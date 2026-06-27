@@ -900,7 +900,7 @@ async function saveAll(){
 // JSONBin.io: free, no server needed, works from any hosted HTML
 // Firebase Realtime Database is used for storage
 // ── FIREBASE (replaces JSONBin - no CORS issues) ──
-const FB = 'https://lifetracker-fs-default-rtdb.firebaseio.com';
+const FB = 'https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
 async function fbGet(p){try{const r=await fetch(FB+'/'+p+'.json');if(!r.ok)return null;return await r.json();}catch(e){return null;}}
 async function fbSet(p,d){try{const r=await fetch(FB+'/'+p+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
 async function fbPatch(p,d){try{const r=await fetch(FB+'/'+p+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}

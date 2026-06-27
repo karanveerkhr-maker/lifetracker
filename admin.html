@@ -333,7 +333,7 @@ async function loadData(){
   document.getElementById('user-table-body').innerHTML='<div class="spinner"></div>';
   document.getElementById('last-refresh-label').textContent='Loading from database...';
   try{
-    const FB_ADMIN = 'https://lifetracker-fs-default-rtdb.firebaseio.com';
+    const FB_ADMIN = 'https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
     const res = await fetch(FB_ADMIN+'/users.json');
     if(!res.ok) throw new Error('HTTP '+res.status+' — check Firebase URL');
     const rawData = await res.json();
