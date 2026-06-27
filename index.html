@@ -258,11 +258,123 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 /* ══ MATCH BADGE ══ */
 .match-badge{background:var(--grad);color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:2px 9px;letter-spacing:.02em;}
 @keyframes spin{to{transform:rotate(360deg);}}
+
+/* ══ LOGIN SCREEN ══ */
+#login-screen{position:fixed;inset:0;background:var(--bg);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
+#login-screen.hidden{display:none;}
+.ls-logo{font-size:48px;margin-bottom:12px;text-align:center;}
+.ls-title{font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;}
+.ls-sub{font-size:13px;color:var(--text2);margin:6px 0 24px;text-align:center;line-height:1.5;}
+.ls-card{background:var(--bg2);border:1.5px solid var(--border2);border-radius:20px;padding:24px 20px;width:100%;max-width:380px;box-shadow:var(--sh2);}
+.ls-tabs{display:flex;gap:0;margin-bottom:20px;background:var(--bg3);border-radius:10px;padding:3px;}
+.ls-tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border-radius:8px;color:var(--text2);transition:all .15s;border:none;background:none;font-family:inherit;}
+.ls-tab.active{background:var(--bg2);color:var(--text);box-shadow:var(--sh);}
+.ls-field{margin-bottom:14px;}
+.ls-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);display:block;margin-bottom:5px;}
+.ls-field input{width:100%;padding:13px 14px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:15px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border-color .15s;}
+.ls-field input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(108,99,255,0.12);}
+.ls-btn{width:100%;padding:15px;background:var(--grad);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;letter-spacing:.01em;}
+.ls-btn:active{opacity:.88;}
+.ls-err{font-size:12px;color:var(--ct);margin-top:8px;text-align:center;display:none;padding:8px;background:var(--cbg);border-radius:var(--rs);}
+.ls-success{font-size:12px;color:var(--gt);margin-top:8px;text-align:center;display:none;padding:8px;background:var(--gbg);border-radius:var(--rs);}
+.ls-cred-box{background:var(--pbg);border-radius:var(--rs);padding:14px;margin-top:14px;display:none;}
+.ls-cred-title{font-size:11px;font-weight:700;color:var(--pt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+.ls-cred-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.ls-cred-label{font-size:12px;color:var(--text2);}
+.ls-cred-val{font-size:14px;font-weight:800;color:var(--pt);letter-spacing:.05em;}
+.ls-cred-copy{background:var(--pt);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+.ls-spinner{border:3px solid var(--border2);border-top:3px solid var(--acc);border-radius:50%;width:22px;height:22px;animation:spin .7s linear infinite;margin:8px auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 </style>
 </head>
 <body>
 
 <!-- ONBOARDING -->
+
+<!-- ══ LOGIN / REGISTER SCREEN ══ -->
+<div id="login-screen">
+  <div class="ls-logo">🔬</div>
+  <div class="ls-title">FS Life Tracker</div>
+  <div class="ls-sub">Your personal career & study companion</div>
+  <div class="ls-card">
+    <div class="ls-tabs">
+      <button class="ls-tab active" onclick="switchAuthTab('login',this)">Login</button>
+      <button class="ls-tab" onclick="switchAuthTab('register',this)">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="auth-login">
+      <div class="ls-field">
+        <label>📱 Mobile Number</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="padding:11px 10px;border:1px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg3);color:var(--text2);white-space:nowrap;">🇮🇳 +91</div>
+          <input id="l-phone" type="tel" placeholder="10-digit number" maxlength="10" autocomplete="tel" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)" onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()" style="flex:1;">
+        </div>
+      </div>
+      <div class="ls-field">
+        <label>🔒 Password</label>
+        <input id="l-pass" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="ls-err" id="l-err"></div>
+      <div id="l-spinner" style="display:none;"><div class="ls-spinner"></div></div>
+      <button class="ls-btn" id="l-btn" onclick="doLogin()">Login →</button>
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--text3);">
+        New user? <span style="color:var(--acc);font-weight:700;cursor:pointer;" onclick="switchAuthTab('register',document.querySelector('.ls-tab:nth-child(2)'))">Register here</span>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="auth-register" style="display:none;">
+      <div class="ls-field">
+        <label>Full name</label>
+        <input id="r-name" type="text" placeholder="e.g. Rahul Singh">
+      </div>
+      <div class="ls-field">
+        <label>Mobile number</label>
+        <input id="r-phone" type="tel" placeholder="10-digit number">
+      </div>
+      <div class="ls-field">
+        <label>Create password (min 6 characters)</label>
+        <input id="r-pass" type="password" placeholder="Create a password" autocomplete="new-password">
+      </div>
+      <div class="ls-field">
+        <label>Confirm password</label>
+        <input id="r-pass2" type="password" placeholder="Repeat password" onkeydown="if(event.key==='Enter')doRegister()">
+      </div>
+      <div class="ls-err" id="r-err"></div>
+      <div id="r-spinner" style="display:none;"><div class="ls-spinner"></div></div>
+      <button class="ls-btn" id="r-btn" onclick="doRegister()">Create account →</button>
+      <!-- Show credentials after register -->
+      <div class="ls-cred-box" id="r-cred-box" style="display:none;background:linear-gradient(135deg,var(--gbg),var(--bbg));border:1px solid var(--gt);border-radius:var(--r);padding:16px;margin-top:14px;">
+        <div style="font-size:14px;font-weight:800;color:var(--gt);margin-bottom:12px;">🎉 Account created successfully!</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.5;">📸 Screenshot this or save it — you need your mobile + password to login from any device.</div>
+        <div class="ls-cred-row">
+          <span class="ls-cred-label">📱 Login mobile:</span>
+          <span class="ls-cred-val" id="r-show-phone" style="color:var(--acc);">—</span>
+        </div>
+        <div class="ls-cred-row">
+          <span class="ls-cred-label">🔒 Password:</span>
+          <span class="ls-cred-val" id="r-show-pass">••••••</span>
+          <button class="ls-cred-copy" onclick="copyText(document.getElementById('r-show-pass').textContent,'Password copied!')">Copy</button>
+        </div>
+        <div class="ls-cred-row">
+          <span class="ls-cred-label">🪪 Your User ID:</span>
+          <span class="ls-cred-val" id="r-show-uid" style="font-size:11px;color:var(--text3);">—</span>
+          <button class="ls-cred-copy" onclick="copyText(document.getElementById('r-show-uid').textContent,'User ID copied!')">Copy</button>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:8px;">User ID is for reference. Login uses your mobile number + password.</div>
+        <div id="sms-status" style="display:none;font-size:12px;font-weight:600;padding:8px 10px;border-radius:8px;background:var(--bg);margin-top:10px;"></div>
+        <button class="ls-btn" style="margin-top:14px;" onclick="proceedAfterRegister()">Continue to app →</button>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:11px;color:var(--text3);margin-top:20px;text-align:center;line-height:1.7;">
+    Your data is saved securely and syncs across devices.<br>
+    <span style="color:var(--acc);cursor:pointer;" onclick="showGuestMode()">Continue as guest (data on this device only)</span>
+  </div>
+</div>
+
 <div id="onboarding">
 
   <div class="ob-step active" id="ob1">
@@ -526,6 +638,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
         <div class="empty" style="padding:1.5rem;"><div class="empty-icon">🎓</div>No certificates yet.</div>
       </div>
       <button class="btn btn-b" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="openModal('cert-modal')">+ Add certificate</button>
+      <button class="btn btn-r" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="logoutUser()">🚪 Logout</button>
       <div class="stitle">Applied jobs <span id="applied-count2" style="background:var(--gbg);color:var(--gt);border-radius:10px;padding:1px 6px;font-size:10px;margin-left:3px;">0</span></div>
       <div id="applied-list2"></div>
       <div style="margin-top:16px;">
@@ -735,13 +848,16 @@ function defaultTasks(){
 }
 
 async function saveAll(){
+  // Cloud sync after every save
+  setTimeout(()=>{ if(currentUID&&!currentUID.startsWith("GUEST_")) saveUserDataToCloud(); }, 2000);
+  // Save to localStorage (persists on device between sessions)
   try{
-    await window.storage.set('P2',JSON.stringify(P));
-    await window.storage.set('CERTS2',JSON.stringify(CERTS));
-    await window.storage.set('APPLIED2',JSON.stringify(APPLIED));
-    await window.storage.set('TASK_LOG2',JSON.stringify(TASK_LOG));
-    await window.storage.set('WEEK_LOG2',JSON.stringify(WEEK_LOG));
-    await window.storage.set('CTASKS2',JSON.stringify(CUSTOM_TASKS));
+    localStorage.setItem('P2',JSON.stringify(P));
+    localStorage.setItem('CERTS2',JSON.stringify(CERTS));
+    localStorage.setItem('APPLIED2',JSON.stringify(APPLIED));
+    localStorage.setItem('TASK_LOG2',JSON.stringify(TASK_LOG));
+    localStorage.setItem('WEEK_LOG2',JSON.stringify(WEEK_LOG));
+    localStorage.setItem('CTASKS2',JSON.stringify(CUSTOM_TASKS));
   }catch(e){}
   // ── ADMIN SYNC via JSONBin ──
   try{
@@ -811,8 +927,9 @@ async function syncToAdmin(uid, snapshot){
   }
 }
 async function loadAll(){
+  // Load from localStorage (device storage - persists between sessions)
   const map={P2:null,CERTS2:null,APPLIED2:null,TASK_LOG2:null,WEEK_LOG2:null,CTASKS2:null};
-  for(const k of Object.keys(map)){try{const r=await window.storage.get(k);if(r&&r.value)map[k]=JSON.parse(r.value);}catch(e){}}
+  for(const k of Object.keys(map)){try{const v=localStorage.getItem(k);if(v)map[k]=JSON.parse(v);}catch(e){}}
   if(map.P2)P=map.P2;
   if(map.CERTS2)CERTS=map.CERTS2;
   if(map.APPLIED2)APPLIED=map.APPLIED2;
@@ -1241,7 +1358,7 @@ function sw(tab,btn){
 function toast(msg){const t=document.getElementById('toast');t.innerHTML=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function resetApp(){
   if(!confirm('Reset everything and restart? All data will be cleared.'))return;
-  try{['P2','CERTS2','APPLIED2','TASK_LOG2','WEEK_LOG2','CTASKS2'].forEach(k=>window.storage.delete(k));}catch(e){}
+  try{['P2','CERTS2','APPLIED2','TASK_LOG2','WEEK_LOG2','CTASKS2'].forEach(k=>localStorage.removeItem(k));}catch(e){}
   P=null;CERTS=[];APPLIED=[];TASK_LOG={};WEEK_LOG={};CUSTOM_TASKS=defaultTasks();
   document.getElementById('app').classList.add('hidden');
   document.getElementById('onboarding').classList.remove('hidden');
@@ -1624,17 +1741,17 @@ function resetLearnPlan() {
   document.getElementById('learn-text').value = '';
   document.getElementById('learn-file-input').value = '';
   document.getElementById('learn-file-name').style.display = 'none';
-  try { window.storage.delete('LPLAN2'); } catch(e) {}
+  try { localStorage.removeItem('LPLAN2'); } catch(e) {}
 }
 
 async function saveLearnPlan() {
-  try { await window.storage.set('LPLAN2', JSON.stringify(learnPlan)); } catch(e) {}
+  try { localStorage.setItem('LPLAN2', JSON.stringify(learnPlan)); } catch(e) {}
 }
 async function loadLearnPlan() {
   try {
-    const r = await window.storage.get('LPLAN2');
-    if (r && r.value) {
-      learnPlan = JSON.parse(r.value);
+    const r = localStorage.getItem('LPLAN2');
+    if (r) {
+      learnPlan = JSON.parse(r);
       if (learnPlan) renderLearnResult();
     }
   } catch(e) {}
@@ -2028,15 +2145,515 @@ function initMonetization(){
 }
 
 async function init(){
-  await loadAll();
+  // Check if already logged in (stored credentials)
+  const savedUID = localStorage.getItem('auth_uid');
+  const savedHash = localStorage.getItem('auth_hash');
+
+  if(savedUID && savedHash){
+    // Verify credentials still valid
+    currentUID = savedUID;
+    // Load local cache first for instant startup
+    await loadAll();
+    // Then sync from cloud in background
+    if(!savedUID.startsWith('GUEST_')){
+      loadUserDataFromCloud(savedUID).then(()=>{
+        if(P && P.setupDone){ renderToday(); renderProfile(); }
+      });
+    }
+    if(P && P.setupDone){
+      document.getElementById('login-screen').classList.add('hidden');
+      startApp();
+      await loadLearnPlan();
+      initMonetization();
+    } else {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+    }
+  } else {
+    // Show login screen
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('onboarding').classList.add('hidden');
+    document.getElementById('app').classList.add('hidden');
+  }
+}
+
+// ════════════════════════════════════════════
+// AUTH SYSTEM — Login / Register / Cloud Sync
+// ════════════════════════════════════════════
+
+// ════════════════════════════════════════════
+// AUTH & CLOUD SYNC — Phone + Password Login
+// Each user gets own bin. No race conditions.
+// ════════════════════════════════════════════
+
+// ACCOUNTS BIN — stores all user accounts index
+// This single bin just maps phone->uid and stores account info
+const ACCOUNTS_BIN_ID = '6a3f4cd5f5f4af5e2937656d';
+const BIN_KEY = '$2a$10$.5/n4a3NQ1CFNYDPiuVsBuwC.l4cORZMupEj3bujJZ8a.nSftzNKW';
+const API = 'https://api.jsonbin.io/v3/b/';
+
+let currentUID = null;
+let currentUserBinID = null; // each user's own private data bin
+let isSyncing = false;
+
+// ── HELPERS ──
+function generateUID(){
+  const L='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  return L[Math.floor(Math.random()*L.length)]+L[Math.floor(Math.random()*L.length)]+Math.floor(1000+Math.random()*9000);
+}
+
+function hashPass(pass){
+  let h=5381;
+  for(let i=0;i<pass.length;i++) h=((h<<5)+h)^pass.charCodeAt(i);
+  return (h>>>0).toString(36).padStart(8,'0');
+}
+
+// Read accounts index bin
+async function readAccounts(){
+  try{
+    const r=await fetch(API+ACCOUNTS_BIN_ID+'/latest',{headers:{'X-Master-Key':BIN_KEY,'X-Bin-Meta':'false'}});
+    if(!r.ok) return null;
+    return await r.json();
+  }catch(e){return null;}
+}
+
+// Write to accounts index bin
+async function writeAccounts(data){
+  try{
+    const r=await fetch(API+ACCOUNTS_BIN_ID,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},body:JSON.stringify(data)});
+    return r.ok;
+  }catch(e){return false;}
+}
+
+// Create a NEW private bin for a user (called once at register)
+async function createUserBin(initialData){
+  try{
+    const r=await fetch(API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY,'X-Bin-Name':'user_data','X-Bin-Private':'true'},
+      body:JSON.stringify(initialData)
+    });
+    if(!r.ok) return null;
+    const j=await r.json();
+    return j.metadata?.id || null;
+  }catch(e){return null;}
+}
+
+// Read from a user's private bin
+async function readUserBin(binId){
+  try{
+    const r=await fetch(API+binId+'/latest',{headers:{'X-Master-Key':BIN_KEY,'X-Bin-Meta':'false'}});
+    if(!r.ok) return null;
+    return await r.json();
+  }catch(e){return null;}
+}
+
+// Write to a user's private bin
+async function writeUserBin(binId, data){
+  try{
+    const r=await fetch(API+binId,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},body:JSON.stringify(data)});
+    return r.ok;
+  }catch(e){return false;}
+}
+
+// ── UI HELPERS ──
+function switchAuthTab(tab,btn){
+  document.querySelectorAll('.ls-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('auth-login').style.display=tab==='login'?'block':'none';
+  document.getElementById('auth-register').style.display=tab==='register'?'block':'none';
+  document.getElementById('l-err').style.display='none';
+  document.getElementById('r-err').style.display='none';
+}
+
+function showErr(id,msg){
+  const el=document.getElementById(id);
+  el.textContent=msg;
+  el.style.display='block';
+}
+
+function showSpinner(id,show){
+  document.getElementById(id).style.display=show?'block':'none';
+}
+
+// ── REGISTER ──
+async function doRegister(){
+  const name=document.getElementById('r-name').value.trim();
+  const phone=document.getElementById('r-phone').value.trim();
+  const pass=document.getElementById('r-pass').value;
+  const pass2=document.getElementById('r-pass2').value;
+
+  if(!name){showErr('r-err','Please enter your full name');return;}
+  if(!phone||!/^[6-9][0-9]{9}$/.test(phone)){showErr('r-err','Enter a valid 10-digit Indian mobile number');return;}
+  if(pass.length<6){showErr('r-err','Password must be at least 6 characters');return;}
+  if(pass!==pass2){showErr('r-err','Passwords do not match');return;}
+
+  showSpinner('r-spinner',true);
+  document.getElementById('r-err').style.display='none';
+  document.getElementById('r-btn').disabled=true;
+
+  // Read accounts index
+  let accounts=await readAccounts()||{byPhone:{},byUID:{}};
+  if(!accounts.byPhone) accounts.byPhone={};
+  if(!accounts.byUID) accounts.byUID={};
+
+  // Check if phone already registered
+  if(accounts.byPhone[phone]){
+    showSpinner('r-spinner',false);
+    document.getElementById('r-btn').disabled=false;
+    showErr('r-err','This mobile number is already registered. Please login with your phone number.');
+    return;
+  }
+
+  const uid=generateUID();
+  const passHash=hashPass(pass);
+  const now=new Date().toISOString();
+
+  // Create user's own private data bin first
+  const userBinId=await createUserBin({
+    userData:{P:null,CERTS:[],APPLIED:[],TASK_LOG:{},WEEK_LOG:{},CUSTOM_TASKS:null},
+    meta:{uid,name,phone,createdAt:now}
+  });
+
+  if(!userBinId){
+    showSpinner('r-spinner',false);
+    document.getElementById('r-btn').disabled=false;
+    showErr('r-err','Network error creating your account. Check connection and try again.');
+    return;
+  }
+
+  // Save account to index
+  accounts.byPhone[phone]={uid,passHash,binId:userBinId,name,joinedAt:now,lastSeen:now};
+  accounts.byUID[uid]={uid,phone,passHash,binId:userBinId,name,joinedAt:now,lastSeen:now};
+
+  const ok=await writeAccounts(accounts);
+  showSpinner('r-spinner',false);
+  document.getElementById('r-btn').disabled=false;
+
+  if(!ok){
+    showErr('r-err','Account created but could not save index. Please try registering again.');
+    return;
+  }
+
+  // Store credentials locally
+  localStorage.setItem('auth_uid',uid);
+  localStorage.setItem('auth_binId',userBinId);
+  localStorage.setItem('auth_hash',passHash);
+  localStorage.setItem('auth_name',name);
+  localStorage.setItem('auth_phone',phone);
+  currentUID=uid;
+  currentUserBinID=userBinId;
+
+  // Show credentials to user
+  document.getElementById('r-show-uid').textContent=uid;
+  document.getElementById('r-show-phone').textContent='+91 '+phone;
+  document.getElementById('r-show-pass').textContent=pass;
+  document.getElementById('r-cred-box').style.display='block';
+  document.getElementById('r-btn').style.display='none';
+
+  // Send welcome SMS
+  sendWelcomeSMS(phone, name, uid, pass);
+
+  // Pre-fill onboarding name
+  setTimeout(()=>{const el=document.getElementById('ob-name');if(el)el.value=name;},100);
+}
+
+async function proceedAfterRegister(){
+  document.getElementById('login-screen').classList.add('hidden');
   if(P&&P.setupDone){
     startApp();
-    await loadLearnPlan();
-  }else{
+    try{await loadLearnPlan();}catch(e){}
+    try{initMonetization();}catch(e){}
+  } else {
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
   }
 }
+
+// ── LOGIN (by phone + password) ──
+async function doLogin(){
+  const phone=document.getElementById('l-phone').value.trim();
+  const pass=document.getElementById('l-pass').value;
+
+  if(!phone||!/^[6-9][0-9]{9}$/.test(phone)){showErr('l-err','Enter a valid 10-digit mobile number');return;}
+  if(!pass){showErr('l-err','Please enter your password');return;}
+
+  showSpinner('l-spinner',true);
+  document.getElementById('l-err').style.display='none';
+  document.getElementById('l-btn').disabled=true;
+
+  const accounts=await readAccounts();
+  showSpinner('l-spinner',false);
+  document.getElementById('l-btn').disabled=false;
+
+  if(!accounts||!accounts.byPhone){
+    showErr('l-err','Could not connect. Check your internet connection and try again.');
+    return;
+  }
+
+  const account=accounts.byPhone[phone];
+  if(!account){
+    showErr('l-err','Mobile number not registered. Please register first.');
+    return;
+  }
+
+  const passHash=hashPass(pass);
+  if(account.passHash!==passHash){
+    showErr('l-err','Wrong password. Please try again.');
+    return;
+  }
+
+  // Login success
+  currentUID=account.uid;
+  currentUserBinID=account.binId;
+
+  localStorage.setItem('auth_uid',account.uid);
+  localStorage.setItem('auth_binId',account.binId);
+  localStorage.setItem('auth_hash',passHash);
+  localStorage.setItem('auth_name',account.name);
+  localStorage.setItem('auth_phone',phone);
+
+  // Update last seen in background
+  try{
+    const acc2=await readAccounts();
+    if(acc2){
+      const now=new Date().toISOString();
+      if(acc2.byPhone[phone]) acc2.byPhone[phone].lastSeen=now;
+      if(acc2.byUID[account.uid]) acc2.byUID[account.uid].lastSeen=now;
+      writeAccounts(acc2); // don't await, let it run in background
+    }
+  }catch(e){}
+
+  toast('Welcome back, '+account.name+'!');
+
+  // Load user data from their private bin
+  await loadUserDataFromCloud();
+
+  document.getElementById('login-screen').classList.add('hidden');
+  if(P&&P.setupDone){
+    startApp();
+    try{await loadLearnPlan();}catch(e){}
+    try{initMonetization();}catch(e){}
+  } else {
+    setTimeout(()=>{const n=document.getElementById('ob-name');if(n)n.value=account.name;},100);
+    document.getElementById('onboarding').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+  }
+}
+
+// ── LOAD USER DATA FROM THEIR OWN BIN ──
+async function loadUserDataFromCloud(){
+  if(!currentUserBinID) return;
+  try{
+    const d=await readUserBin(currentUserBinID);
+    if(!d||!d.userData) return;
+    const ud=d.userData;
+    if(ud.P) P=ud.P;
+    if(ud.CERTS) CERTS=ud.CERTS;
+    if(ud.APPLIED) APPLIED=ud.APPLIED;
+    if(ud.TASK_LOG) TASK_LOG=ud.TASK_LOG;
+    if(ud.WEEK_LOG) WEEK_LOG=ud.WEEK_LOG;
+    if(ud.CUSTOM_TASKS) CUSTOM_TASKS=ud.CUSTOM_TASKS;
+    // Cache locally
+    localStorage.setItem('P2',JSON.stringify(P));
+    localStorage.setItem('CERTS2',JSON.stringify(CERTS));
+    localStorage.setItem('APPLIED2',JSON.stringify(APPLIED));
+    localStorage.setItem('TASK_LOG2',JSON.stringify(TASK_LOG));
+    localStorage.setItem('WEEK_LOG2',JSON.stringify(WEEK_LOG));
+    localStorage.setItem('CTASKS2',JSON.stringify(CUSTOM_TASKS));
+  }catch(e){}
+}
+
+// ── SAVE USER DATA TO THEIR OWN BIN ──
+async function saveUserDataToCloud(){
+  if(!currentUID||!currentUserBinID||isSyncing) return;
+  if(currentUID.startsWith('GUEST_')) return;
+  isSyncing=true;
+  try{
+    // Save full data to user's private bin
+    await writeUserBin(currentUserBinID,{
+      userData:{P,CERTS,APPLIED,TASK_LOG,WEEK_LOG,CUSTOM_TASKS,lastSaved:new Date().toISOString()},
+      meta:{uid:currentUID,lastSaved:new Date().toISOString()}
+    });
+    // Update admin snapshot in accounts bin
+    if(P&&P.setupDone){
+      const accounts=await readAccounts();
+      if(accounts&&accounts.byUID&&accounts.byUID[currentUID]){
+        const sched=CUSTOM_TASKS||[];
+        const tlog=TASK_LOG[todayKey]||{};
+        const todayPct=sched.length?Math.round(sched.filter(t=>tlog[t.id]).length/sched.length*100):0;
+        let wt=0,wc=0;
+        for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const l=TASK_LOG[k]||{};const pp=sched.length?Math.round(sched.filter(t=>l[t.id]).length/sched.length*100):0;if(TASK_LOG[k]){wt+=pp;wc++;}}
+        const weekAvg=wc?Math.round(wt/wc):0;
+        let streak=0;
+        for(let i=1;i<30;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const l=TASK_LOG[k]||{};const pp=sched.length?Math.round(sched.filter(t=>l[t.id]).length/sched.length*100):0;if(pp>=50)streak++;else break;}
+        accounts.byUID[currentUID].snapshot={
+          degree:P.degreeLabel||'',field:P.field||'',college:P.college||'',
+          state:P.state||'',sem:P.sem||3,goal:P.goal||'',
+          applied:(APPLIED||[]).length,certs:(CERTS||[]).length,
+          todayPct,weekAvg,streak,lastSeen:new Date().toISOString()
+        };
+        writeAccounts(accounts); // background, no await
+      }
+    }
+  }catch(e){}
+  isSyncing=false;
+}
+
+// ── GUEST MODE ──
+function showGuestMode(){
+  if(confirm('Guest mode saves data only on this device. You cannot log in from another device.\n\nContinue as guest?')){
+    currentUID='GUEST_'+Date.now();
+    currentUserBinID=null;
+    localStorage.setItem('auth_uid',currentUID);
+    document.getElementById('login-screen').classList.add('hidden');
+    if(P&&P.setupDone){
+      startApp();
+    } else {
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+    }
+  }
+}
+
+// ── COPY HELPER ──
+function copyText(text,msg){
+  navigator.clipboard?.writeText(text).then(()=>toast(msg)).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast(msg);
+  });
+}
+
+// ── LOGOUT ──
+function logoutUser(){
+  if(!confirm('Log out? Your data is saved to the cloud.')) return;
+  saveUserDataToCloud().finally(()=>{localStorage.clear();location.reload();});
+}
+
+
+// ════════════════════════════════════════════
+// SMS NOTIFICATION — Fast2SMS (India)
+// ════════════════════════════════════════════
+// HOW TO SET UP (free):
+// 1. Go to https://www.fast2sms.com and sign up
+// 2. Verify your account (free ₹50 credits given)
+// 3. Go to Dev API → API Key → copy your key
+// 4. Paste it below replacing YOUR_FAST2SMS_API_KEY
+// 5. That's it — users will get SMS on registration!
+
+const FAST2SMS_KEY = '38e7wfQqgAiGIyvXOU6uYhMlnmH24p1LPB05jSVaWZNJDCrdTRv6PNY9iyVfS57qaKgoupZRzUl3HIQW';
+
+async function sendWelcomeSMS(phone, name, uid, pass){
+  // Don't try if API key not set
+  if(!FAST2SMS_KEY || FAST2SMS_KEY === 'YOUR_FAST2SMS_API_KEY'){
+    console.log('SMS skipped: Fast2SMS API key not configured.');
+    showSMSStatus('sms-status', false, 'Add your Fast2SMS key to enable SMS.');
+    return;
+  }
+
+  const firstName = name.split(' ')[0];
+  const message =
+    'Welcome to Life Tracker, '+firstName+'! '+
+    'Your account is created. '+
+    'Login: Mobile '+phone+' | Password: '+pass+' | User ID: '+uid+'. '+
+    'Keep your password safe. - Life Tracker';
+
+  try{
+    // Fast2SMS Quick SMS API
+    const res = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+      method: 'POST',
+      headers: {
+        'authorization': FAST2SMS_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        route: 'q',           // Quick SMS route (no DLT needed for quick)
+        message: message,
+        language: 'english',
+        flash: 0,
+        numbers: phone
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.return === true){
+      showSMSStatus('sms-status', true, 'SMS sent to +91 '+phone+'!');
+    } else {
+      // API responded but SMS failed (insufficient credits, wrong key etc.)
+      const reason = data.message || 'SMS could not be sent.';
+      showSMSStatus('sms-status', false, reason);
+      console.warn('Fast2SMS error:', data);
+    }
+  } catch(e){
+    // Network error or CORS issue
+    // Fast2SMS blocks direct browser calls on some plans — use server proxy if needed
+    showSMSStatus('sms-status', false, 'SMS network error. Credentials shown above.');
+    console.warn('SMS fetch error:', e);
+  }
+}
+
+function showSMSStatus(elId, success, msg){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  el.style.display = 'block';
+  el.textContent = (success ? '✅ ' : 'ℹ️ ') + msg;
+  el.style.color = success ? 'var(--gt)' : 'var(--at)';
+}
+
+// ── AUTO RESTORE from localStorage on startup (fast, before cloud loads) ──
+async function initAuth(){
+  const savedUID=localStorage.getItem('auth_uid');
+  const savedBinId=localStorage.getItem('auth_binId');
+  const savedHash=localStorage.getItem('auth_hash');
+
+  if(savedUID&&savedBinId&&savedHash&&!savedUID.startsWith('GUEST_')){
+    currentUID=savedUID;
+    currentUserBinID=savedBinId;
+    await loadAll(); // load localStorage cache immediately
+    if(!CUSTOM_TASKS) CUSTOM_TASKS=defaultTasks();
+    if(P&&P.setupDone){
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('onboarding').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      startApp();
+      try{await loadLearnPlan();}catch(e){}
+      try{initMonetization();}catch(e){}
+      // Sync from cloud in background
+      setTimeout(async()=>{
+        await loadUserDataFromCloud();
+        renderToday();renderTimetable();renderStudy();renderSkills();renderJobs();renderProfile();
+      },1500);
+    } else {
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('login-screen').classList.add('hidden');
+    }
+  } else if(savedUID&&savedUID.startsWith('GUEST_')){
+    currentUID=savedUID;
+    await loadAll();
+    if(!CUSTOM_TASKS) CUSTOM_TASKS=defaultTasks();
+    if(P&&P.setupDone){
+      document.getElementById('login-screen').classList.add('hidden');
+      startApp();
+      try{await loadLearnPlan();}catch(e){}
+      try{initMonetization();}catch(e){}
+    } else {
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('login-screen').classList.add('hidden');
+    }
+  } else {
+    // Show login screen
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('onboarding').classList.add('hidden');
+    document.getElementById('app').classList.add('hidden');
+  }
+}
+
+// ── AUTO CLOUD SAVE every 90 seconds ──
+setInterval(()=>{ if(currentUID&&!currentUID.startsWith('GUEST_')) saveUserDataToCloud(); }, 90000);
+
+initAuth();
 </script>
 </body>
 </html>

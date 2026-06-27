@@ -156,7 +156,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <div id="dashboard">
   <div id="setup-banner" style="background:#2A1E00;border-bottom:1px solid #FFD060;padding:10px 24px;font-size:12px;color:#FFD060;display:flex;align-items:center;gap:10px;">
     <span>⚙️</span>
-    <span><b>Setup required:</b> Replace <code>JSONBIN_KEY</code> and <code>JSONBIN_BIN_ID</code> in both the app and admin files. <a href="https://jsonbin.io" target="_blank" style="color:#FFD060;">Get free API key at jsonbin.io →</a></span>
+    <span><b>✅ Connected:</b> Reading from JSONbin · Bin ID: 6a3f4cd5f5f4af5e2937656d · Auto-refreshes every 60s</span>
     <button onclick="document.getElementById('setup-banner').style.display='none'" style="margin-left:auto;background:none;border:none;color:#FFD060;font-size:16px;cursor:pointer;">✕</button>
   </div>
   <div class="topbar">
@@ -338,8 +338,47 @@ async function loadData(){
     });
     if(!res.ok) throw new Error('HTTP '+res.status+' — check your JSONBin API key and Bin ID');
     const data = await res.json();
-    const usersObj = data.users || {};
-    allUsers = Object.values(usersObj).sort((a,b)=>new Date(b.lastSeen)-new Date(a.lastSeen));
+
+    // Support BOTH data formats:
+    // Old format: data.users = {uid: snapshot}
+    // New v10 format: data.byUID = {uid: {uid,name,phone,passHash,binId,snapshot:{...}}}
+    let usersMap = {};
+
+    // Read old format snapshots
+    if(data.users){
+      Object.values(data.users).forEach(u=>{ if(u&&u.uid) usersMap[u.uid]=u; });
+    }
+
+    // Read new v10 format — merge snapshot data with account info
+    if(data.byUID){
+      Object.values(data.byUID).forEach(acc=>{
+        if(!acc||!acc.uid) return;
+        const snap = acc.snapshot || {};
+        const existing = usersMap[acc.uid] || {};
+        usersMap[acc.uid] = {
+          uid: acc.uid,
+          name: acc.name || existing.name || 'Unknown',
+          phone: acc.phone || existing.phone || '',
+          degree: snap.degree || existing.degree || '',
+          field: snap.field || existing.field || '',
+          college: snap.college || existing.college || '',
+          state: snap.state || existing.state || '',
+          sem: snap.sem || existing.sem || '',
+          goal: snap.goal || existing.goal || '',
+          m12: snap.m12 || existing.m12 || '',
+          applied: snap.applied ?? existing.applied ?? 0,
+          certs: snap.certs ?? existing.certs ?? 0,
+          todayPct: snap.todayPct ?? existing.todayPct ?? 0,
+          weekAvg: snap.weekAvg ?? existing.weekAvg ?? 0,
+          streak: snap.streak ?? existing.streak ?? 0,
+          lastSeen: snap.lastSeen || acc.lastSeen || existing.lastSeen || '',
+          joinedAt: acc.joinedAt || existing.joinedAt || '',
+          appVersion: snap.appVersion || existing.appVersion || 'v10',
+        };
+      });
+    }
+
+    allUsers = Object.values(usersMap).sort((a,b)=>new Date(b.lastSeen)-new Date(a.lastSeen));
     renderStats();
     renderTable();
     renderInsights();
