@@ -2205,27 +2205,32 @@ function hashPass(pass){
 
 // Read accounts index bin
 async function readAccounts(){
-  const d=await fbGet('accounts');
-  return d||{byUID:{},byPhone:{}};
+  const byUID = await fbGet('accounts/byUID') || {};
+  const byPhone = await fbGet('accounts/byPhone') || {};
+  return {byUID, byPhone};
 }
 
 // Write to accounts index bin
 async function writeAccounts(data){
-  return await fbSet('accounts',data);
+  // Write each account separately for efficiency
+  if(data.byUID){
+    for(const uid of Object.keys(data.byUID)){
+      await fbSet('accounts/byUID/'+uid, data.byUID[uid]);
+    }
+  }
+  if(data.byPhone){
+    for(const phone of Object.keys(data.byPhone)){
+      await fbSet('accounts/byPhone/'+phone.replace(/[^0-9]/g,''), data.byPhone[phone]);
+    }
+  }
+  return true;
 }
 
 // Create a NEW private bin for a user (called once at register)
-async function createUserBin(initialData){
-  try{
-    const r=await fetch(API,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY,'X-Bin-Name':'user_data','X-Bin-Private':'true'},
-      body:JSON.stringify(initialData)
-    });
-    if(!r.ok) return null;
-    const j=await r.json();
-    return j.metadata?.id || null;
-  }catch(e){return null;}
+async function createUserBin(initialData, uid){
+  // Firebase: store data at users path using uid as key
+  await fbSet('userData/'+uid, initialData);
+  return uid; // return uid as the "bin ID"
 }
 
 // Read from a user's private bin
@@ -2292,10 +2297,8 @@ async function doRegister(){
   const now=new Date().toISOString();
 
   // Create user's own private data bin first
-  const userBinId=await createUserBin({
-    userData:{P:null,CERTS:[],APPLIED:[],TASK_LOG:{},WEEK_LOG:{},CUSTOM_TASKS:null},
-    meta:{uid,name,phone,createdAt:now}
-  });
+  const userBinId = uid; // Firebase uses uid as key
+  await fbSet('userData/'+uid, {userData:{P:null,CERTS:[],APPLIED:[],TASK_LOG:{},WEEK_LOG:{},CUSTOM_TASKS:null},meta:{uid,name,phone,createdAt:now}});
 
   if(!userBinId){
     showSpinner('r-spinner',false);
