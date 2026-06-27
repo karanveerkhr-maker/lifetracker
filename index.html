@@ -905,20 +905,10 @@ async function fbGet(p){try{const r=await fetch(FB+'/'+p+'.json');if(!r.ok)retur
 async function fbSet(p,d){try{const r=await fetch(FB+'/'+p+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
 async function fbPatch(p,d){try{const r=await fetch(FB+'/'+p+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
 // Keep these for compatibility
-const JSONBIN_KEY='';const JSONBIN_BIN_ID='';const BIN_KEY='';const ACCOUNTS_BIN_ID='';const API='';
+// Legacy JSONBin constants (migrated to Firebase)
 
 async function syncToAdmin(uid,snapshot){
   try{ await fbSet('users/'+uid,snapshot); }catch(e){}
-}
-    if(!data.users) data.users = {};
-    // 2. Update this user's snapshot
-    data.users[uid] = snapshot;
-    // 3. Write back
-    await fbSet('sync/'+uid, snapshot);
-  }catch(e){
-    // Fallback to localStorage sync flag
-    localStorage.setItem('pendingSync_'+uid, JSON.stringify(snapshot));
-  }
 }
 async function loadAll(){
   // Load from localStorage (device storage - persists between sessions)
