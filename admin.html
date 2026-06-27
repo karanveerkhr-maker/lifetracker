@@ -326,18 +326,18 @@ function logout(){
 // DATA LOADING
 // ══════════════════════════════════════
 // ── JSONBIN CONFIG (must match the app) ──
-const JSONBIN_KEY = '$2a$10$.5/n4a3NQ1CFNYDPiuVsBuwC.l4cORZMupEj3bujJZ8a.nSftzNKW';
-const JSONBIN_BIN_ID = '6a3f4cd5f5f4af5e2937656d';
+// Firebase used - no keys needed for public read
+const _FB_UNUSED = '';
 
 async function loadData(){
   document.getElementById('user-table-body').innerHTML='<div class="spinner"></div>';
   document.getElementById('last-refresh-label').textContent='Loading from database...';
   try{
-    const res = await fetch('https://api.jsonbin.io/v3/b/'+JSONBIN_BIN_ID+'/latest',{
-      headers:{'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta':'false'}
-    });
-    if(!res.ok) throw new Error('HTTP '+res.status+' — check your JSONBin API key and Bin ID');
-    const data = await res.json();
+    const FB_ADMIN = 'https://lifetracker-fs-default-rtdb.firebaseio.com';
+    const res = await fetch(FB_ADMIN+'/users.json');
+    if(!res.ok) throw new Error('HTTP '+res.status+' — check Firebase URL');
+    const rawData = await res.json();
+    const data = {users: rawData || {}};
 
     // Support BOTH data formats:
     // Old format: data.users = {uid: snapshot}
