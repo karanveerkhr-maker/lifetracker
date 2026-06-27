@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Life Tracker — Admin Dashboard</title>
+<style>
+:root{
+  --bg:#0F1117;--bg2:#181C2A;--bg3:#222636;--bg4:#2A2F45;
+  --text:#EEF0FA;--text2:#8A8FAD;--text3:#3E4260;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --acc:#6C63FF;--acc2:#3ECFB2;
+  --gbg:#0A2A1A;--gt:#5DD49A;
+  --bbg:#0A1A3A;--bt:#7EB3FF;
+  --pbg:#1A1540;--pt:#B0AAFF;
+  --abg:#2A1E00;--at:#FFD060;
+  --cbg:#2A0A0A;--ct:#FF9090;
+  --r:14px;--rs:9px;
+  --grad:linear-gradient(135deg,#6C63FF,#3ECFB2);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;}
+
+/* LOGIN */
+#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+#login-screen.hidden{display:none;}
+.login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:36px 28px;width:100%;max-width:380px;text-align:center;}
+.login-logo{font-size:42px;margin-bottom:12px;}
+.login-h{font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.login-sub{font-size:13px;color:var(--text2);margin:6px 0 24px;}
+.login-input{width:100%;padding:13px 16px;border:1px solid var(--border2);border-radius:var(--rs);font-size:15px;background:var(--bg3);color:var(--text);font-family:inherit;outline:none;margin-bottom:12px;letter-spacing:3px;}
+.login-input:focus{border-color:var(--acc);}
+.login-btn{width:100%;padding:14px;background:var(--grad);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+.login-err{font-size:12px;color:var(--ct);margin-top:8px;display:none;}
+
+/* DASHBOARD */
+#dashboard{display:none;}
+#dashboard.visible{display:block;}
+
+/* TOP BAR */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.topbar-logo{font-size:15px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.topbar-right{display:flex;gap:10px;align-items:center;}
+.tb-btn{padding:7px 14px;border:1px solid var(--border2);border-radius:var(--rs);font-size:12px;cursor:pointer;background:transparent;color:var(--text2);font-family:inherit;font-weight:500;}
+.tb-btn:hover{background:var(--bg3);}
+.tb-btn.active{background:var(--acc);color:#fff;border-color:var(--acc);}
+
+/* MAIN LAYOUT */
+.main{padding:20px 24px;max-width:1200px;margin:0 auto;}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
+.stat-n{font-size:28px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-l{font-size:11px;color:var(--text2);margin-top:3px;text-transform:uppercase;letter-spacing:.06em;}
+.stat-change{font-size:11px;margin-top:5px;}
+.stat-up{color:var(--gt);}
+.stat-dn{color:var(--ct);}
+
+/* SEARCH & FILTER */
+.controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.search-box{flex:1;min-width:200px;padding:9px 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);font-size:13px;color:var(--text);font-family:inherit;outline:none;}
+.search-box:focus{border-color:var(--acc);}
+.filter-sel{padding:9px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);font-size:12px;color:var(--text2);font-family:inherit;cursor:pointer;outline:none;}
+
+/* TABLE */
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px;}
+.table-head{background:var(--bg3);display:grid;padding:10px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);border-bottom:1px solid var(--border);}
+.table-row{display:grid;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background .1s;}
+.table-row:last-child{border-bottom:none;}
+.table-row:hover{background:var(--bg3);}
+.table-cols{grid-template-columns:1.6fr 1.4fr 1fr .9fr .6fr .7fr .7fr .5fr .7fr 1fr .5fr;}
+.cell-name{font-size:13px;font-weight:600;}
+.cell-sub{font-size:10px;color:var(--text2);margin-top:2px;}
+.tag{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;display:inline-block;}
+.tg{background:var(--gbg);color:var(--gt);}
+.tb{background:var(--bbg);color:var(--bt);}
+.tp{background:var(--pbg);color:var(--pt);}
+.ta{background:var(--abg);color:var(--at);}
+.tc{background:var(--cbg);color:var(--ct);}
+.score-bar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:4px;}
+.score-fill{height:100%;border-radius:3px;}
+.badge-online{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3ECFB2;margin-right:5px;}
+.badge-offline{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--text3);margin-right:5px;}
+
+/* USER MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:24px;width:100%;max-width:560px;}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:18px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.detail-item{background:var(--bg3);border-radius:var(--rs);padding:12px 14px;}
+.detail-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.detail-val{font-size:14px;font-weight:700;}
+.timeline-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.timeline-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);margin-top:3px;flex-shrink:0;}
+.modal-close{float:right;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:0;}
+.section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;margin-top:16px;}
+
+/* CHART */
+.mini-chart{display:flex;gap:3px;align-items:flex-end;height:40px;margin-top:6px;}
+.mc-bar{flex:1;border-radius:2px 2px 0 0;background:var(--acc);opacity:.5;min-height:2px;}
+.mc-bar.today{opacity:1;}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3);}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty-h{font-size:16px;font-weight:600;margin-bottom:6px;}
+.empty-s{font-size:13px;color:var(--text3);}
+
+/* LOADING */
+.spinner{border:3px solid var(--border2);border-top:3px solid var(--acc);border-radius:50%;width:28px;height:28px;animation:spin .7s linear infinite;margin:40px auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TABS */
+.tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;}
+.tab-btn{padding:10px 16px;background:none;border:none;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;}
+.tab-btn.active{color:var(--acc);border-bottom-color:var(--acc);}
+
+/* INSIGHTS */
+.insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.insight-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
+.insight-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px;}
+.bar-label{min-width:80px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+.bar-fill-h{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--acc),var(--acc2));}
+.bar-val{min-width:28px;text-align:right;font-weight:600;color:var(--text);}
+
+@media(max-width:700px){
+  .table-cols{grid-template-columns:1.5fr 1fr .7fr .7fr;}
+  .hide-mob{display:none!important;}
+  .insights-grid{grid-template-columns:1fr;}
+  .detail-grid{grid-template-columns:1fr;}
+  .main{padding:14px 12px;}
+  .topbar{padding:12px 14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🔐</div>
+    <div class="login-h">Admin Dashboard</div>
+    <div class="login-sub">Life Tracker — Creator Access Only</div>
+    <input class="login-input" type="password" id="admin-pw" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')tryLogin()">
+    <button class="login-btn" onclick="tryLogin()">→ Login</button>
+    <div class="login-err" id="login-err">Wrong password. Try again.</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:18px;">Only the app creator has access to this panel.</div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ── -->
+<div id="dashboard">
+  <div id="setup-banner" style="background:#2A1E00;border-bottom:1px solid #FFD060;padding:10px 24px;font-size:12px;color:#FFD060;display:flex;align-items:center;gap:10px;">
+    <span>⚙️</span>
+    <span><b>Setup required:</b> Replace <code>JSONBIN_KEY</code> and <code>JSONBIN_BIN_ID</code> in both the app and admin files. <a href="https://jsonbin.io" target="_blank" style="color:#FFD060;">Get free API key at jsonbin.io →</a></span>
+    <button onclick="document.getElementById('setup-banner').style.display='none'" style="margin-left:auto;background:none;border:none;color:#FFD060;font-size:16px;cursor:pointer;">✕</button>
+  </div>
+  <div class="topbar">
+    <div>
+      <div class="topbar-logo">📊 Life Tracker Admin</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="last-refresh-label">Loading...</div>
+    </div>
+    <div class="topbar-right">
+      <button class="tb-btn" onclick="refreshData()">⟳ Refresh</button>
+      <button class="tb-btn" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="tb-btn" onclick="logout()" style="color:var(--ct);">Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('users',this)">👥 Users</button>
+      <button class="tab-btn" onclick="showTab('insights',this)">📊 Insights</button>
+      <button class="tab-btn" onclick="showTab('activity',this)">⚡ Recent Activity</button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card"><div class="stat-n" id="stat-total">—</div><div class="stat-l">Total users</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-active">—</div><div class="stat-l">Active today</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-avg">—</div><div class="stat-l">Avg day score</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-apps">—</div><div class="stat-l">Total job apps</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-certs">—</div><div class="stat-l">Certificates earned</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-streak">—</div><div class="stat-l">Avg streak 🔥</div></div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div id="tab-users">
+      <div class="controls">
+        <input class="search-box" type="text" id="search" placeholder="🔍  Search by name, degree, college, state..." oninput="renderTable()">
+        <select class="filter-sel" id="filter-goal" onchange="renderTable()">
+          <option value="">All goals</option>
+          <option value="govt">Govt job</option>
+          <option value="bank">Bank job</option>
+          <option value="core">Core field</option>
+          <option value="higher">Higher studies</option>
+          <option value="private">Private sector</option>
+          <option value="mixed">Mixed</option>
+        </select>
+        <select class="filter-sel" id="filter-field" onchange="renderTable()">
+          <option value="">All fields</option>
+          <option value="forensic">Forensic Science</option>
+          <option value="cs">Computer Science</option>
+          <option value="biotech">Biotechnology</option>
+          <option value="chemistry">Chemistry</option>
+          <option value="economics">Economics</option>
+          <option value="cse">BTech CSE</option>
+          <option value="mech">Mechanical</option>
+          <option value="llb">Law</option>
+        </select>
+        <select class="filter-sel" id="filter-score" onchange="renderTable()">
+          <option value="">All scores</option>
+          <option value="high">High (70%+)</option>
+          <option value="mid">Mid (40–69%)</option>
+          <option value="low">Low (&lt;40%)</option>
+        </select>
+        <select class="filter-sel" id="sort-by" onchange="renderTable()">
+          <option value="lastSeen">Sort: Last seen</option>
+          <option value="weekAvg">Sort: Week score</option>
+          <option value="streak">Sort: Streak</option>
+          <option value="name">Sort: Name</option>
+          <option value="joined">Sort: Joined</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-head table-cols">
+          <div>User</div>
+          <div>Degree / College</div>
+          <div class="hide-mob">Phone</div>
+          <div>Goal</div>
+          <div class="hide-mob">Sem</div>
+          <div>Today</div>
+          <div class="hide-mob">Week avg</div>
+          <div class="hide-mob">Streak</div>
+          <div class="hide-mob">Applied</div>
+          <div class="hide-mob">Last seen</div>
+          <div></div>
+        </div>
+        <div id="user-table-body">
+          <div class="spinner"></div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);text-align:center;" id="table-footer"></div>
+    </div>
+
+    <!-- INSIGHTS TAB -->
+    <div id="tab-insights" style="display:none;">
+      <div class="insights-grid" id="insights-grid">
+        <div class="insight-card"><div class="insight-title">🎯 Goals breakdown</div><div id="ins-goals"></div></div>
+        <div class="insight-card"><div class="insight-title">🔬 Top fields</div><div id="ins-fields"></div></div>
+        <div class="insight-card"><div class="insight-title">📍 States</div><div id="ins-states"></div></div>
+        <div class="insight-card"><div class="insight-title">🎓 Degree types</div><div id="ins-degrees"></div></div>
+        <div class="insight-card" style="grid-column:1/-1;"><div class="insight-title">📊 Score distribution</div><div id="ins-scores" style="display:flex;gap:8px;align-items:flex-end;height:80px;margin-top:8px;"></div><div id="ins-score-labels" style="display:flex;gap:8px;margin-top:4px;font-size:10px;color:var(--text3);"></div></div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY TAB -->
+    <div id="tab-activity" style="display:none;">
+      <div class="table-wrap">
+        <div style="padding:14px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--border);">Recent user activity (last seen)</div>
+        <div id="activity-list"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- USER DETAIL MODAL -->
+<div class="modal-bg" id="user-modal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+      <div>
+        <h3 id="modal-name">User detail</h3>
+        <div style="font-size:12px;color:var(--text2);" id="modal-sub"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// ADMIN PASSWORD — change this!
+// ══════════════════════════════════════
+const ADMIN_PASSWORD = 'admin1234';
+
+let isLoggedIn = false;
+let allUsers = [];
+
+let _loginAttempts=0,_loginLocked=false;
+function tryLogin(){
+  if(_loginLocked){document.getElementById('login-err').textContent='Too many attempts. Wait 30 seconds.';document.getElementById('login-err').style.display='block';return;}
+  const pw = document.getElementById('admin-pw').value;
+  if(pw === ADMIN_PASSWORD){
+    isLoggedIn = true;
+    _loginAttempts=0;
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('visible');
+    loadData();
+  } else {
+    _loginAttempts++;
+    document.getElementById('login-err').textContent=`Wrong password. ${3-_loginAttempts} attempt(s) left.`;
+    document.getElementById('login-err').style.display='block';
+    document.getElementById('admin-pw').value='';
+    setTimeout(()=>document.getElementById('login-err').style.display='none',2500);
+    if(_loginAttempts>=3){_loginLocked=true;document.getElementById('login-err').textContent='Too many wrong attempts. Locked for 30 seconds.';document.getElementById('login-err').style.display='block';setTimeout(()=>{_loginLocked=false;_loginAttempts=0;document.getElementById('login-err').style.display='none';},30000);}
+  }
+}
+
+function logout(){
+  isLoggedIn=false;
+  document.getElementById('dashboard').classList.remove('visible');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.getElementById('admin-pw').value='';
+}
+
+// ══════════════════════════════════════
+// DATA LOADING
+// ══════════════════════════════════════
+// ── JSONBIN CONFIG (must match the app) ──
+const JSONBIN_KEY = '$2a$10$$2a$10$.5/n4a3NQ1CFNYDPiuVsBuwC.l4cORZMupEj3bujJZ8a.nSftzNKW';
+const JSONBIN_BIN_ID = '6a3f4cd5f5f4af5e2937656d';
+
+async function loadData(){
+  document.getElementById('user-table-body').innerHTML='<div class="spinner"></div>';
+  document.getElementById('last-refresh-label').textContent='Loading from database...';
+  try{
+    const res = await fetch('https://api.jsonbin.io/v3/b/'+JSONBIN_BIN_ID+'/latest',{
+      headers:{'X-Master-Key': JSONBIN_KEY, 'X-Bin-Meta':'false'}
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status+' — check your JSONBin API key and Bin ID');
+    const data = await res.json();
+    const usersObj = data.users || {};
+    allUsers = Object.values(usersObj).sort((a,b)=>new Date(b.lastSeen)-new Date(a.lastSeen));
+    renderStats();
+    renderTable();
+    renderInsights();
+    renderActivity();
+    document.getElementById('last-refresh-label').textContent=
+      'Last refreshed: '+new Date().toLocaleTimeString('en-IN')+' · '+allUsers.length+' users loaded';
+  }catch(e){
+    document.getElementById('user-table-body').innerHTML=
+      '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-h">Could not load data</div><div class="empty-s">'+e.message+'</div><div class="empty-s" style="margin-top:8px;font-size:11px;">Make sure JSONBIN_KEY and JSONBIN_BIN_ID are set correctly in the admin file.</div></div>';
+    document.getElementById('last-refresh-label').textContent='Error loading data';
+  }
+}
+
+async function refreshData(){ await loadData(); }
+
+// ══════════════════════════════════════
+// STATS
+// ══════════════════════════════════════
+function renderStats(){
+  const now=new Date(), todayStr=now.toISOString().slice(0,10);
+  const activeToday=allUsers.filter(u=>u.lastSeen&&u.lastSeen.startsWith(todayStr)).length;
+  const avgScore=allUsers.length?Math.round(allUsers.reduce((s,u)=>s+(u.weekAvg||0),0)/allUsers.length):0;
+  const totalApps=allUsers.reduce((s,u)=>s+(u.applied||0),0);
+  const totalCerts=allUsers.reduce((s,u)=>s+(u.certs||0),0);
+  document.getElementById('stat-total').textContent=allUsers.length;
+  document.getElementById('stat-active').textContent=activeToday;
+  document.getElementById('stat-avg').textContent=avgScore+'%';
+  document.getElementById('stat-apps').textContent=totalApps;
+  document.getElementById('stat-certs').textContent=totalCerts;
+  const avgStreak=allUsers.length?Math.round(allUsers.reduce((s,u)=>s+(u.streak||0),0)/allUsers.length):0;
+  document.getElementById('stat-streak').textContent=avgStreak+'🔥';
+}
+
+// ══════════════════════════════════════
+// USER TABLE
+// ══════════════════════════════════════
+function renderTable(){
+  const search=(document.getElementById('search').value||'').toLowerCase();
+  const goalF=document.getElementById('filter-goal').value;
+  const fieldF=document.getElementById('filter-field').value;
+  const scoreF=document.getElementById('filter-score').value;
+
+  const sortBy=document.getElementById('sort-by')?.value||'lastSeen';
+  const sorted=[...allUsers].sort((a,b)=>{
+    if(sortBy==='weekAvg') return (b.weekAvg||0)-(a.weekAvg||0);
+    if(sortBy==='streak') return (b.streak||0)-(a.streak||0);
+    if(sortBy==='name') return (a.name||'').localeCompare(b.name||'');
+    if(sortBy==='joined') return new Date(b.joinedAt||0)-new Date(a.joinedAt||0);
+    return new Date(b.lastSeen||0)-new Date(a.lastSeen||0);
+  });
+  let filtered=sorted.filter(u=>{
+    if(search&&!`${u.name} ${u.degree} ${u.college} ${u.state} ${u.phone||''}`.toLowerCase().includes(search)) return false;
+    if(goalF&&u.goal!==goalF) return false;
+    if(fieldF&&u.field!==fieldF) return false;
+    if(scoreF==='high'&&(u.weekAvg||0)<70) return false;
+    if(scoreF==='mid'&&((u.weekAvg||0)<40||(u.weekAvg||0)>=70)) return false;
+    if(scoreF==='low'&&(u.weekAvg||0)>=40) return false;
+    return true;
+  });
+
+  document.getElementById('table-footer').textContent=
+    `Showing ${filtered.length} of ${allUsers.length} users`;
+
+  if(!filtered.length){
+    document.getElementById('user-table-body').innerHTML=
+      '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-h">No users match filters</div><div class="empty-s">Try clearing filters above</div></div>';
+    return;
+  }
+
+  const now=new Date();
+  document.getElementById('user-table-body').innerHTML=filtered.map(u=>{
+    const lastSeen=u.lastSeen?new Date(u.lastSeen):null;
+    const minsAgo=lastSeen?Math.floor((now-lastSeen)/60000):null;
+    const isOnline=minsAgo!==null&&minsAgo<60;
+    const lastSeenStr=!lastSeen?'Never':minsAgo<1?'Just now':minsAgo<60?minsAgo+'m ago':minsAgo<1440?Math.floor(minsAgo/60)+'h ago':Math.floor(minsAgo/1440)+'d ago';
+    const scoreColor=u.todayPct>=70?'#3ECFB2':u.todayPct>=40?'#FFD060':'#FF9090';
+    const weekColor=u.weekAvg>=70?'#3ECFB2':u.weekAvg>=40?'#FFD060':'#FF9090';
+    const goalTag={govt:'tb',bank:'tg',core:'tp',higher:'ta',private:'ta',mixed:'tt2'}[u.goal]||'';
+    return`<div class="table-row table-cols" onclick="openUserModal('${u.uid}')">
+      <div>
+        <div class="cell-name"><span class="${isOnline?'badge-online':'badge-offline'}"></span>${u.name||'Anonymous'}</div>
+        <div class="cell-sub">${u.state||'—'}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;">${u.degree||'—'}</div>
+        <div class="cell-sub">${(u.college||'').slice(0,28)}</div>
+      </div>
+      <div class="hide-mob" style="font-size:12px;font-weight:600;">${u.phone||'—'}</div>
+      <div><span class="tag ${goalTag}" style="font-size:10px;">${goalLabel(u.goal)}</span></div>
+      <div class="hide-mob" style="font-size:13px;font-weight:700;">S${u.sem||'?'}</div>
+      <div>
+        <div style="font-size:13px;font-weight:800;color:${scoreColor};">${u.todayPct||0}%</div>
+        <div class="score-bar"><div class="score-fill" style="width:${u.todayPct||0}%;background:${scoreColor};"></div></div>
+      </div>
+      <div class="hide-mob">
+        <div style="font-size:12px;font-weight:700;color:${weekColor};">${u.weekAvg||0}%</div>
+      </div>
+      <div class="hide-mob" style="font-size:12px;font-weight:600;">${u.applied||0}</div>
+      <div class="hide-mob" style="font-size:11px;color:var(--text2);">${lastSeenStr}</div>
+      <div style="font-size:14px;color:var(--text3);">›</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════
+// USER DETAIL MODAL
+// ══════════════════════════════════════
+function openUserModal(uid){
+  const u=allUsers.find(x=>x.uid===uid);
+  if(!u) return;
+  document.getElementById('modal-name').textContent=u.name||'Anonymous';
+  document.getElementById('modal-sub').textContent=(u.degree||'')+(u.college?' · '+u.college:'')+(u.state?' · '+u.state:'');
+  const scoreColor=u.todayPct>=70?'#3ECFB2':u.todayPct>=40?'#FFD060':'#FF9090';
+  const joined=u.joinedAt?new Date(u.joinedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'Unknown';
+  const last=u.lastSeen?new Date(u.lastSeen).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Unknown';
+  document.getElementById('modal-body').innerHTML=`
+    <div class="detail-grid">
+      <div class="detail-item"><div class="detail-label">📱 Mobile number</div><div class="detail-val" style="color:var(--acc2);">${u.phone||'Not provided'}</div></div>
+      <div class="detail-item"><div class="detail-label">Field of study</div><div class="detail-val">${u.field||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">Semester</div><div class="detail-val">Semester ${u.sem||'?'}</div></div>
+      <div class="detail-item"><div class="detail-label">12th Marks</div><div class="detail-val">${u.m12?u.m12+'%':'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">Career goal</div><div class="detail-val">${goalLabel(u.goal)}</div></div>
+      <div class="detail-item"><div class="detail-label">Today's score</div><div class="detail-val" style="color:${scoreColor};">${u.todayPct||0}%</div></div>
+      <div class="detail-item"><div class="detail-label">7-day avg score</div><div class="detail-val">${u.weekAvg||0}%</div></div>
+      <div class="detail-item"><div class="detail-label">Jobs applied</div><div class="detail-val">${u.applied||0}</div></div>
+      <div class="detail-item"><div class="detail-label">Certificates</div><div class="detail-val">${u.certs||0}</div></div>
+      <div class="detail-item"><div class="detail-label">Day streak</div><div class="detail-val" style="color:var(--at);">${u.streak||0}🔥</div></div>
+    </div>
+    <div class="section-title">Activity</div>
+    <div class="timeline-item"><div class="timeline-dot"></div><div><b>Joined app:</b> ${joined}</div></div>
+    <div class="timeline-item"><div class="timeline-dot" style="background:var(--acc2);"></div><div><b>Last seen:</b> ${last}</div></div>
+    <div class="timeline-item"><div class="timeline-dot" style="background:#FFD060;"></div><div><b>User ID:</b> <span style="color:var(--text3);font-size:11px;">${u.uid}</span></div></div>
+    <div class="section-title" style="margin-top:14px;">Score summary</div>
+    <div style="display:flex;gap:16px;margin-top:4px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Today</div>
+        <div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${u.todayPct||0}%;background:${scoreColor};border-radius:4px;"></div></div>
+        <div style="font-size:12px;font-weight:700;margin-top:4px;color:${scoreColor};">${u.todayPct||0}%</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Week avg</div>
+        <div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${u.weekAvg||0}%;background:var(--acc);border-radius:4px;"></div></div>
+        <div style="font-size:12px;font-weight:700;margin-top:4px;color:var(--acc);">${u.weekAvg||0}%</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('user-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('user-modal').classList.remove('open');}
+document.getElementById('user-modal').addEventListener('click',e=>{if(e.target===document.getElementById('user-modal'))closeModal();});
+
+// ══════════════════════════════════════
+// INSIGHTS
+// ══════════════════════════════════════
+function renderInsights(){
+  renderBarChart('ins-goals',countBy(allUsers,'goal'),goalLabel);
+  renderBarChart('ins-fields',countBy(allUsers,'field'),f=>f||'Unknown');
+  renderBarChart('ins-states',countBy(allUsers,'state'),s=>s||'Unknown');
+  renderBarChart('ins-degrees',countByKey(allUsers,'degree',d=>(d||'').split(' ')[0]||'Unknown'),d=>d||'Unknown');
+
+  // score distribution buckets
+  const buckets=[0,0,0,0,0]; // 0-19,20-39,40-59,60-79,80-100
+  allUsers.forEach(u=>{const s=u.weekAvg||0;buckets[Math.min(4,Math.floor(s/20))]++;});
+  const maxB=Math.max(...buckets,1);
+  const labels=['0–19%','20–39%','40–59%','60–79%','80–100%'];
+  const colors=['#FF9090','#FFB570','#FFD060','#70D4FF','#3ECFB2'];
+  document.getElementById('ins-scores').innerHTML=buckets.map((b,i)=>
+    `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+      <div style="font-size:11px;font-weight:700;color:${colors[i]};">${b}</div>
+      <div style="width:100%;height:${Math.round((b/maxB)*60)+4}px;background:${colors[i]};border-radius:3px 3px 0 0;opacity:.8;"></div>
+    </div>`).join('');
+  document.getElementById('ins-score-labels').innerHTML=labels.map(l=>`<div style="flex:1;text-align:center;">${l}</div>`).join('');
+}
+
+function countBy(arr,key){
+  const map={};
+  arr.forEach(u=>{const v=u[key]||'Unknown';map[v]=(map[v]||0)+1;});
+  return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
+}
+function countByKey(arr,key,extractFn){
+  const map={};
+  arr.forEach(u=>{const v=extractFn(u[key]);map[v]=(map[v]||0)+1;});
+  return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
+}
+
+function renderBarChart(elId,data,labelFn){
+  const el=document.getElementById(elId);
+  if(!data.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;">No data yet</div>';return;}
+  const max=data[0][1];
+  el.innerHTML=data.map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-label">${labelFn(k)}</div>
+      <div class="bar-track"><div class="bar-fill-h" style="width:${Math.round((v/max)*100)}%;"></div></div>
+      <div class="bar-val">${v}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// ACTIVITY TAB
+// ══════════════════════════════════════
+function renderActivity(){
+  const sorted=[...allUsers].sort((a,b)=>new Date(b.lastSeen)-new Date(a.lastSeen));
+  const now=new Date();
+  document.getElementById('activity-list').innerHTML=sorted.map(u=>{
+    const last=u.lastSeen?new Date(u.lastSeen):null;
+    const minsAgo=last?Math.floor((now-last)/60000):null;
+    const timeStr=!last?'Unknown':minsAgo<1?'Just now':minsAgo<60?minsAgo+'m ago':minsAgo<1440?Math.floor(minsAgo/60)+'h ago':Math.floor(minsAgo/1440)+'d ago';
+    const isOnline=minsAgo!==null&&minsAgo<60;
+    const scoreColor=u.todayPct>=70?'#3ECFB2':u.todayPct>=40?'#FFD060':'#FF9090';
+    return`<div class="table-row" style="grid-template-columns:auto 1fr auto auto;gap:12px;" onclick="openUserModal('${u.uid}')">
+      <span class="${isOnline?'badge-online':'badge-offline'}" style="width:9px;height:9px;margin-top:4px;"></span>
+      <div>
+        <div style="font-size:13px;font-weight:600;">${u.name||'Anonymous'}</div>
+        <div style="font-size:11px;color:var(--text2);">${u.degree||'—'} · ${u.college||'—'}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:13px;font-weight:700;color:${scoreColor};">${u.todayPct||0}%</div>
+        <div style="font-size:10px;color:var(--text3);">today</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:12px;color:var(--text2);">${timeStr}</div>
+        <div style="font-size:10px;color:var(--text3);">last seen</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════
+// TABS
+// ══════════════════════════════════════
+function showTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-users').style.display=name==='users'?'block':'none';
+  document.getElementById('tab-insights').style.display=name==='insights'?'block':'none';
+  document.getElementById('tab-activity').style.display=name==='activity'?'block':'none';
+}
+
+// ══════════════════════════════════════
+// EXPORT CSV
+// ══════════════════════════════════════
+function exportCSV(){
+  if(!allUsers.length){alert('No users to export.');return;}
+  const headers=['Name','Phone','Degree','Field','College','State','Semester','12th%','Goal','Today%','WeekAvg%','JobsApplied','Certs','JoinedAt','LastSeen'];
+  const rows=allUsers.map(u=>[
+    u.name||'',u.phone||'',u.degree||'',u.field||'',u.college||'',u.state||'',
+    u.sem||'',u.m12||'',goalLabel(u.goal),
+    u.todayPct||0,u.weekAvg||0,u.applied||0,u.certs||0,
+    u.joinedAt||'',u.lastSeen||''
+  ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv=[headers.join(','),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='lifetracker_users_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+// ══════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════
+function goalLabel(g){return{govt:'Govt Job',bank:'Bank Job',core:'Core Field',higher:'Higher Studies',private:'Private',mixed:'Mixed',undefined:'—','':'—'}[g]||g||'—';}
+
+// Auto-refresh every 60 seconds
+setInterval(()=>{ if(isLoggedIn) refreshData(); }, 60000);
+
+// Focus password field
+document.getElementById('admin-pw').focus();
+</script>
+</body>
+</html>
