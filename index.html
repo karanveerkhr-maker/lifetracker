@@ -5,7 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Life Tracker">
+<meta name="theme-color" content="#6C63FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1017" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Your personal career & study companion">
+<link rel="manifest" href="manifest.json">
 <title>Life Tracker</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -260,7 +265,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ══ LOGIN SCREEN ══ */
-#login-screen{position:fixed;inset:0;background:var(--bg);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;}
+#login-screen{position:fixed;inset:0;background:var(--bg);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 24px 40px;overflow-y:auto;padding-top:max(env(safe-area-inset-top,0px),24px);}
 #login-screen.hidden{display:none;}
 .ls-logo{font-size:48px;margin-bottom:12px;text-align:center;}
 .ls-title{font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;}
@@ -286,6 +291,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .ls-spinner{border:3px solid var(--border2);border-top:3px solid var(--acc);border-radius:50%;width:22px;height:22px;animation:spin .7s linear infinite;margin:8px auto;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+
+/* ══ PWA INSTALL BANNER ══ */
+#pwa-install-banner{position:fixed;bottom:calc(var(--safe-bot)+76px);left:12px;right:12px;background:var(--grad);color:#fff;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:150;box-shadow:0 4px 20px rgba(108,99,255,0.4);transform:translateY(120%);transition:transform .4s cubic-bezier(.4,0,.2,1);}
+#pwa-install-banner.show{transform:translateY(0);}
+.pwa-icon{font-size:24px;flex-shrink:0;}
+.pwa-text{flex:1;}
+.pwa-title{font-size:13px;font-weight:800;}
+.pwa-sub{font-size:11px;opacity:.85;margin-top:1px;}
+.pwa-install-btn{background:rgba(255,255,255,0.25);border:1.5px solid rgba(255,255,255,0.5);color:#fff;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:inherit;}
+.pwa-close-btn{background:none;border:none;color:rgba(255,255,255,0.7);font-size:18px;cursor:pointer;padding:2px 4px;flex-shrink:0;}
+
+/* ══ UPDATE BANNER ══ */
+#pwa-update-banner{position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#3ECFB2,#6C63FF);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;z-index:600;transform:translateY(-100%);transition:transform .3s ease;}
+#pwa-update-banner.show{transform:translateY(0);}
+.pwa-update-text{flex:1;font-size:13px;font-weight:600;}
+.pwa-update-btn{background:rgba(255,255,255,0.25);border:1.5px solid rgba(255,255,255,0.5);color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
 </style>
 </head>
 <body>
@@ -295,7 +316,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 <!-- ══ LOGIN / REGISTER SCREEN ══ -->
 <div id="login-screen">
   <div class="ls-logo">🔬</div>
-  <div class="ls-title">FS Life Tracker</div>
+  <div class="ls-title">Life Tracker</div>
   <div class="ls-sub">Your personal career & study companion</div>
   <div class="ls-card">
     <div class="ls-tabs">
@@ -320,7 +341,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       <div id="l-spinner" style="display:none;"><div class="ls-spinner"></div></div>
       <button class="ls-btn" id="l-btn" onclick="doLogin()">Login →</button>
       <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--text3);">
-        New user? <span style="color:var(--acc);font-weight:700;cursor:pointer;" onclick="switchAuthTab('register',document.querySelector('.ls-tab:nth-child(2)'))">Register here</span>
+        New user? <span style="color:var(--acc);font-weight:700;cursor:pointer;" onclick="switchAuthTab('register',document.querySelectorAll('.ls-tab')[1])">Register here</span>
       </div>
     </div>
 
@@ -369,9 +390,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       </div>
     </div>
   </div>
-  <div style="font-size:11px;color:var(--text3);margin-top:20px;text-align:center;line-height:1.7;">
-    Your data is saved securely and syncs across devices.<br>
-    <span style="color:var(--acc);cursor:pointer;" onclick="showGuestMode()">Continue as guest (data on this device only)</span>
+  <div style="margin-top:16px;width:100%;max-width:380px;">
+    <button onclick="showGuestMode()" style="width:100%;padding:13px;background:var(--bg2);color:var(--text2);border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">
+      👤 Continue without login (guest mode)
+    </button>
+    <div style="font-size:11px;color:var(--text3);margin-top:10px;text-align:center;line-height:1.7;">
+      Guest mode saves data on this device only.<br>Register to sync across devices.
+    </div>
   </div>
 </div>
 
@@ -654,7 +679,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       <div style="text-align:center;padding:20px 0 16px;">
         <div style="font-size:36px;margin-bottom:8px;">🚀</div>
         <div style="font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Go Premium</div>
-        <div style="font-size:13px;color:var(--text2);margin-top:5px;">Unlock the full FS Life Tracker experience</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:5px;">Unlock the full Life Tracker experience</div>
         <div id="premium-status-banner" style="margin-top:12px;"></div>
       </div>
 
@@ -901,7 +926,7 @@ async function saveAll(){
 // Firebase Realtime Database is used for storage
 // ── FIREBASE (replaces JSONBin - no CORS issues) ──
 const FB = 'https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
-async function fbGet(p){try{const r=await fetch(FB+'/'+p+'.json');if(!r.ok)return null;return await r.json();}catch(e){return null;}}
+async function fbGet(p){try{const ctrl=new AbortController();const tid=setTimeout(()=>ctrl.abort(),8000);const r=await fetch(FB+'/'+p+'.json',{signal:ctrl.signal});clearTimeout(tid);if(!r.ok)return null;return await r.json();}catch(e){return null;}}
 async function fbSet(p,d){try{const r=await fetch(FB+'/'+p+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
 async function fbPatch(p,d){try{const r=await fetch(FB+'/'+p+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
 // Keep these for compatibility
@@ -936,9 +961,27 @@ const FIELDS_BY_DEGREE={
 };
 
 let obDegType='',obField='';
-function selDegType(type,el){obDegType=type;document.querySelectorAll('#ob1 .ob-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');const fields=FIELDS_BY_DEGREE[type]||[];const grid=document.getElementById('ob2-options');grid.innerHTML=fields.map(f=>`<div class="ob-card" onclick="selField('${f.val}',this)"><div class="ob-icon">${f.icon}</div><div class="ob-card-t">${f.label}</div><div class="ob-card-s">${f.label}</div></div>`).join('');setTimeout(()=>goOb(2),200);}
+function selDegType(type,el){
+  obDegType=type;
+  document.querySelectorAll('#ob1 .ob-card').forEach(c=>c.classList.remove('sel'));
+  if(el) el.classList.add('sel');
+  const fields=FIELDS_BY_DEGREE[type]||[];
+  const grid=document.getElementById('ob2-options');
+  // Use global fn ob2Click so it survives any sandbox
+  grid.innerHTML=fields.map(f=>
+    `<div class="ob-card" onclick="ob2Click('${f.val}',this)">
+      <div class="ob-icon">${f.icon}</div>
+      <div class="ob-card-t">${f.label}</div>
+    </div>`
+  ).join('');
+  goOb(2);
+}
+function ob2Click(val,el){ selField(val,el); }
 function selField(val,el){obField=val;document.querySelectorAll('#ob2-options .ob-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');setTimeout(()=>goOb(3),250);}
 function goOb(n){document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));const step=document.getElementById('ob'+n);step.classList.add('active');document.getElementById('onboarding').scrollTo({top:0,behavior:'smooth'});}
+
+// Event delegation for ob1 — works in all sandboxed environments
+// ob1 clicks handled via direct onclick attributes;);}
 function validatePhone(){
   const v=document.getElementById('ob-phone').value;
   const ok=/^[6-9][0-9]{9}$/.test(v);
@@ -2024,7 +2067,7 @@ function renderReferral(){
 
 function copyReferral(){
   const code = document.getElementById('referral-code')?.textContent || 'FS0000';
-  navigator.clipboard?.writeText('Download FS Life Tracker - India\'s best student career app! Use my code '+code+' for free premium month. Download: https://play.google.com/store/apps/details?id=com.fstracker').catch(()=>{});
+  navigator.clipboard?.writeText('Download Life Tracker - India\'s best student career app! Use my code '+code+' for free premium month. Download: https://play.google.com/store/apps/details?id=com.fstracker').catch(()=>{});
   toast('📋 Referral link copied!');
 }
 
@@ -2032,7 +2075,7 @@ function shareReferral(){
   const code = document.getElementById('referral-code')?.textContent || 'FS0000';
   if(navigator.share){
     navigator.share({
-      title:'FS Life Tracker — Free Student App',
+      title:'Life Tracker — Free Student App',
       text:'Check out this amazing free app for students — schedule, jobs, study planner, AI courses! Use my code '+code+' for 1 month free Premium.',
       url:'https://play.google.com/store/apps/details?id=com.fstracker'
     });
@@ -2477,17 +2520,17 @@ async function saveUserDataToCloud(){
 
 // ── GUEST MODE ──
 function showGuestMode(){
-  if(confirm('Guest mode saves data only on this device. You cannot log in from another device.\n\nContinue as guest?')){
-    currentUID='GUEST_'+Date.now();
-    currentUserBinID=null;
-    localStorage.setItem('auth_uid',currentUID);
-    document.getElementById('login-screen').classList.add('hidden');
-    if(P&&P.setupDone){
-      startApp();
-    } else {
-      document.getElementById('onboarding').classList.remove('hidden');
-      document.getElementById('app').classList.add('hidden');
-    }
+  currentUID='GUEST_'+Date.now();
+  currentUserBinID=null;
+  localStorage.setItem('auth_uid',currentUID);
+  document.getElementById('login-screen').classList.add('hidden');
+  if(P&&P.setupDone){
+    startApp();
+    try{loadLearnPlan();}catch(e){}
+    try{initMonetization();}catch(e){}
+  } else {
+    document.getElementById('onboarding').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
   }
 }
 
@@ -2628,6 +2671,113 @@ async function initAuth(){
 setInterval(()=>{ if(currentUID&&!currentUID.startsWith('GUEST_')) saveUserDataToCloud(); }, 90000);
 
 initAuth();
+
+
+// ════════════════════════════════════════════
+// PWA — Service Worker + Install + Updates
+// ════════════════════════════════════════════
+
+let _deferredPrompt = null;
+let _swRegistration = null;
+
+// ── Register Service Worker ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      _swRegistration = await navigator.serviceWorker.register('./sw.js', {scope: './'});
+
+      // Check for updates every time the page loads
+      _swRegistration.addEventListener('updatefound', () => {
+        const newWorker = _swRegistration.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // New version is ready — show update banner
+            showUpdateBanner(newWorker);
+          }
+        });
+      });
+
+      // Listen for controller change (after update applied)
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      });
+
+    } catch(e) {
+      console.warn('Service worker registration failed:', e);
+    }
+  });
+}
+
+// ── Install Banner Logic ──
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredPrompt = e;
+
+  // Only show if not already dismissed this session
+  if (!sessionStorage.getItem('pwa-banner-dismissed')) {
+    setTimeout(() => {
+      document.getElementById('pwa-install-banner')?.classList.add('show');
+    }, 3000); // show after 3 seconds
+  }
+});
+
+document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
+  if (!_deferredPrompt) return;
+  _deferredPrompt.prompt();
+  const { outcome } = await _deferredPrompt.userChoice;
+  _deferredPrompt = null;
+  document.getElementById('pwa-install-banner')?.classList.remove('show');
+  if (outcome === 'accepted') toast('✅ App installed! Find it on your home screen.');
+});
+
+document.getElementById('pwa-close-btn')?.addEventListener('click', () => {
+  document.getElementById('pwa-install-banner')?.classList.remove('show');
+  sessionStorage.setItem('pwa-banner-dismissed', '1');
+});
+
+// Hide install banner if already installed (standalone mode)
+if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+  document.getElementById('pwa-install-banner')?.remove();
+}
+
+// ── Update Banner Logic ──
+function showUpdateBanner(newWorker) {
+  const banner = document.getElementById('pwa-update-banner');
+  if (!banner) return;
+  banner.classList.add('show');
+  document.getElementById('pwa-update-btn')?.addEventListener('click', () => {
+    newWorker.postMessage('SKIP_WAITING');
+    banner.classList.remove('show');
+    toast('Updating... please wait');
+  });
+}
+
+// ── App installed event ──
+window.addEventListener('appinstalled', () => {
+  toast('✅ Life Tracker installed as app!');
+  document.getElementById('pwa-install-banner')?.classList.remove('show');
+  _deferredPrompt = null;
+});
+
 </script>
+
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-install-banner">
+  <div class="pwa-icon">📲</div>
+  <div class="pwa-text">
+    <div class="pwa-title">Install Life Tracker</div>
+    <div class="pwa-sub">Add to home screen for app experience</div>
+  </div>
+  <button class="pwa-install-btn" id="pwa-install-btn">Install</button>
+  <button class="pwa-close-btn" id="pwa-close-btn">✕</button>
+</div>
+
+<!-- PWA UPDATE BANNER -->
+<div id="pwa-update-banner">
+  <div class="pwa-update-text">🔄 New update available!</div>
+  <button class="pwa-update-btn" id="pwa-update-btn">Update now</button>
+</div>
+
 </body>
 </html>
