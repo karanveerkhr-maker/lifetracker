@@ -156,7 +156,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <div id="dashboard">
   <div id="setup-banner" style="background:#2A1E00;border-bottom:1px solid #FFD060;padding:10px 24px;font-size:12px;color:#FFD060;display:flex;align-items:center;gap:10px;">
     <span>⚙️</span>
-    <span><b>✅ Connected:</b> Reading from JSONbin · Bin ID: 6a3f4cd5f5f4af5e2937656d · Auto-refreshes every 60s</span>
+    <span><b>✅ Connected:</b> Reading from Firebase Realtime Database · Paths: /users + /accounts/byUID · Auto-refreshes every 60s</span>
     <button onclick="document.getElementById('setup-banner').style.display='none'" style="margin-left:auto;background:none;border:none;color:#FFD060;font-size:16px;cursor:pointer;">✕</button>
   </div>
   <div class="topbar">
@@ -332,34 +332,127 @@ const _FB_UNUSED = '';
 async function loadData(){
   document.getElementById('user-table-body').innerHTML='<div class="spinner"></div>';
   document.getElementById('last-refresh-label').textContent='Loading from database...';
+
+  // ── ORIGIN CHECK: warn if not opened from the correct domain ──
+  const origin = window.location.origin;
+  const isLocalFile = window.location.protocol === 'file:';
+  const isGithub = origin.includes('github.io') || origin.includes('karanveerkhr');
+  if(!isLocalFile && !isGithub){
+    document.getElementById('user-table-body').innerHTML=`
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <div class="empty-h">Wrong origin — Firebase will block this</div>
+        <div class="empty-s" style="margin-bottom:16px;">You are viewing this from: <b style="color:var(--at);">${origin}</b></div>
+        <div class="empty-s">To use the admin panel, open it from one of these:</div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
+          <a href="https://karanveerkhr-maker.github.io/lifetracker/admin.html"
+             style="display:inline-block;padding:10px 18px;background:var(--grad);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">
+            🌐 Open on GitHub Pages
+          </a>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Or download and open the file directly in your browser (file://)</div>
+        </div>
+      </div>`;
+    document.getElementById('last-refresh-label').textContent='⚠️ Wrong origin — see instructions below';
+    return;
+  }
+
   try{
-    const FB_ADMIN = 'https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
-    const res = await fetch(FB_ADMIN+'/users.json');
-    if(!res.ok) throw new Error('HTTP '+res.status+' — check Firebase URL');
-    const rawData = await res.json();
-    const data = {users: rawData || {}};
+    const FB = 'https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
 
-    // Support BOTH data formats:
-    // Old format: data.users = {uid: snapshot}
-    // New v10 format: data.byUID = {uid: {uid,name,phone,passHash,binId,snapshot:{...}}}
-    let usersMap = {};
+    const fetchFB = (path) => fetch(FB+path, {
+      method: 'GET',
+      headers: {'Accept': 'application/json'},
+      mode: 'cors'
+    });
 
-    // Read old format snapshots
-    if(data.users){
-      Object.values(data.users).forEach(u=>{ if(u&&u.uid) usersMap[u.uid]=u; });
+    // Fetch all known paths in parallel
+    let rootKeys = null;
+    try{ const r = await fetchFB('/.json?shallow=true'); if(r.ok) rootKeys = await r.json(); }catch(e){}
+
+    const [resUsers, resAccounts] = await Promise.all([
+      fetchFB('/users.json'),
+      fetchFB('/accounts/byUID.json'),
+    ]);
+
+    // ── Check if Firebase rules are blocking us ──
+    if(resUsers.status === 401 || resUsers.status === 403 ||
+       resAccounts.status === 401 || resAccounts.status === 403){
+      document.getElementById('user-table-body').innerHTML=`
+        <div class="empty-state" style="text-align:left;max-width:600px;margin:0 auto;">
+          <div class="empty-icon" style="text-align:center;">🔒</div>
+          <div class="empty-h" style="text-align:center;margin-bottom:16px;">Firebase Rules are blocking reads</div>
+          <div style="background:var(--bg3);border-radius:12px;padding:16px;margin-bottom:16px;">
+            <div style="font-size:12px;font-weight:700;color:var(--at);margin-bottom:10px;">HTTP Status: /users=${resUsers.status} · /accounts/byUID=${resAccounts.status}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">Fix in 30 seconds:</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+              1. Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--acc2);">console.firebase.google.com</a><br>
+              2. Select your project → <b>Realtime Database</b><br>
+              3. Click <b>Rules</b> tab<br>
+              4. Replace rules with:
+            </div>
+            <pre style="background:var(--bg4);border-radius:8px;padding:12px;margin-top:10px;font-size:12px;color:var(--gt);">{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}</pre>
+            <div style="font-size:11px;color:var(--text3);margin-top:8px;">5. Click <b>Publish</b> → then come back and click ⟳ Refresh</div>
+          </div>
+        </div>`;
+      document.getElementById('last-refresh-label').textContent='⚠️ Firebase rules blocking access — see instructions';
+      return;
     }
 
-    // Read new v10 format — merge snapshot data with account info
-    if(data.byUID){
-      Object.values(data.byUID).forEach(acc=>{
-        if(!acc||!acc.uid) return;
+    // Show status in banner
+    const diagMsg = 'Origin: '+origin+' | DB root: '+(rootKeys?Object.keys(rootKeys).join(', '):'denied/empty')
+      +' | /users: '+resUsers.status+' | /accounts/byUID: '+resAccounts.status;
+    document.getElementById('setup-banner').querySelector('span:nth-child(2)').innerHTML =
+      '<b>✅ Connected:</b> Firebase · '+diagMsg;
+    document.getElementById('setup-banner').style.display='flex';
+
+    const rawUsers    = resUsers.ok    ? await resUsers.json()    : null;
+    const rawAccounts = resAccounts.ok ? await resAccounts.json() : null;
+
+    let usersMap = {};
+
+    // OLD FORMAT: /users/{uid} — flat snapshot stored directly
+    if(rawUsers && typeof rawUsers === 'object'){
+      Object.values(rawUsers).forEach(u=>{
+        if(!u || !u.uid) return;
+        usersMap[u.uid] = {
+          uid: u.uid,
+          name: u.name || 'Unknown',
+          phone: u.phone || '',
+          degree: u.degree || u.degreeLabel || '',
+          field: u.field || '',
+          college: u.college || '',
+          state: u.state || '',
+          sem: u.sem || '',
+          goal: u.goal || '',
+          m12: u.m12 || '',
+          applied: u.applied ?? 0,
+          certs: u.certs ?? 0,
+          todayPct: u.todayPct ?? 0,
+          weekAvg: u.weekAvg ?? 0,
+          streak: u.streak ?? 0,
+          lastSeen: u.lastSeen || '',
+          joinedAt: u.joinedAt || '',
+        };
+      });
+    }
+
+    // NEW FORMAT: /accounts/byUID/{uid} = {uid,name,phone,joinedAt,lastSeen,snapshot:{...}}
+    // Merged on top — newer data wins, old data preserved if field is missing
+    if(rawAccounts && typeof rawAccounts === 'object'){
+      Object.values(rawAccounts).forEach(acc=>{
+        if(!acc || !acc.uid) return;
         const snap = acc.snapshot || {};
         const existing = usersMap[acc.uid] || {};
         usersMap[acc.uid] = {
           uid: acc.uid,
           name: acc.name || existing.name || 'Unknown',
           phone: acc.phone || existing.phone || '',
-          degree: snap.degree || existing.degree || '',
+          degree: snap.degree || snap.degreeLabel || existing.degree || '',
           field: snap.field || existing.field || '',
           college: snap.college || existing.college || '',
           state: snap.state || existing.state || '',
@@ -373,22 +466,53 @@ async function loadData(){
           streak: snap.streak ?? existing.streak ?? 0,
           lastSeen: snap.lastSeen || acc.lastSeen || existing.lastSeen || '',
           joinedAt: acc.joinedAt || existing.joinedAt || '',
-          appVersion: snap.appVersion || existing.appVersion || 'v10',
         };
       });
     }
 
-    allUsers = Object.values(usersMap).sort((a,b)=>new Date(b.lastSeen)-new Date(a.lastSeen));
+    if(!Object.keys(usersMap).length){
+      // Show a detailed dump of raw data to help diagnose
+      const dumpHtml = '<div class="empty-state" style="text-align:left;padding:20px;">'
+        +'<div class="empty-icon" style="text-align:center;">👥</div>'
+        +'<div class="empty-h" style="text-align:center;margin-bottom:16px;">No users found</div>'
+        +'<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Raw /users response:</div>'
+        +'<pre style="font-size:10px;color:var(--at);background:var(--bg3);padding:10px;border-radius:8px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;">'
+        +JSON.stringify(rawUsers,null,2)
+        +'</pre>'
+        +'<div style="font-size:11px;color:var(--text3);margin:8px 0;">Raw /accounts/byUID response:</div>'
+        +'<pre style="font-size:10px;color:var(--acc2);background:var(--bg3);padding:10px;border-radius:8px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;">'
+        +JSON.stringify(rawAccounts,null,2)
+        +'</pre>'
+        +'</div>';
+      document.getElementById('user-table-body').innerHTML=dumpHtml;
+      document.getElementById('last-refresh-label').textContent='No users found · '+new Date().toLocaleTimeString('en-IN');
+      allUsers=[];
+      renderStats(); renderInsights(); renderActivity();
+      return;
+    }
+
+    allUsers = Object.values(usersMap).sort((a,b)=>new Date(b.lastSeen||0)-new Date(a.lastSeen||0));
     renderStats();
     renderTable();
     renderInsights();
     renderActivity();
     document.getElementById('last-refresh-label').textContent=
-      'Last refreshed: '+new Date().toLocaleTimeString('en-IN')+' · '+allUsers.length+' users loaded';
+      'Last refreshed: '+new Date().toLocaleTimeString('en-IN')+' · '+allUsers.length+' user(s) loaded';
   }catch(e){
+    const isCORS = e.message.includes('fetch') || e.message.includes('network') || e.message.includes('CORS') || e.message.includes('Failed');
     document.getElementById('user-table-body').innerHTML=
-      '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-h">Could not load data</div><div class="empty-s">'+e.message+'</div><div class="empty-s" style="margin-top:8px;font-size:11px;">Make sure JSONBIN_KEY and JSONBIN_BIN_ID are set correctly in the admin file.</div></div>';
-    document.getElementById('last-refresh-label').textContent='Error loading data';
+      '<div class="empty-state" style="text-align:left;max-width:500px;margin:0 auto;">'
+      +'<div class="empty-icon" style="text-align:center;">⚠️</div>'
+      +'<div class="empty-h" style="text-align:center;">'+(isCORS?'Network error — open from GitHub':'Could not load data')+'</div>'
+      +'<div style="background:var(--bg3);border-radius:10px;padding:14px;margin-top:14px;font-size:12px;color:var(--text2);line-height:1.8;">'
+      +'Error: <b style="color:var(--ct);">'+e.message+'</b><br><br>'
+      +(isCORS
+        ?'This usually means:<br>① Firebase Rules are set to <b>false</b> (fix in Firebase Console → Realtime Database → Rules)<br>② OR you opened the file from the wrong place<br><br>Open from: <a href="https://karanveerkhr-maker.github.io/lifetracker/admin.html" style="color:var(--acc2);">karanveerkhr-maker.github.io/lifetracker/admin.html</a>'
+        :'Check your internet connection and try again.'
+       )
+      +'</div></div>';
+    document.getElementById('last-refresh-label').textContent='Error: '+e.message;
+    console.error('Admin loadData error:', e);
   }
 }
 
@@ -476,6 +600,7 @@ function renderTable(){
       <div class="hide-mob">
         <div style="font-size:12px;font-weight:700;color:${weekColor};">${u.weekAvg||0}%</div>
       </div>
+      <div class="hide-mob" style="font-size:12px;font-weight:600;color:var(--at);">${u.streak||0}🔥</div>
       <div class="hide-mob" style="font-size:12px;font-weight:600;">${u.applied||0}</div>
       <div class="hide-mob" style="font-size:11px;color:var(--text2);">${lastSeenStr}</div>
       <div style="font-size:14px;color:var(--text3);">›</div>
