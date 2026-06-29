@@ -858,21 +858,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 <div class="modal-bg" id="notif-modal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3>🔔 Notifications</h3>
-    <div id="notif-status-box" style="margin:12px 0;padding:12px;border-radius:12px;background:var(--card);text-align:center;font-size:14px;"></div>
+    <h3>🔔 Smart Notifications</h3>
+    <div id="notif-status-box" style="margin:12px 0;padding:12px;border-radius:12px;background:var(--card);font-size:14px;line-height:1.6;"></div>
     <div id="notif-controls" style="display:none;">
-      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">⏰ Daily Reminder Time</label>
-      <input type="time" id="notif-time-input" value="08:00" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border);font-size:16px;margin-bottom:12px;background:var(--card);color:var(--text);">
-      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">📝 Reminder Message</label>
-      <input type="text" id="notif-msg-input" placeholder="Time to check your Life Tracker! 📚" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;margin-bottom:16px;background:var(--card);color:var(--text);">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn btn-p" style="flex:1;justify-content:center;" onclick="saveNotifSettings()">✓ Save Reminder</button>
-        <button class="btn" onclick="sendTestNotif()" style="flex:1;justify-content:center;">🧪 Test Now</button>
+      <div style="background:var(--card);border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.8;">
+        <b>What you'll get:</b><br>
+        🌅 <b>06:00</b> — Good morning message<br>
+        ⏰ <b>Each task</b> — Reminder at task time<br>
+        📊 <b>14:00</b> — Performance check-in<br>
+        📈 <b>18:00</b> — Growth & streak update<br>
+        🌙 <b>22:00</b> — End of day summary
       </div>
-      <button class="btn btn-r" style="width:100%;justify-content:center;margin-top:8px;" onclick="disableNotifs()">🔕 Disable Notifications</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="sendTestNotif()" style="flex:1;justify-content:center;">🧪 Test Now</button>
+        <button class="btn btn-r" onclick="disableNotifs()" style="flex:1;justify-content:center;">🔕 Disable</button>
+      </div>
     </div>
     <div id="notif-enable-btn-wrap">
-      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:8px;" onclick="enableNotifs()">🔔 Enable Notifications</button>
+      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:8px;" onclick="enableNotifs()">🔔 Enable Smart Notifications</button>
     </div>
     <div class="modal-btns" style="margin-top:12px;">
       <button class="btn" onclick="closeModal('notif-modal')" style="width:100%;justify-content:center;">Close</button>
@@ -2788,9 +2791,40 @@ window.addEventListener('appinstalled', () => {
 });
 
 // ═══════════════════════════════════════════
-// NOTIFICATIONS
+// SMART NOTIFICATIONS — task reminders + daily check-ins
 // ═══════════════════════════════════════════
-let notifTimer = null;
+let _notifTimers = [];
+
+// Task-specific messages by category
+const NOTIF_CAT_MSG = {
+  free:     { emoji:'🌅', msgs:['Rise & shine! Morning routine time.', 'Good morning! Start strong today 💪', 'Wake up champ! New day, new goals 🌟'] },
+  college:  { emoji:'🎓', msgs:['Classes starting soon! Pack your bag 🎒', 'Time for college — stay focused in lectures!', 'Head to class! Every session counts 📖'] },
+  gym:      { emoji:'💪', msgs:["Gym time! Don't skip — consistency is key.", 'Your workout is waiting. Let\'s go! 🏋️', 'Time to train! Remember why you started 🔥'] },
+  study:    { emoji:'📚', msgs:['Study session starting! Put your phone down (after this 😄)', 'Time to hit the books — future you will thank you!', 'Study time! One focused hour = massive progress 🧠'] },
+  'job-prep':{ emoji:'💼', msgs:['Job prep time! 30 mins of focused prep today.', 'Career time! One topic from your jobs tab 🎯', 'Quick job prep session — your future self is watching! 🚀'] },
+  sleep:    { emoji:'😴', msgs:["Time to wind down. Great work today! 🌙", "Sleep time! Rest is part of the grind 💤", "Log off and rest — tomorrow's goals need energy! 🌙"] },
+  default:  { emoji:'⏰', msgs:['Time for your next task!', 'Up next on your schedule!', 'Task reminder from Life Tracker 📋'] }
+};
+
+// Fixed daily check-in notifications
+const DAILY_CHECKINS = [
+  { id:'gm',    time:'06:00', title:'🌅 Good Morning!',        body: () => `Rise and shine${P&&P.name?' '+P.name.split(' ')[0]:''}! Your schedule is ready. Let's make today count! 💪` },
+  { id:'perf',  time:'14:00', title:'📊 Performance Check',    body: () => {
+      const done = Object.values(TASK_LOG).filter(v=>v===true).length;
+      const total = (CUSTOM_TASKS||defaultTasks()).length;
+      return `You've completed ${done}/${total} tasks so far today. ${done>=total/2?'Great pace! Keep going 🔥':'You can catch up — stay focused! 💡'}`;
+  }},
+  { id:'growth',time:'18:00', title:'📈 Your Growth Update',   body: () => {
+      const days = parseInt(localStorage.getItem('lt_streak')||'0');
+      return `You're on a ${days}-day streak! 🏆 Check your Study & Skills tabs — you're building something great.`;
+  }},
+  { id:'night', time:'22:00', title:'🌙 End of Day',           body: () => {
+      const done = Object.values(TASK_LOG).filter(v=>v===true).length;
+      const total = (CUSTOM_TASKS||defaultTasks()).length;
+      const pct = Math.round((done/total)*100)||0;
+      return `Today: ${done}/${total} tasks done (${pct}%). ${pct>=80?'Incredible day! 🌟':pct>=50?'Solid effort! Tomorrow, aim higher 💪':'Rest up and go stronger tomorrow! 🌙'}`;
+  }}
+];
 
 function openNotifModal() {
   updateNotifStatusUI();
@@ -2804,26 +2838,27 @@ function updateNotifStatusUI() {
   const perm = Notification.permission;
 
   if (perm === 'granted') {
-    const saved = JSON.parse(localStorage.getItem('lt_notif') || '{}');
+    const tasks = CUSTOM_TASKS || defaultTasks();
     status.style.background = '#d4edda';
     status.style.color = '#155724';
-    status.innerHTML = `✅ Notifications are <b>enabled</b>${saved.time ? `<br>⏰ Daily reminder at <b>${saved.time}</b>` : ''}`;
+    status.innerHTML = `
+      ✅ <b>Smart Notifications ON</b><br>
+      <span style="font-size:12px;opacity:.8">
+        📋 ${tasks.length} task reminders scheduled<br>
+        🌅 Good morning · 📊 Afternoon check · 📈 Growth update · 🌙 Night summary
+      </span>`;
     controls.style.display = 'block';
     enableWrap.style.display = 'none';
-    if (saved.time) {
-      document.getElementById('notif-time-input').value = saved.time;
-      document.getElementById('notif-msg-input').value = saved.msg || '';
-    }
   } else if (perm === 'denied') {
     status.style.background = '#f8d7da';
     status.style.color = '#721c24';
-    status.innerHTML = `🚫 Notifications are <b>blocked</b>.<br>Go to browser/phone Settings → Site Settings → allow notifications for this site.`;
+    status.innerHTML = `🚫 Notifications <b>blocked</b>.<br>Go to phone Settings → Apps → Browser → Notifications → Allow.`;
     controls.style.display = 'none';
     enableWrap.style.display = 'none';
   } else {
     status.style.background = '#fff3cd';
     status.style.color = '#856404';
-    status.innerHTML = `⚠️ Notifications not enabled yet.<br>Tap the button below to allow.`;
+    status.innerHTML = `⚠️ Not enabled yet. Tap below to get smart reminders for all your tasks!`;
     controls.style.display = 'none';
     enableWrap.style.display = 'block';
   }
@@ -2832,70 +2867,104 @@ function updateNotifStatusUI() {
 async function enableNotifs() {
   const perm = await Notification.requestPermission();
   if (perm === 'granted') {
-    toast('🔔 Notifications enabled!');
+    localStorage.setItem('lt_notif_enabled', '1');
+    scheduleAllNotifs();
+    toast('🔔 Smart notifications enabled!');
     updateNotifStatusUI();
-    scheduleNotifs();
   } else {
     toast('❌ Permission denied. Check browser settings.');
     updateNotifStatusUI();
   }
 }
 
-function saveNotifSettings() {
-  const time = document.getElementById('notif-time-input').value;
-  const msg = document.getElementById('notif-msg-input').value.trim() || 'Time to check your Life Tracker! 📚';
-  localStorage.setItem('lt_notif', JSON.stringify({ time, msg, enabled: true }));
-  scheduleNotifs();
-  toast(`✅ Reminder set for ${time} daily!`);
-  updateNotifStatusUI();
-}
-
 function disableNotifs() {
-  localStorage.setItem('lt_notif', JSON.stringify({ enabled: false }));
-  if (notifTimer) clearTimeout(notifTimer);
-  toast('🔕 Daily reminder disabled.');
+  localStorage.removeItem('lt_notif_enabled');
+  _notifTimers.forEach(t => clearTimeout(t));
+  _notifTimers = [];
+  toast('🔕 Notifications disabled.');
   updateNotifStatusUI();
 }
 
 function sendTestNotif() {
   if (Notification.permission !== 'granted') { toast('Enable notifications first!'); return; }
-  const msg = document.getElementById('notif-msg-input').value.trim() || 'Time to check your Life Tracker! 📚';
-  new Notification('📚 Life Tracker', {
-    body: msg,
-    icon: '/lifetracker/icon-192.png',
-    badge: '/lifetracker/icon-192.png',
-    tag: 'lt-test'
-  });
-  toast('🧪 Test notification sent!');
+  const name = P && P.name ? P.name.split(' ')[0] : 'there';
+  fireNotif('lt-test', '🧪 Life Tracker Test', `Hey ${name}! Notifications are working perfectly 🎉`);
+  toast('🧪 Test sent!');
 }
 
-function scheduleNotifs() {
-  if (notifTimer) clearTimeout(notifTimer);
-  const saved = JSON.parse(localStorage.getItem('lt_notif') || '{}');
-  if (!saved.enabled || !saved.time || Notification.permission !== 'granted') return;
+function fireNotif(tag, title, body) {
+  if (Notification.permission !== 'granted') return;
+  try {
+    new Notification(title, {
+      body,
+      icon: '/lifetracker/icon-192.png',
+      badge: '/lifetracker/icon-192.png',
+      tag,
+      requireInteraction: false
+    });
+  } catch(e) {}
+}
 
-  const [h, m] = saved.time.split(':').map(Number);
+function msUntil(timeStr) {
+  const [h, m] = timeStr.split(':').map(Number);
   const now = new Date();
   const next = new Date();
   next.setHours(h, m, 0, 0);
   if (next <= now) next.setDate(next.getDate() + 1);
+  return next - now;
+}
 
-  const ms = next - now;
-  notifTimer = setTimeout(() => {
-    new Notification('📚 Life Tracker', {
-      body: saved.msg || 'Time to check your Life Tracker! 📚',
-      icon: '/lifetracker/icon-192.png',
-      badge: '/lifetracker/icon-192.png',
-      tag: 'lt-daily'
-    });
-    scheduleNotifs();
+function scheduleAllNotifs() {
+  // Clear existing
+  _notifTimers.forEach(t => clearTimeout(t));
+  _notifTimers = [];
+  if (Notification.permission !== 'granted') return;
+  if (!localStorage.getItem('lt_notif_enabled')) return;
+
+  const tasks = CUSTOM_TASKS || defaultTasks();
+
+  // 1. Schedule task reminders
+  tasks.forEach(task => {
+    if (!task.time) return;
+    const cat = task.cat || 'default';
+    const catData = NOTIF_CAT_MSG[cat] || NOTIF_CAT_MSG.default;
+    const msg = catData.msgs[Math.floor(Math.random() * catData.msgs.length)];
+    const title = `${catData.emoji} ${task.label}`;
+
+    const ms = msUntil(task.time);
+    const t = setTimeout(() => {
+      fireNotif('task-'+task.id, title, msg);
+      // Reschedule for tomorrow
+      const t2 = setTimeout(() => scheduleAllNotifs(), 24*60*60*1000);
+      _notifTimers.push(t2);
+    }, ms);
+    _notifTimers.push(t);
+  });
+
+  // 2. Schedule daily check-ins
+  DAILY_CHECKINS.forEach(ci => {
+    const ms = msUntil(ci.time);
+    const t = setTimeout(() => {
+      fireNotif('checkin-'+ci.id, ci.title, ci.body());
+    }, ms);
+    _notifTimers.push(t);
+  });
+}
+
+// Reschedule every midnight to refresh for new day
+function scheduleMidnightRefresh() {
+  const ms = msUntil('00:01');
+  setTimeout(() => {
+    scheduleAllNotifs();
+    scheduleMidnightRefresh();
   }, ms);
 }
 
+// Init on load
 (function initNotifs() {
-  const saved = JSON.parse(localStorage.getItem('lt_notif') || '{}');
-  if (saved.enabled && Notification.permission === 'granted') {
-    scheduleNotifs();
+  if (localStorage.getItem('lt_notif_enabled') && Notification.permission === 'granted') {
+    scheduleAllNotifs();
+    scheduleMidnightRefresh();
   }
 })();
 
