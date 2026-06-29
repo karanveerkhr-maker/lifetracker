@@ -1,0 +1,2991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Life Tracker">
+<meta name="theme-color" content="#6C63FF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1017" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Your personal career & study companion">
+<link rel="manifest" href="manifest.json">
+<title>Life Tracker</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+  /* Core palette */
+  --bg:#F7F8FC;--bg2:#FFFFFF;--bg3:#ECEEF5;
+  --text:#0D0F1A;--text2:#5A5F7A;--text3:#9FA4BC;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.13);
+  --r:16px;--rs:10px;
+  /* Brand gradient */
+  --grad:linear-gradient(135deg,#6C63FF 0%,#3ECFB2 100%);
+  --grad-r:linear-gradient(135deg,#3ECFB2 0%,#6C63FF 100%);
+  --acc:#6C63FF;--acc2:#3ECFB2;
+  /* Semantic colours */
+  --gbg:#E8F8F0;--gt:#0D6E45;
+  --bbg:#E8F0FE;--bt:#1A4FD6;
+  --pbg:#EDE9FF;--pt:#4B3FCC;
+  --abg:#FFF4E0;--at:#8A5C00;
+  --cbg:#FFE9E9;--ct:#B91C1C;
+  --tbg:#E0FAF4;--tt:#0A5F49;
+  /* Shadows */
+  --sh:0 2px 12px rgba(108,99,255,0.08);
+  --sh2:0 4px 24px rgba(108,99,255,0.14);
+  --safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0F1017;--bg2:#181A24;--bg3:#22253A;
+  --text:#EEF0FA;--text2:#8A8FAD;--text3:#3E4260;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
+  --acc:#7B74FF;--acc2:#3ECFB2;
+  --gbg:#0A2A1A;--gt:#5DD49A;
+  --bbg:#0A1A3A;--bt:#7EB3FF;
+  --pbg:#1A1540;--pt:#B0AAFF;
+  --abg:#2A1E00;--at:#FFD060;
+  --cbg:#2A0A0A;--ct:#FF9090;
+  --tbg:#001A14;--tt:#5DE8C8;
+  --sh:0 2px 12px rgba(0,0,0,0.4);
+  --sh2:0 4px 24px rgba(0,0,0,0.5);
+}}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;}
+
+/* ══ ONBOARDING ══ */
+#onboarding{position:fixed;inset:0;background:var(--bg);z-index:500;overflow-y:auto;padding:0 0 40px;}
+#onboarding.hidden{display:none;}
+.ob-step{display:none;min-height:100vh;flex-direction:column;padding:calc(var(--safe-top)+28px) 22px 32px;}
+.ob-step.active{display:flex;}
+.ob-hero{background:var(--grad);border-radius:20px;padding:22px 20px 18px;margin-bottom:22px;position:relative;overflow:hidden;}
+.ob-hero::after{content:'';position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.1);}
+.ob-logo{font-size:36px;margin-bottom:8px;}
+.ob-h{font-size:26px;font-weight:800;color:#fff;line-height:1.2;}
+.ob-sub-hero{font-size:13px;color:rgba(255,255,255,0.82);margin-top:5px;line-height:1.5;}
+.ob-h-plain{font-size:22px;font-weight:800;color:var(--text);line-height:1.2;}
+.ob-sub{font-size:13px;color:var(--text2);margin-top:5px;line-height:1.5;margin-bottom:4px;}
+.ob-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.ob-card{border:1.5px solid var(--border2);border-radius:var(--r);padding:14px 12px;cursor:pointer;transition:all 0.18s;text-align:left;background:var(--bg2);box-shadow:var(--sh);}
+.ob-card:active{transform:scale(0.97);}
+.ob-card.sel{border-color:var(--acc);background:var(--pbg);box-shadow:0 0 0 3px rgba(108,99,255,0.15);}
+.ob-icon{font-size:24px;margin-bottom:6px;}
+.ob-card-t{font-size:13px;font-weight:700;color:var(--text);}
+.ob-card-s{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.4;}
+.ob-field{margin-top:14px;}
+.ob-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);display:block;margin-bottom:6px;}
+.ob-field input,.ob-field select{width:100%;padding:13px 14px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:15px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;box-shadow:var(--sh);transition:border-color .15s;}
+.ob-field input:focus,.ob-field select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(108,99,255,0.12);}
+.ob-btn{margin-top:22px;width:100%;padding:15px;background:var(--grad);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:var(--sh2);letter-spacing:.01em;transition:opacity .15s;}
+.ob-btn:active{opacity:.88;}
+.ob-back{background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:10px 0;font-family:inherit;margin-top:8px;text-align:center;width:100%;font-weight:500;}
+.ob-prog{display:flex;gap:6px;margin-bottom:22px;}
+.ob-dot{height:4px;flex:1;border-radius:3px;background:var(--bg3);}
+.ob-dot.done{background:var(--grad);background:var(--acc);}
+
+/* ══ MAIN APP ══ */
+#app{display:flex;flex-direction:column;height:100%;overflow:hidden;}
+#app.hidden{display:none;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:calc(var(--safe-top)+12px) 18px 12px;flex-shrink:0;box-shadow:0 1px 8px rgba(0,0,0,0.04);}
+.hdr-row{display:flex;justify-content:space-between;align-items:center;}
+.hdr h1{font-size:17px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hdr-sub{font-size:11px;color:var(--text3);margin-top:2px;font-weight:500;}
+.hdr-edit-btn{width:34px;height:34px;border-radius:50%;background:var(--pbg);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.bar-wrap{margin-top:10px;}
+.bar-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:600;letter-spacing:.03em;}
+.bar-track{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--grad);border-radius:3px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px calc(var(--safe-bot)+72px);}
+
+/* ══ NAV BAR ══ */
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-bot);z-index:100;box-shadow:0 -2px 16px rgba(0,0,0,0.06);}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px 7px;cursor:pointer;background:none;border:none;color:var(--text3);font-size:9px;font-family:inherit;position:relative;font-weight:600;letter-spacing:.02em;transition:color .15s;}
+.nb svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:all .15s;}
+.nb.active{color:var(--acc);}
+.nb.active svg{stroke:var(--acc);}
+.nb-pip{width:4px;height:4px;border-radius:50%;background:var(--acc);display:none;margin:0 auto;}
+.nb.active .nb-pip{display:block;}
+.nbadge{background:linear-gradient(135deg,#FF6B6B,#FF3B3B);color:#fff;border-radius:10px;font-size:8px;font-weight:700;padding:1px 4px;position:absolute;top:5px;right:calc(50% - 17px);}
+
+.sec{display:none;}.sec.active{display:block;}
+.stitle{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;margin-top:4px;}
+
+/* ══ TAGS ══ */
+.tag{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;display:inline-block;}
+.tg{background:var(--gbg);color:var(--gt);}
+.tb{background:var(--bbg);color:var(--bt);}
+.tp{background:var(--pbg);color:var(--pt);}
+.ta{background:var(--abg);color:var(--at);}
+.tc{background:var(--cbg);color:var(--ct);}
+.tt2{background:var(--tbg);color:var(--tt);}
+
+/* ══ CARDS ══ */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--sh);}
+
+/* ══ BUTTONS ══ */
+.btn{padding:9px 14px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:12px;cursor:pointer;background:transparent;color:var(--text);font-family:inherit;font-weight:600;display:inline-flex;align-items:center;gap:5px;text-decoration:none;transition:all .15s;}
+.btn:active{transform:scale(0.97);}
+.btn-p{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--sh2);}
+.btn-g{background:var(--gbg);color:var(--gt);border-color:transparent;}
+.btn-b{background:var(--bbg);color:var(--bt);border-color:transparent;}
+.btn-r{background:var(--cbg);color:var(--ct);border-color:transparent;}
+.btn-sm{padding:6px 11px;font-size:11px;border-radius:8px;}
+.btn-lock{background:var(--bg3);color:var(--text3);border-color:transparent;cursor:not-allowed;opacity:.7;}
+
+/* ══ FILTER ROW ══ */
+.jbtns{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.frow{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;margin-bottom:4px;}
+.frow::-webkit-scrollbar{display:none;}
+.fp{flex-shrink:0;padding:6px 14px;border:1.5px solid var(--border2);border-radius:20px;font-size:12px;cursor:pointer;background:var(--bg2);color:var(--text2);font-family:inherit;font-weight:500;transition:all .15s;}
+.fp.active{background:var(--pbg);color:var(--pt);border-color:var(--acc);font-weight:700;}
+
+/* ══ TODAY STATS ══ */
+.today-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.today-stat{background:var(--bg2);border-radius:var(--r);padding:14px;box-shadow:var(--sh);border:1px solid var(--border);position:relative;overflow:hidden;}
+.today-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
+.today-n{font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.today-l{font-size:11px;color:var(--text3);margin-top:2px;font-weight:600;}
+
+/* ══ ROUTINE ITEMS ══ */
+.routine-item{display:flex;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;}
+.routine-item:active{background:var(--bg3);}
+.routine-item:last-child{border-bottom:none;}
+.ri-time{min-width:56px;font-size:11px;font-weight:700;color:var(--text3);}
+.ri-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:2.5px solid var(--border2);transition:all .2s;}
+.ri-dot.done{background:#3ECFB2;border-color:#3ECFB2;box-shadow:0 0 6px rgba(62,207,178,0.4);}
+.ri-dot.now{background:#F5A623;border-color:#F5A623;box-shadow:0 0 6px rgba(245,166,35,0.4);}
+.ri-info{flex:1;}
+.ri-title{font-size:14px;font-weight:600;}
+.ri-check{font-size:20px;color:var(--text3);transition:color .2s;}
+.ri-check.done{color:#3ECFB2;}
+
+/* ══ WEEK BARS ══ */
+.week-bar-wrap{display:flex;gap:5px;align-items:flex-end;height:64px;margin:10px 0;}
+.wbar{flex:1;border-radius:4px 4px 0 0;background:var(--bg3);min-height:4px;transition:height .4s ease;}
+.wbar.today{background:var(--grad);}
+.wday{font-size:9px;color:var(--text3);text-align:center;margin-top:4px;font-weight:600;}
+
+/* ══ TOPIC CARDS ══ */
+.topic-card{border-radius:var(--r);padding:14px;margin-bottom:10px;border:1px solid var(--border);background:var(--bg2);box-shadow:var(--sh);transition:box-shadow .15s;}
+.topic-card:hover{box-shadow:var(--sh2);}
+.topic-cat{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;color:var(--acc);}
+.topic-title{font-size:14px;font-weight:700;color:var(--text);}
+.topic-desc{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.6;}
+.topic-imp{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:6px;}
+.imp-high{background:var(--cbg);color:var(--ct);}
+.imp-med{background:var(--abg);color:var(--at);}
+.imp-low{background:var(--gbg);color:var(--gt);}
+.res-links{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.res-link{display:flex;align-items:center;gap:7px;padding:5px 0;text-decoration:none;color:var(--bt);font-size:12px;font-weight:600;}
+.res-link:active{opacity:.7;}
+
+/* ══ SKILL CARDS ══ */
+.skill-card{border-radius:var(--r);padding:14px;margin-bottom:10px;border:1px solid var(--border);background:var(--bg2);box-shadow:var(--sh);}
+.skill-name{font-size:14px;font-weight:700;}
+.skill-why{font-size:12px;color:var(--text2);margin-top:5px;line-height:1.6;}
+.skill-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;align-items:center;}
+
+/* ══ JOB CARDS ══ */
+.job-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--sh);}
+.jtitle{font-size:14px;font-weight:700;color:var(--text);line-height:1.3;margin-top:4px;}
+.jorg{font-size:12px;color:var(--text2);margin-top:3px;font-weight:500;}
+.jdesc{font-size:12px;color:var(--text2);margin-top:8px;line-height:1.6;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;}
+.jsal{font-size:14px;font-weight:800;color:var(--text);background:var(--gbg);padding:4px 8px;border-radius:8px;white-space:nowrap;}
+
+/* ══ PROFILE ══ */
+.pro-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;}
+.pro-row:last-child{border-bottom:none;}
+.pro-lbl{color:var(--text3);font-size:12px;font-weight:600;}
+
+/* ══ MODALS ══ */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(10,12,30,0.55);backdrop-filter:blur(3px);z-index:200;align-items:flex-end;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg2);border-radius:24px 24px 0 0;padding:20px 18px calc(var(--safe-bot)+20px);width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,0.18);}
+.modal-handle{width:40px;height:4px;background:var(--bg3);border-radius:2px;margin:0 auto 16px;}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:16px;color:var(--text);}
+.field{margin-bottom:13px;}
+.field label{font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em;}
+.field input,.field select{width:100%;padding:11px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;}
+.field input:focus,.field select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(108,99,255,0.12);}
+.modal-btns{display:flex;gap:8px;margin-top:8px;}
+
+/* ══ INFO BOXES ══ */
+.ibox{border-radius:var(--r);padding:13px 14px;font-size:12px;line-height:1.7;margin-bottom:12px;border:1px solid transparent;}
+.empty{text-align:center;padding:2.8rem 1rem;color:var(--text3);font-size:13px;line-height:1.8;}
+.empty-icon{font-size:34px;margin-bottom:9px;}
+
+/* ══ TOAST ══ */
+
+/* ══ ADS ══ */
+.ad-banner{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rs);padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;position:relative;}
+.ad-label{font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.06em;text-transform:uppercase;position:absolute;top:5px;right:8px;}
+.ad-icon{font-size:22px;flex-shrink:0;}
+.ad-text{flex:1;}
+.ad-title{font-size:12px;font-weight:700;color:var(--text);}
+.ad-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+.ad-btn{background:var(--grad);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;}
+
+/* ══ PREMIUM ══ */
+.premium-badge{background:linear-gradient(135deg,#F5A623,#FF6B35);color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:2px 8px;letter-spacing:.02em;display:inline-block;}
+.plan-card{border-radius:var(--r);padding:18px;margin-bottom:10px;border:2px solid var(--border);background:var(--bg2);position:relative;cursor:pointer;transition:all .2s;}
+.plan-card.popular{border-color:var(--acc);box-shadow:0 0 0 3px rgba(108,99,255,0.12);}
+.plan-card.selected{border-color:#F5A623;box-shadow:0 0 0 3px rgba(245,166,35,0.15);}
+.plan-popular-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--grad);color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:3px 12px;white-space:nowrap;}
+.plan-price{font-size:28px;font-weight:800;color:var(--text);}
+.plan-price span{font-size:13px;font-weight:500;color:var(--text2);}
+.plan-feature{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);padding:5px 0;border-bottom:.5px solid var(--border);}
+.plan-feature:last-child{border-bottom:none;}
+.plan-feature .tick{color:#3ECFB2;font-weight:700;flex-shrink:0;}
+.plan-feature .cross{color:var(--ct);flex-shrink:0;}
+.paywall-overlay{position:fixed;inset:0;background:rgba(10,12,30,0.7);backdrop-filter:blur(6px);z-index:300;display:flex;align-items:flex-end;justify-content:center;}
+.paywall-sheet{background:var(--bg2);border-radius:24px 24px 0 0;padding:24px 18px calc(var(--safe-bot)+24px);width:100%;max-height:92vh;overflow-y:auto;}
+.feature-lock{position:relative;overflow:hidden;}
+.feature-lock::after{content:'🔒 Premium';position:absolute;inset:0;background:rgba(var(--bg2-rgb,255,255,255),0.85);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--pt);backdrop-filter:blur(2px);}
+.upi-btn{display:flex;align-items:center;gap:10px;padding:14px 16px;border:1.5px solid var(--border2);border-radius:var(--rs);cursor:pointer;background:var(--bg2);width:100%;margin-bottom:8px;transition:all .15s;font-family:inherit;}
+.upi-btn:active{transform:scale(.98);}
+.upi-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.upi-name{font-size:14px;font-weight:700;color:var(--text);text-align:left;}
+.upi-sub{font-size:11px;color:var(--text2);text-align:left;}
+
+#toast{position:fixed;bottom:calc(var(--safe-bot)+80px);left:50%;transform:translateX(-50%) translateY(6px);background:var(--text);color:var(--bg2);padding:10px 18px;border-radius:22px;font-size:12px;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;z-index:999;box-shadow:var(--sh2);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ══ NOTIFICATIONS ══ */
+.notif-banner{border-radius:12px;padding:11px 13px;margin-bottom:10px;font-size:12px;line-height:1.5;font-weight:500;display:flex;align-items:center;gap:8px;}
+.nb-info{background:var(--bbg);color:var(--bt);border:1px solid rgba(26,79,214,0.15);}
+.nb-urgent{background:var(--cbg);color:var(--ct);border:1px solid rgba(185,28,28,0.15);}
+.nb-good{background:var(--gbg);color:var(--gt);border:1px solid rgba(13,110,69,0.15);}
+
+/* ══ MATCH BADGE ══ */
+.match-badge{background:var(--grad);color:#fff;border-radius:20px;font-size:10px;font-weight:700;padding:2px 9px;letter-spacing:.02em;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ══ LOGIN SCREEN ══ */
+#login-screen{position:fixed;inset:0;background:var(--bg);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 24px 40px;overflow-y:auto;padding-top:max(env(safe-area-inset-top,0px),24px);}
+#login-screen.hidden{display:none;}
+.ls-logo{font-size:48px;margin-bottom:12px;text-align:center;}
+.ls-title{font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;}
+.ls-sub{font-size:13px;color:var(--text2);margin:6px 0 24px;text-align:center;line-height:1.5;}
+.ls-card{background:var(--bg2);border:1.5px solid var(--border2);border-radius:20px;padding:24px 20px;width:100%;max-width:380px;box-shadow:var(--sh2);}
+.ls-tabs{display:flex;gap:0;margin-bottom:20px;background:var(--bg3);border-radius:10px;padding:3px;}
+.ls-tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border-radius:8px;color:var(--text2);transition:all .15s;border:none;background:none;font-family:inherit;}
+.ls-tab.active{background:var(--bg2);color:var(--text);box-shadow:var(--sh);}
+.ls-field{margin-bottom:14px;}
+.ls-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);display:block;margin-bottom:5px;}
+.ls-field input{width:100%;padding:13px 14px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:15px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border-color .15s;}
+.ls-field input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(108,99,255,0.12);}
+.ls-btn{width:100%;padding:15px;background:var(--grad);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;letter-spacing:.01em;}
+.ls-btn:active{opacity:.88;}
+.ls-err{font-size:12px;color:var(--ct);margin-top:8px;text-align:center;display:none;padding:8px;background:var(--cbg);border-radius:var(--rs);}
+.ls-success{font-size:12px;color:var(--gt);margin-top:8px;text-align:center;display:none;padding:8px;background:var(--gbg);border-radius:var(--rs);}
+.ls-cred-box{background:var(--pbg);border-radius:var(--rs);padding:14px;margin-top:14px;display:none;}
+.ls-cred-title{font-size:11px;font-weight:700;color:var(--pt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+.ls-cred-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.ls-cred-label{font-size:12px;color:var(--text2);}
+.ls-cred-val{font-size:14px;font-weight:800;color:var(--pt);letter-spacing:.05em;}
+.ls-cred-copy{background:var(--pt);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+.ls-spinner{border:3px solid var(--border2);border-top:3px solid var(--acc);border-radius:50%;width:22px;height:22px;animation:spin .7s linear infinite;margin:8px auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+
+/* ══ PWA INSTALL BANNER ══ */
+#pwa-install-banner{position:fixed;bottom:calc(var(--safe-bot)+76px);left:12px;right:12px;background:var(--grad);color:#fff;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:150;box-shadow:0 4px 20px rgba(108,99,255,0.4);transform:translateY(120%);transition:transform .4s cubic-bezier(.4,0,.2,1);}
+#pwa-install-banner.show{transform:translateY(0);}
+.pwa-icon{font-size:24px;flex-shrink:0;}
+.pwa-text{flex:1;}
+.pwa-title{font-size:13px;font-weight:800;}
+.pwa-sub{font-size:11px;opacity:.85;margin-top:1px;}
+.pwa-install-btn{background:rgba(255,255,255,0.25);border:1.5px solid rgba(255,255,255,0.5);color:#fff;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:inherit;}
+.pwa-close-btn{background:none;border:none;color:rgba(255,255,255,0.7);font-size:18px;cursor:pointer;padding:2px 4px;flex-shrink:0;}
+
+/* ══ UPDATE BANNER ══ */
+#pwa-update-banner{position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#3ECFB2,#6C63FF);color:#fff;padding:10px 16px;display:flex;align-items:center;gap:10px;z-index:600;transform:translateY(-100%);transition:transform .3s ease;}
+#pwa-update-banner.show{transform:translateY(0);}
+.pwa-update-text{flex:1;font-size:13px;font-weight:600;}
+.pwa-update-btn{background:rgba(255,255,255,0.25);border:1.5px solid rgba(255,255,255,0.5);color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+
+<!-- ══ LOGIN / REGISTER SCREEN ══ -->
+<div id="login-screen">
+  <div class="ls-logo">🔬</div>
+  <div class="ls-title">Life Tracker</div>
+  <div class="ls-sub">Your personal career & study companion</div>
+  <div class="ls-card">
+    <div class="ls-tabs">
+      <button class="ls-tab active" onclick="switchAuthTab('login',this)">Login</button>
+      <button class="ls-tab" onclick="switchAuthTab('register',this)">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="auth-login">
+      <div class="ls-field">
+        <label>📱 Mobile Number</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="padding:11px 10px;border:1px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg3);color:var(--text2);white-space:nowrap;">🇮🇳 +91</div>
+          <input id="l-phone" type="tel" placeholder="10-digit number" maxlength="10" autocomplete="tel" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)" onkeydown="if(event.key==='Enter')document.getElementById('l-pass').focus()" style="flex:1;">
+        </div>
+      </div>
+      <div class="ls-field">
+        <label>🔒 Password</label>
+        <input id="l-pass" type="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="ls-err" id="l-err"></div>
+      <div id="l-spinner" style="display:none;"><div class="ls-spinner"></div></div>
+      <button class="ls-btn" id="l-btn" onclick="doLogin()">Login →</button>
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--text3);">
+        New user? <span style="color:var(--acc);font-weight:700;cursor:pointer;" onclick="switchAuthTab('register',document.querySelectorAll('.ls-tab')[1])">Register here</span>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="auth-register" style="display:none;">
+      <div class="ls-field">
+        <label>Full name</label>
+        <input id="r-name" type="text" placeholder="e.g. Rahul Singh">
+      </div>
+      <div class="ls-field">
+        <label>Mobile number</label>
+        <input id="r-phone" type="tel" placeholder="10-digit number">
+      </div>
+      <div class="ls-field">
+        <label>Create password (min 6 characters)</label>
+        <input id="r-pass" type="password" placeholder="Create a password" autocomplete="new-password">
+      </div>
+      <div class="ls-field">
+        <label>Confirm password</label>
+        <input id="r-pass2" type="password" placeholder="Repeat password" onkeydown="if(event.key==='Enter')doRegister()">
+      </div>
+      <div class="ls-err" id="r-err"></div>
+      <div id="r-spinner" style="display:none;"><div class="ls-spinner"></div></div>
+      <button class="ls-btn" id="r-btn" onclick="doRegister()">Create account →</button>
+      <!-- Show credentials after register -->
+      <div class="ls-cred-box" id="r-cred-box" style="display:none;background:linear-gradient(135deg,var(--gbg),var(--bbg));border:1px solid var(--gt);border-radius:var(--r);padding:16px;margin-top:14px;">
+        <div style="font-size:14px;font-weight:800;color:var(--gt);margin-bottom:12px;">🎉 Account created successfully!</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.5;">📸 Screenshot this or save it — you need your mobile + password to login from any device.</div>
+        <div class="ls-cred-row">
+          <span class="ls-cred-label">📱 Login mobile:</span>
+          <span class="ls-cred-val" id="r-show-phone" style="color:var(--acc);">—</span>
+        </div>
+        <div class="ls-cred-row">
+          <span class="ls-cred-label">🔒 Password:</span>
+          <span class="ls-cred-val" id="r-show-pass">••••••</span>
+          <button class="ls-cred-copy" onclick="copyText(document.getElementById('r-show-pass').textContent,'Password copied!')">Copy</button>
+        </div>
+        <div class="ls-cred-row">
+          <span class="ls-cred-label">🪪 Your User ID:</span>
+          <span class="ls-cred-val" id="r-show-uid" style="font-size:11px;color:var(--text3);">—</span>
+          <button class="ls-cred-copy" onclick="copyText(document.getElementById('r-show-uid').textContent,'User ID copied!')">Copy</button>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:8px;">User ID is for reference. Login uses your mobile number + password.</div>
+        <div id="sms-status" style="display:none;font-size:12px;font-weight:600;padding:8px 10px;border-radius:8px;background:var(--bg);margin-top:10px;"></div>
+        <button class="ls-btn" style="margin-top:14px;" onclick="proceedAfterRegister()">Continue to app →</button>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:16px;width:100%;max-width:380px;">
+    <button onclick="showGuestMode()" style="width:100%;padding:13px;background:var(--bg2);color:var(--text2);border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">
+      👤 Continue without login (guest mode)
+    </button>
+    <div style="font-size:11px;color:var(--text3);margin-top:10px;text-align:center;line-height:1.7;">
+      Guest mode saves data on this device only.<br>Register to sync across devices.
+    </div>
+  </div>
+</div>
+
+<div id="onboarding">
+
+  <div class="ob-step active" id="ob1">
+    <div class="ob-hero">
+      <div class="ob-logo">🎓</div>
+      <div class="ob-h">Welcome to Life Tracker</div>
+      <div class="ob-sub-hero">Tell us about yourself — we'll personalise jobs, study material and skills just for you.</div>
+    </div>
+    <div class="ob-prog">
+      <div class="ob-dot done"></div><div class="ob-dot"></div><div class="ob-dot"></div><div class="ob-dot"></div>
+    </div>
+    <div style="font-size:10px;font-weight:700;color:var(--text3);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em;">What are you pursuing?</div>
+    <div class="ob-grid">
+      <div class="ob-card" onclick="selDegType('BSc',this)"><div class="ob-icon">🔬</div><div class="ob-card-t">BSc</div><div class="ob-card-s">Bachelor of Science</div></div>
+      <div class="ob-card" onclick="selDegType('BA',this)"><div class="ob-icon">📚</div><div class="ob-card-t">BA</div><div class="ob-card-s">Bachelor of Arts</div></div>
+      <div class="ob-card" onclick="selDegType('BCom',this)"><div class="ob-icon">💼</div><div class="ob-card-t">BCom</div><div class="ob-card-s">Bachelor of Commerce</div></div>
+      <div class="ob-card" onclick="selDegType('BTech',this)"><div class="ob-icon">⚙️</div><div class="ob-card-t">BTech / BE</div><div class="ob-card-s">Engineering</div></div>
+      <div class="ob-card" onclick="selDegType('BCA',this)"><div class="ob-icon">💻</div><div class="ob-card-t">BCA / MCA</div><div class="ob-card-s">Computer Applications</div></div>
+      <div class="ob-card" onclick="selDegType('Diploma',this)"><div class="ob-icon">📜</div><div class="ob-card-t">Diploma / ITI</div><div class="ob-card-s">Polytechnic / Vocational</div></div>
+      <div class="ob-card" onclick="selDegType('Medical',this)"><div class="ob-icon">🏥</div><div class="ob-card-t">MBBS / BDS</div><div class="ob-card-s">Medical</div></div>
+      <div class="ob-card" onclick="selDegType('Law',this)"><div class="ob-icon">⚖️</div><div class="ob-card-t">LLB / BA LLB</div><div class="ob-card-s">Law</div></div>
+    </div>
+  </div>
+
+  <div class="ob-step" id="ob2">
+    <div class="ob-prog"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div><div class="ob-dot"></div></div>
+    <div class="ob-h-plain" id="ob2-title">What is your specialisation?</div>
+    <div class="ob-sub" id="ob2-sub">Pick the one closest to your course.</div>
+    <div id="ob2-options" class="ob-grid" style="margin-top:16px;"></div>
+    <button class="ob-back" onclick="goOb(1)">← Back</button>
+  </div>
+
+  <div class="ob-step" id="ob3">
+    <div class="ob-prog"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot"></div></div>
+    <div class="ob-h-plain">Your current year & semester</div>
+    <div class="ob-sub">We'll show you the right topics and unlock future content as you progress.</div>
+    <div class="ob-field" style="margin-top:20px;">
+      <label>Year</label>
+      <select id="ob-year">
+        <option value="1">1st Year</option><option value="2">2nd Year</option>
+        <option value="3">3rd Year</option><option value="4">4th Year (Final)</option>
+      </select>
+    </div>
+    <div class="ob-field">
+      <label>Semester</label>
+      <select id="ob-sem">
+        <option value="1">Semester 1</option><option value="2">Semester 2</option>
+        <option value="3" selected>Semester 3</option><option value="4">Semester 4</option>
+        <option value="5">Semester 5</option><option value="6">Semester 6</option>
+        <option value="7">Semester 7</option><option value="8">Semester 8</option>
+      </select>
+    </div>
+    <button class="ob-btn" onclick="goOb(4)">Continue →</button>
+    <button class="ob-back" onclick="goOb(2)">← Back</button>
+  </div>
+
+  <div class="ob-step" id="ob4">
+    <div class="ob-prog"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div></div>
+    <div class="ob-h-plain">A few more details</div>
+    <div class="ob-sub">Optional — helps personalise job eligibility and location.</div>
+    <div class="ob-field" style="margin-top:18px;">
+      <label>Your name</label>
+      <input id="ob-name" type="text" placeholder="e.g. Priya Sharma">
+    </div>
+    <div class="ob-field">
+      <label>📱 Mobile number <span style="color:var(--ct);">*</span></label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div style="padding:13px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:15px;background:var(--bg2);color:var(--text2);white-space:nowrap;">🇮🇳 +91</div>
+        <input id="ob-phone" type="tel" placeholder="10-digit mobile number" maxlength="10" pattern="[6-9][0-9]{9}" style="flex:1;" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10);validatePhone()">
+      </div>
+      <div id="phone-err" style="font-size:11px;color:var(--ct);margin-top:5px;display:none;">Please enter a valid 10-digit mobile number (starts with 6-9)</div>
+      <div id="phone-ok" style="font-size:11px;color:var(--gt);margin-top:5px;display:none;">✓ Looks good!</div>
+    </div>
+    <div class="ob-field">
+      <label>College / University</label>
+      <input id="ob-college" type="text" placeholder="e.g. Punjab University, Chandigarh">
+    </div>
+    <div class="ob-field">
+      <label>State / Location</label>
+      <select id="ob-state">
+        <option>Punjab</option><option>Haryana</option><option>Delhi</option><option>UP</option>
+        <option>Rajasthan</option><option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
+        <option>Tamil Nadu</option><option>West Bengal</option><option>MP</option><option>Bihar</option><option>Other</option>
+      </select>
+    </div>
+    <div class="ob-field">
+      <label>12th marks %</label>
+      <input id="ob-m12" type="number" placeholder="e.g. 75" min="30" max="100">
+    </div>
+    <div class="ob-field">
+      <label>Goal — What do you want most?</label>
+      <select id="ob-goal">
+        <option value="govt">Government Job (SSC/State PSC)</option>
+        <option value="bank">Bank Job (IBPS/SBI)</option>
+        <option value="core">Core field job (my subject area)</option>
+        <option value="higher">Higher studies / PG</option>
+        <option value="private">Private sector job</option>
+        <option value="mixed">Mix of everything</option>
+      </select>
+    </div>
+    <button class="ob-btn" onclick="finishOnboarding()">🚀 Set up my tracker</button>
+    <button class="ob-back" onclick="goOb(3)">← Back</button>
+  </div>
+
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+  <div class="hdr">
+    <div class="hdr-row">
+      <div>
+        <h1 id="hdr-name">📚 Life Tracker</h1>
+        <div class="hdr-sub" id="hdr-sub">Loading...</div>
+      </div>
+      <button onclick="openModal('edit-modal')" class="hdr-edit-btn" title="Edit profile">✏️</button>
+      <button onclick="openNotifModal()" class="hdr-edit-btn" id="notif-bell-btn" title="Notifications">🔔</button>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-lbl"><span id="bar-label-left">Progress</span><b id="bar-lbl">—</b></div>
+      <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div id="s-today" class="sec active">
+      <div id="notif-area"></div>
+      <div class="today-grid">
+        <div class="today-stat"><div class="today-n" id="td-done">0</div><div class="today-l">Done today</div></div>
+        <div class="today-stat"><div class="today-n" id="td-pct">0%</div><div class="today-l">Completion</div></div>
+        <div class="today-stat"><div class="today-n" id="td-streak">0🔥</div><div class="today-l">Day streak</div></div>
+        <div class="today-stat"><div class="today-n" id="td-week">—</div><div class="today-l">Week avg</div></div>
+      </div>
+      <div class="stitle" id="today-date-label">Today</div>
+      <div class="card" style="padding:0;overflow:hidden;" id="routine-list"></div>
+      <div style="margin-top:10px;" id="topic-of-day"></div>
+    </div>
+
+    <div id="s-schedule" class="sec">
+      <div class="ibox" style="background:var(--pbg);color:var(--pt);">
+        <b>📅 Your daily schedule</b><br>Tap any task to edit it, rename it, change its time or delete it. Add your own tasks too.
+      </div>
+      <div id="tt-blocks"></div>
+      <button class="btn btn-p" style="width:100%;justify-content:center;margin-bottom:14px;" onclick="openAddTask()">+ Add task</button>
+      <div>
+        <div class="stitle">Weekly performance</div>
+        <div class="card">
+          <div class="week-bar-wrap" id="week-bars"></div>
+          <div style="display:flex;" id="week-days"></div>
+          <div style="margin-top:8px;font-size:12px;color:var(--text2);" id="week-summary"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="s-study" class="sec">
+      <div id="study-header-box"></div>
+      <div class="frow" id="study-filters"></div>
+      <div id="study-list"></div>
+    </div>
+
+    <div id="s-skills" class="sec">
+      <div id="skills-header-box"></div>
+      <div class="frow" id="skill-filters">
+        <button class="fp active" onclick="kfilt('all',this)">All</button>
+        <button class="fp" onclick="kfilt('must',this)">Must-do</button>
+        <button class="fp" onclick="kfilt('core',this)">Core field</button>
+        <button class="fp" onclick="kfilt('tech',this)">Tech/Digital</button>
+        <button class="fp" onclick="kfilt('govt',this)">Govt exam</button>
+      </div>
+      <div id="skill-list"></div>
+    </div>
+
+    <!-- ══ LEARN TAB ══ -->
+    <div id="s-learn" class="sec">
+      <div id="learn-upload-area">
+        <div class="ibox" style="background:var(--pbg);color:var(--pt);border:1px solid rgba(108,99,255,0.2);">
+          <b>📥 AI Study Planner</b><br>
+          Upload your syllabus PDF, paste topics, or just write what you want to learn — e.g. <i>"Python, Django, REST APIs"</i> or <i>"Unit 1: Fingerprints, Unit 2: DNA"</i>. Claude AI builds a full course list + weekly timetable for you — free resources only.
+        </div>
+        <div class="frow" id="learn-mode-tabs">
+          <button class="fp active" onclick="setLearnMode('paste',this)">✏️ Type / Paste</button>
+          <button class="fp" onclick="setLearnMode('file',this)">📄 Upload file</button>
+        </div>
+        <div id="lm-paste">
+          <div class="field" style="margin-top:4px;">
+            <label>Syllabus / Topics to learn</label>
+            <textarea id="learn-text" rows="8" placeholder="e.g.&#10;Unit 1: Fingerprint Analysis&#10;Unit 2: Bloodstain Patterns&#10;&#10;Or just write:&#10;I want to learn Python, Django and REST APIs" style="width:100%;padding:12px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;resize:vertical;line-height:1.6;box-shadow:var(--sh);"></textarea>
+          </div>
+        </div>
+        <div id="lm-file" style="display:none;">
+          <label for="learn-file-input" id="learn-file-label" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed var(--border2);border-radius:var(--r);padding:30px 16px;cursor:pointer;background:var(--bg2);gap:8px;margin-top:6px;">
+            <div style="font-size:36px;">📄</div>
+            <div style="font-size:14px;font-weight:700;color:var(--text);">Tap to upload file</div>
+            <div style="font-size:12px;color:var(--text3);">PDF, TXT, DOCX, MD supported</div>
+          </label>
+          <input type="file" id="learn-file-input" accept=".txt,.pdf,.docx,.doc,.md" style="display:none;" onchange="handleLearnFile(this)">
+          <div id="learn-file-name" style="font-size:12px;color:var(--acc);margin-top:8px;text-align:center;display:none;font-weight:600;"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Study hours/day</div>
+            <select id="learn-hours" style="width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
+              <option value="1">1 hour</option><option value="2" selected>2 hours</option>
+              <option value="3">3 hours</option><option value="4">4 hours</option><option value="5">5+ hours</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Complete in</div>
+            <select id="learn-weeks" style="width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
+              <option value="2">2 weeks</option><option value="4" selected>4 weeks</option>
+              <option value="6">6 weeks</option><option value="8">8 weeks</option><option value="12">12 weeks</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-p" id="learn-gen-btn" style="width:100%;justify-content:center;margin-top:16px;font-size:14px;padding:15px;" onclick="generateLearnPlan()">
+          ✨ Generate my study plan
+        </button>
+      </div>
+      <div id="learn-loading" style="display:none;text-align:center;padding:50px 20px;">
+        <div style="width:48px;height:48px;border:3px solid var(--bg3);border-top-color:var(--acc);border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite;"></div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);" id="learn-status">Analysing your syllabus...</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:6px;">Claude AI is building your personalised plan</div>
+      </div>
+      <div id="learn-result" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div style="font-size:16px;font-weight:800;" id="learn-plan-title">📚 Your Study Plan</div>
+          <button class="btn btn-sm" onclick="resetLearnPlan()">↺ New plan</button>
+        </div>
+        <div id="learn-summary-pills" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;"></div>
+        <div class="frow" style="margin-bottom:12px;">
+          <button class="fp active" onclick="setLearnView('timetable',this)">📅 Timetable</button>
+          <button class="fp" onclick="setLearnView('topics',this)">📖 Topics</button>
+          <button class="fp" onclick="setLearnView('courses',this)">🔗 Courses</button>
+        </div>
+        <div id="lv-timetable"></div>
+        <div id="lv-topics" style="display:none;"></div>
+        <div id="lv-courses" style="display:none;"></div>
+      </div>
+      <div id="learn-error" style="display:none;"></div>
+    </div>
+
+    <div id="s-jobs" class="sec">
+      <div id="jobs-header-box"></div>
+      <div class="frow" id="job-filters">
+        <button class="fp active" onclick="jfilt('all',this)">All</button>
+        <button class="fp" onclick="jfilt('match',this)">Best match ⭐</button>
+        <button class="fp" onclick="jfilt('now',this)">Apply now</button>
+        <button class="fp" onclick="jfilt('govt',this)">Central Govt</button>
+        <button class="fp" onclick="jfilt('state',this)">State Govt</button>
+        <button class="fp" onclick="jfilt('bank',this)">Bank</button>
+        <button class="fp" onclick="jfilt('core',this)">Core field</button>
+        <button class="fp" onclick="jfilt('after',this)">After degree</button>
+      </div>
+      <div id="job-list"></div>
+    </div>
+
+    <div id="s-profile" class="sec">
+      <div class="card" id="pro-display"></div>
+      <button class="btn" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="openModal('edit-modal')">✏️ Edit profile</button>
+      <div class="stitle">My certificates <span id="cert-count" style="background:var(--pbg);color:var(--pt);border-radius:10px;padding:1px 6px;font-size:10px;margin-left:3px;">0</span></div>
+      <div id="cert-list" style="margin-bottom:10px;border:.5px solid var(--border);border-radius:var(--r);overflow:hidden;">
+        <div class="empty" style="padding:1.5rem;"><div class="empty-icon">🎓</div>No certificates yet.</div>
+      </div>
+      <button class="btn btn-b" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="openModal('cert-modal')">+ Add certificate</button>
+      <button class="btn btn-r" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="logoutUser()">🚪 Logout</button>
+      <div class="stitle">Applied jobs <span id="applied-count2" style="background:var(--gbg);color:var(--gt);border-radius:10px;padding:1px 6px;font-size:10px;margin-left:3px;">0</span></div>
+      <div id="applied-list2"></div>
+      <div style="margin-top:16px;">
+        <button class="btn btn-r" style="width:100%;justify-content:center;" onclick="resetApp()">↺ Reset &amp; restart onboarding</button>
+      </div>
+      <div class="ibox" style="background:var(--bbg);color:var(--bt);margin-top:10px;">
+        <b>📱 Install as phone app</b><br><b>Android:</b> Chrome → ⋮ → Add to Home screen<br><b>iPhone:</b> Safari → Share → Add to Home Screen
+      </div>
+    </div>
+
+    <!-- PREMIUM TAB -->
+    <div id="s-premium" class="sec">
+      <div style="text-align:center;padding:20px 0 16px;">
+        <div style="font-size:36px;margin-bottom:8px;">🚀</div>
+        <div style="font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Go Premium</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:5px;">Unlock the full Life Tracker experience</div>
+        <div id="premium-status-banner" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- PLANS -->
+      <div id="plan-cards"></div>
+
+      <!-- WHAT YOU GET -->
+      <div class="stitle" style="margin-top:4px;">Free vs Premium</div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:0;font-size:11px;font-weight:700;color:var(--text3);padding:10px 14px;background:var(--bg3);letter-spacing:.04em;text-transform:uppercase;">
+          <div>Feature</div><div style="text-align:center;">Free</div><div style="text-align:center;">Pro</div>
+        </div>
+        <div id="feature-compare"></div>
+      </div>
+
+      <!-- HOW TO PAY -->
+      <div class="stitle">Pay with UPI / Card</div>
+      <div class="ibox" style="background:var(--abg);color:var(--at);margin-bottom:12px;">
+        <b>💡 How payment works</b><br>
+        Tap a payment method below → pay the plan amount → send your UPI transaction ID here → we activate your premium within 2 hours.
+      </div>
+      <div id="payment-methods"></div>
+
+      <!-- AFTER PAYING -->
+      <div class="stitle" style="margin-top:4px;">Already paid? Enter transaction ID</div>
+      <div class="card">
+        <div class="field" style="margin-bottom:10px;">
+          <label>UPI Transaction / Reference ID</label>
+          <input id="txn-id-input" type="text" placeholder="e.g. 4256789012345678" style="width:100%;padding:11px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;">
+        </div>
+        <div class="field" style="margin-bottom:10px;">
+          <label>Plan you paid for</label>
+          <select id="txn-plan-select" style="width:100%;padding:11px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;">
+            <option value="monthly">Monthly — ₹49</option>
+            <option value="annual">Annual — ₹299</option>
+            <option value="lifetime">Lifetime — ₹499</option>
+          </select>
+        </div>
+        <button class="btn btn-p" style="width:100%;justify-content:center;" onclick="submitTxn()">✓ Submit for verification</button>
+        <div id="txn-result" style="margin-top:10px;font-size:12px;text-align:center;color:var(--text2);"></div>
+      </div>
+
+      <!-- REFERRAL -->
+      <div class="stitle" style="margin-top:4px;">🎁 Refer & earn free Premium</div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px;">
+          Share your referral code with friends. <b>Every 3 friends who install = 1 month free Premium</b> for you!
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;text-align:center;margin-bottom:10px;">
+          <div style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.04em;margin-bottom:4px;">YOUR REFERRAL CODE</div>
+          <div style="font-size:22px;font-weight:800;letter-spacing:.08em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="referral-code">FS0000</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button class="btn btn-b" style="justify-content:center;" onclick="copyReferral()">📋 Copy code</button>
+          <button class="btn btn-p" style="justify-content:center;" onclick="shareReferral()">📤 Share</button>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text2);">
+          Referrals used: <b id="ref-count">0</b> / 3 for next free month
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="nav">
+    <button class="nb active" onclick="sw('today',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Today<div class="nb-pip"></div>
+    </button>
+    <button class="nb" onclick="sw('schedule',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Plan<div class="nb-pip"></div>
+    </button>
+    <button class="nb" onclick="sw('study',this)">
+      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Study<div class="nb-pip"></div>
+    </button>
+    <button class="nb" onclick="sw('learn',this)">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Learn<div class="nb-pip"></div>
+    </button>
+    <button class="nb" onclick="sw('jobs',this)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>Jobs<span class="nbadge" id="nav-badge" style="display:none;">0</span><div class="nb-pip"></div>
+    </button>
+    <button class="nb" onclick="sw('skills',this)">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Skills<div class="nb-pip"></div>
+    </button>
+    <button class="nb" onclick="sw('profile',this)">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Me<div class="nb-pip"></div>
+    </button>
+    <button class="nb" onclick="sw('premium',this)" id="premium-nav-btn">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="currentColor" stroke="none"/></svg>Pro<div class="nb-pip"></div>
+    </button>
+  </nav>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>✏️ Edit profile</h3>
+    <div class="field"><label>Name</label><input id="f-name" type="text" placeholder="Your name"></div>
+    <div class="field"><label>📱 Mobile number</label>
+      <div style="display:flex;gap:8px;">
+        <div style="padding:9px 10px;border:.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg2);color:var(--text2);">+91</div>
+        <input id="f-phone" type="tel" placeholder="10-digit number" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)" style="flex:1;">
+      </div>
+    </div>
+    <div class="field"><label>College</label><input id="f-college" type="text" placeholder="University / College"></div>
+    <div class="field"><label>Degree & Field</label><input id="f-degree" type="text" placeholder="e.g. BSc Forensic Science"></div>
+    <div class="field"><label>Semester</label>
+      <select id="f-sem"><option value="1">Sem 1</option><option value="2">Sem 2</option><option value="3">Sem 3</option><option value="4">Sem 4</option><option value="5">Sem 5</option><option value="6">Sem 6</option><option value="7">Sem 7</option><option value="8">Sem 8</option></select>
+    </div>
+    <div class="field"><label>12th marks %</label><input id="f-12" type="text" placeholder="75"></div>
+    <div class="field"><label>State</label>
+      <select id="f-state"><option>Punjab</option><option>Haryana</option><option>Delhi</option><option>UP</option><option>Rajasthan</option><option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option><option>Tamil Nadu</option><option>West Bengal</option><option>Other</option></select>
+    </div>
+    <div class="field"><label>Primary goal</label>
+      <select id="f-goal">
+        <option value="govt">Government Job</option><option value="bank">Bank Job</option>
+        <option value="core">Core field job</option><option value="higher">Higher studies</option>
+        <option value="private">Private sector</option><option value="mixed">Mixed</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-p" style="flex:1;justify-content:center;" onclick="saveProfile()">✓ Save</button>
+      <button class="btn" onclick="closeModal('edit-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- CERT MODAL -->
+<div class="modal-bg" id="cert-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>🎓 Add certificate</h3>
+    <div class="field"><label>Course name</label><input id="c-name" type="text" placeholder="e.g. Fingerprint Analysis"></div>
+    <div class="field"><label>Provider</label><input id="c-prov" type="text" placeholder="e.g. NPTEL, Coursera, Alison"></div>
+    <div class="field"><label>Duration</label><input id="c-dur" type="text" placeholder="e.g. 1 month"></div>
+    <div class="field"><label>Completed</label><input id="c-date" type="month"></div>
+    <div class="modal-btns">
+      <button class="btn btn-p" style="flex:1;justify-content:center;" onclick="saveCert()">✓ Add</button>
+      <button class="btn" onclick="closeModal('cert-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TASK EDIT MODAL -->
+<div class="modal-bg" id="task-edit-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3 id="task-edit-title">✏️ Edit task</h3>
+    <input type="hidden" id="te-idx">
+    <div class="field"><label>Task name</label><input id="te-label" type="text" placeholder="e.g. Morning run"></div>
+    <div class="field"><label>Description (optional)</label><input id="te-desc" type="text" placeholder="e.g. 30 min jog in park"></div>
+    <div class="field"><label>Time</label><input id="te-time" type="time"></div>
+    <div class="field"><label>Category</label>
+      <select id="te-cat">
+        <option value="college">🏫 College / Class</option>
+        <option value="study">📚 Study / Revision</option>
+        <option value="gym">💪 Gym / Exercise</option>
+        <option value="job-prep">💼 Job Prep</option>
+        <option value="free">🌿 Break / Meals</option>
+        <option value="sleep">😴 Sleep / Rest</option>
+        <option value="custom">⭐ Custom</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-p" style="flex:1;justify-content:center;" onclick="saveTaskEdit()">✓ Save</button>
+      <button class="btn btn-r" id="te-del-btn" onclick="deleteTask()" style="display:none;">🗑 Delete</button>
+      <button class="btn" onclick="closeModal('task-edit-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- NOTIFICATION MODAL -->
+<div class="modal-bg" id="notif-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>🔔 Smart Notifications</h3>
+    <div id="notif-status-box" style="margin:12px 0;padding:12px;border-radius:12px;background:var(--card);font-size:14px;line-height:1.6;"></div>
+    <div id="notif-controls" style="display:none;">
+      <div style="background:var(--card);border-radius:12px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.8;">
+        <b>What you'll get:</b><br>
+        🌅 <b>06:00</b> — Good morning message<br>
+        ⏰ <b>Each task</b> — Reminder at task time<br>
+        📊 <b>14:00</b> — Performance check-in<br>
+        📈 <b>18:00</b> — Growth & streak update<br>
+        🌙 <b>22:00</b> — End of day summary
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="sendTestNotif()" style="flex:1;justify-content:center;">🧪 Test Now</button>
+        <button class="btn btn-r" onclick="disableNotifs()" style="flex:1;justify-content:center;">🔕 Disable</button>
+      </div>
+    </div>
+    <div id="notif-enable-btn-wrap">
+      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:8px;" onclick="enableNotifs()">🔔 Enable Smart Notifications</button>
+    </div>
+    <div class="modal-btns" style="margin-top:12px;">
+      <button class="btn" onclick="closeModal('notif-modal')" style="width:100%;justify-content:center;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// STORAGE
+let P=null,CERTS=[],APPLIED=[],TASK_LOG={},WEEK_LOG={};
+
+// CUSTOM TASKS — fully editable schedule
+// Each task: {id, label, desc, time:'HH:MM', cat, sort}
+let CUSTOM_TASKS=null; // null = not yet initialised
+function defaultTasks(){
+  return[
+    {id:'wake',label:'Wake up & Morning routine',desc:'Freshen up, breakfast, get ready.',time:'05:30',cat:'free'},
+    {id:'college',label:'College / Classes',desc:'Lectures, labs, practicals.',time:'08:00',cat:'college'},
+    {id:'rest',label:'Travel + Rest',desc:'Decompress. Light snack.',time:'16:30',cat:'free'},
+    {id:'gym',label:'Gym 💪',desc:'Strength/cardio session.',time:'19:00',cat:'gym'},
+    {id:'study',label:'Study session 📚',desc:'Core revision + exam prep.',time:'21:00',cat:'study'},
+    {id:'jobprep',label:'Job prep — 30 min',desc:'One topic from Jobs/Study tab.',time:'23:00',cat:'job-prep'},
+    {id:'sleep',label:'Sleep 😴',desc:'6+ hours non-negotiable.',time:'23:30',cat:'sleep'},
+  ];
+}
+
+async function saveAll(){
+  // Cloud sync after every save
+  setTimeout(()=>{ if(currentUID&&!currentUID.startsWith("GUEST_")) saveUserDataToCloud(); }, 2000);
+  // Save to localStorage (persists on device between sessions)
+  try{
+    localStorage.setItem('P2',JSON.stringify(P));
+    localStorage.setItem('CERTS2',JSON.stringify(CERTS));
+    localStorage.setItem('APPLIED2',JSON.stringify(APPLIED));
+    localStorage.setItem('TASK_LOG2',JSON.stringify(TASK_LOG));
+    localStorage.setItem('WEEK_LOG2',JSON.stringify(WEEK_LOG));
+    localStorage.setItem('CTASKS2',JSON.stringify(CUSTOM_TASKS));
+  }catch(e){}
+  // ── ADMIN SYNC via JSONBin ──
+  try{
+    if(P&&P.setupDone&&P._uid){
+      const uid=P._uid;
+      const sched=CUSTOM_TASKS||[];
+      const tlog=TASK_LOG[todayKey]||{};
+      const todayPct=sched.length?Math.round((sched.filter(t=>tlog[t.id]).length/sched.length)*100):0;
+      let wt=0,wc=0;
+      for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const l=TASK_LOG[k]||{};const pp=sched.length?Math.round((sched.filter(t=>l[t.id]).length/sched.length)*100):0;if(TASK_LOG[k]){wt+=pp;wc++;}}
+      const weekAvg=wc?Math.round(wt/wc):0;
+      let streak=0;
+      for(let i=1;i<30;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const l=TASK_LOG[k]||{};const pp=sched.length?Math.round((sched.filter(t=>l[t.id]).length/sched.length)*100):0;if(pp>=50)streak++;else break;}
+      const snapshot={
+        uid,
+        name:P.name||'Anonymous',
+        phone:P.phone||'',
+        degree:P.degreeLabel||P.degree||'',
+        field:P.field||'',
+        college:P.college||'',
+        state:P.state||'',
+        sem:P.sem||3,
+        goal:P.goal||'',
+        m12:P.m12||'',
+        applied:(APPLIED||[]).length,
+        certs:(CERTS||[]).length,
+        todayPct,
+        weekAvg,
+        streak,
+        lastSeen:new Date().toISOString(),
+        joinedAt:P._joinedAt||new Date().toISOString(),
+        appVersion:'v8'
+      };
+      await syncToAdmin(uid, snapshot);
+    }
+  }catch(e){}
+}
+
+// ── JSONBIN SYNC ENGINE ──
+// JSONBin.io: free, no server needed, works from any hosted HTML
+// Firebase Realtime Database is used for storage
+// ── FIREBASE (replaces JSONBin - no CORS issues) ──
+const FB = 'https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
+async function fbGet(p){try{const ctrl=new AbortController();const tid=setTimeout(()=>ctrl.abort(),8000);const r=await fetch(FB+'/'+p+'.json',{signal:ctrl.signal});clearTimeout(tid);if(!r.ok)return null;return await r.json();}catch(e){return null;}}
+async function fbSet(p,d){try{const r=await fetch(FB+'/'+p+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
+async function fbPatch(p,d){try{const r=await fetch(FB+'/'+p+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});return r.ok;}catch(e){return false;}}
+// Keep these for compatibility
+// Legacy JSONBin constants (migrated to Firebase)
+
+async function syncToAdmin(uid,snapshot){
+  try{ await fbSet('users/'+uid,snapshot); }catch(e){}
+}
+async function loadAll(){
+  // Load from localStorage (device storage - persists between sessions)
+  const map={P2:null,CERTS2:null,APPLIED2:null,TASK_LOG2:null,WEEK_LOG2:null,CTASKS2:null};
+  for(const k of Object.keys(map)){try{const v=localStorage.getItem(k);if(v)map[k]=JSON.parse(v);}catch(e){}}
+  if(map.P2)P=map.P2;
+  if(map.CERTS2)CERTS=map.CERTS2;
+  if(map.APPLIED2)APPLIED=map.APPLIED2;
+  if(map.TASK_LOG2)TASK_LOG=map.TASK_LOG2;
+  if(map.WEEK_LOG2)WEEK_LOG=map.WEEK_LOG2;
+  if(map.CTASKS2)CUSTOM_TASKS=map.CTASKS2;
+  if(!CUSTOM_TASKS)CUSTOM_TASKS=defaultTasks();
+}
+
+// ONBOARDING DATA
+const FIELDS_BY_DEGREE={
+  BSc:[{val:'forensic',label:'Forensic Science',icon:'🔬'},{val:'cs',label:'Computer Science / IT',icon:'💻'},{val:'biotech',label:'Biotechnology',icon:'🧬'},{val:'chemistry',label:'Chemistry',icon:'⚗️'},{val:'physics',label:'Physics',icon:'🌌'},{val:'math',label:'Mathematics / Stats',icon:'📐'},{val:'botany',label:'Botany / Zoology',icon:'🌿'},{val:'nursing',label:'Nursing / Paramedics',icon:'💊'}],
+  BA:[{val:'english',label:'English',icon:'📖'},{val:'history',label:'History',icon:'🏛️'},{val:'polisci',label:'Political Science',icon:'⚖️'},{val:'economics',label:'Economics',icon:'📊'},{val:'sociology',label:'Sociology / Psychology',icon:'🧠'},{val:'hindi',label:'Hindi / Punjabi',icon:'✍️'},{val:'journalism',label:'Journalism / Mass Comm',icon:'📰'},{val:'geography',label:'Geography',icon:'🗺️'}],
+  BCom:[{val:'general',label:'BCom General',icon:'📋'},{val:'accounting',label:'Accounting & Finance',icon:'💰'},{val:'ca',label:'CA / CMA Foundation',icon:'🏦'},{val:'bba',label:'BBA / Management',icon:'📈'}],
+  BTech:[{val:'cse',label:'CSE / IT',icon:'💻'},{val:'ece',label:'ECE / EEE',icon:'📡'},{val:'mech',label:'Mechanical',icon:'⚙️'},{val:'civil',label:'Civil',icon:'🏗️'},{val:'chemical',label:'Chemical',icon:'🧪'},{val:'ai',label:'AI / Data Science',icon:'🤖'}],
+  BCA:[{val:'bca',label:'BCA',icon:'💻'},{val:'mca',label:'MCA',icon:'🖥️'}],
+  Diploma:[{val:'poly_cs',label:'Computer Science',icon:'💻'},{val:'poly_mech',label:'Mechanical',icon:'⚙️'},{val:'poly_civil',label:'Civil',icon:'🏗️'},{val:'poly_elec',label:'Electrical',icon:'⚡'},{val:'iti',label:'ITI Trade',icon:'🔧'}],
+  Medical:[{val:'mbbs',label:'MBBS',icon:'🩺'},{val:'bds',label:'BDS (Dental)',icon:'🦷'},{val:'bpharm',label:'B.Pharm',icon:'💊'},{val:'bpt',label:'Physiotherapy (BPT)',icon:'🏃'}],
+  Law:[{val:'llb',label:'LLB (3-year)',icon:'📜'},{val:'ballb',label:'BA LLB (5-year)',icon:'⚖️'}]
+};
+
+let obDegType='',obField='';
+function selDegType(type,el){
+  obDegType=type;
+  document.querySelectorAll('#ob1 .ob-card').forEach(c=>c.classList.remove('sel'));
+  if(el) el.classList.add('sel');
+  const fields=FIELDS_BY_DEGREE[type]||[];
+  const grid=document.getElementById('ob2-options');
+  // Use global fn ob2Click so it survives any sandbox
+  grid.innerHTML=fields.map(f=>
+    `<div class="ob-card" onclick="ob2Click('${f.val}',this)">
+      <div class="ob-icon">${f.icon}</div>
+      <div class="ob-card-t">${f.label}</div>
+    </div>`
+  ).join('');
+  goOb(2);
+}
+function ob2Click(val,el){ selField(val,el); }
+function selField(val,el){obField=val;document.querySelectorAll('#ob2-options .ob-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');setTimeout(()=>goOb(3),250);}
+function goOb(n){document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));const step=document.getElementById('ob'+n);step.classList.add('active');document.getElementById('onboarding').scrollTo({top:0,behavior:'smooth'});}
+
+// Event delegation for ob1 — works in all sandboxed environments
+// ob1 clicks handled via direct onclick attributes;);}
+function validatePhone(){
+  const v=document.getElementById('ob-phone').value;
+  const ok=/^[6-9][0-9]{9}$/.test(v);
+  document.getElementById('phone-err').style.display=(!ok&&v.length>0)?'block':'none';
+  document.getElementById('phone-ok').style.display=ok?'block':'none';
+  return ok;
+}
+function finishOnboarding(){const name=document.getElementById('ob-name').value.trim();
+  const phone=document.getElementById('ob-phone').value.trim();
+  if(!phone||!/^[6-9][0-9]{9}$/.test(phone)){
+    document.getElementById('phone-err').style.display='block';
+    document.getElementById('ob-phone').focus();
+    document.getElementById('ob-phone').style.borderColor='var(--ct)';
+    toast('Please enter a valid 10-digit mobile number');
+    return;
+  }
+  const sem=parseInt(document.getElementById('ob-sem').value);const year=parseInt(document.getElementById('ob-year').value);const maxSem=(obDegType==='BTech'||obDegType==='Medical'||obDegType==='Law')?8:6;const fields=FIELDS_BY_DEGREE[obDegType]||[];const fobj=fields.find(f=>f.val===obField)||{label:obField};const degreeLabel=obDegType+' '+fobj.label;P={name,degType:obDegType,field:obField,fieldLabel:fobj.label,degreeLabel,college:document.getElementById('ob-college').value.trim(),state:document.getElementById('ob-state').value,m12:document.getElementById('ob-m12').value||'',sem,year,maxSem,goal:document.getElementById('ob-goal').value,phone:'+91'+phone,setupDone:true,_uid:'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),_joinedAt:new Date().toISOString()};saveAll();startApp();}
+
+// CONTENT DATABASE
+const ALL_TOPICS=[
+  {id:'fs1',fields:['forensic'],cat:'Core FS',title:'Fingerprint Classification & Minutiae',desc:'Henry system, ridge counting, AFIS. All 5 patterns. Tested in FSL/police jobs.',priority:'high',resources:[{t:'Alison: Fingerprint Analysis (Free)',u:'https://alison.com/courses/fingerprint-analysis'},{t:'YouTube: Fingerprint Analysis',u:'https://www.youtube.com/results?search_query=fingerprint+classification+forensic+science'},{t:'NPTEL Forensic Science',u:'https://nptel.ac.in/courses/113/107/113107094/'}]},
+  {id:'fs2',fields:['forensic'],cat:'Core FS',title:'Bloodstain Pattern Analysis',desc:'Impact angle, area of origin, cast-off patterns. CFSL entrance & FSL Punjab questions.',priority:'high',resources:[{t:'YouTube: BPA explained',u:'https://www.youtube.com/results?search_query=bloodstain+pattern+analysis+forensic'},{t:'Alison: Crime Scene Investigation',u:'https://alison.com/courses/crime-scene-investigation-revised'}]},
+  {id:'fs3',fields:['forensic'],cat:'Core FS',title:'Forensic Toxicology — Drug Classification',desc:'Narcotics, stimulants, NDPS Act + spot tests. FSL serology & toxicology sections.',priority:'high',resources:[{t:'Alison: Toxicology (Free)',u:'https://alison.com/courses/toxicology'},{t:'YouTube: Forensic Toxicology',u:'https://www.youtube.com/results?search_query=forensic+toxicology+drugs+classification'}]},
+  {id:'fs4',fields:['forensic'],cat:'Core FS',title:'Forensic Ballistics',desc:'Rifled vs smooth bore, GSR collection, firing mechanism. High FSL relevance.',priority:'high',resources:[{t:'YouTube: Forensic Ballistics',u:'https://www.youtube.com/results?search_query=forensic+ballistics+firearm+examination'}]},
+  {id:'cs1',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Data Structures & Algorithms',desc:'Arrays, linked lists, trees, sorting, searching. Asked in every tech interview and GATE.',priority:'high',resources:[{t:'GeeksforGeeks DSA (Free)',u:'https://www.geeksforgeeks.org/data-structures/'},{t:'YouTube: DSA by Abdul Bari',u:'https://www.youtube.com/results?search_query=data+structures+algorithms+Abdul+Bari'},{t:'CS50 Harvard (Free)',u:'https://cs50.harvard.edu/x/'}]},
+  {id:'cs2',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Database Management — SQL',desc:'SELECT, JOIN, normalization, transactions. NIELIT CCC, bank IT officer, SSC require SQL.',priority:'high',resources:[{t:'W3Schools SQL (Free)',u:'https://www.w3schools.com/sql/'},{t:'YouTube: SQL Tutorial Hindi',u:'https://www.youtube.com/results?search_query=sql+tutorial+hindi'},{t:'SQLZoo Practice (Free)',u:'https://sqlzoo.net/'}]},
+  {id:'cs3',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Python Programming',desc:'Syntax, functions, OOP, file handling. Needed for data science, automation, backend.',priority:'high',resources:[{t:'Python.org Tutorial (Free)',u:'https://docs.python.org/3/tutorial/'},{t:'YouTube: Python full course',u:'https://www.youtube.com/results?search_query=python+full+course+for+beginners'},{t:'Codecademy Python (Free)',u:'https://www.codecademy.com/learn/learn-python-3'}]},
+  {id:'cs4',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Operating Systems & Networking',desc:'Process management, memory, TCP/IP, OSI model. GATE + IBPS IT officer topics.',priority:'high',resources:[{t:'NPTEL OS Course (Free)',u:'https://nptel.ac.in/courses/106/105/106105182/'},{t:'YouTube: Networking for beginners',u:'https://www.youtube.com/results?search_query=computer+networking+tutorial+for+beginners'}]},
+  {id:'bt1',fields:['biotech'],cat:'Core Biotech',title:'PCR & Molecular Biology Techniques',desc:'PCR, gel electrophoresis, cloning. Used in research labs, CDFD, NCCS recruitment.',priority:'high',resources:[{t:'YouTube: PCR explained',u:'https://www.youtube.com/results?search_query=PCR+technique+molecular+biology'},{t:'NPTEL Biotechnology',u:'https://nptel.ac.in/courses/102/103/102103013/'}]},
+  {id:'bt2',fields:['biotech'],cat:'Core Biotech',title:'Bioinformatics Tools',desc:'BLAST, NCBI, protein structure prediction. CSIR-JRF, DBT, pharma companies.',priority:'high',resources:[{t:'YouTube: Bioinformatics for beginners',u:'https://www.youtube.com/results?search_query=bioinformatics+tutorial+for+beginners'},{t:'EMBL-EBI Training (Free)',u:'https://www.ebi.ac.uk/training/'}]},
+  {id:'chem1',fields:['chemistry'],cat:'Core Chemistry',title:'Organic Reaction Mechanisms',desc:'SN1/SN2, elimination, addition. GATE Chemistry, CSIR-JRF, pharma industry.',priority:'high',resources:[{t:'Khan Academy Organic Chemistry',u:'https://www.khanacademy.org/science/organic-chemistry'},{t:'YouTube: Organic Chemistry Hindi',u:'https://www.youtube.com/results?search_query=organic+chemistry+reaction+mechanism+hindi'}]},
+  {id:'eco1',fields:['economics','general','accounting','bba'],cat:'Core Economics',title:'Micro & Macro Economics',desc:'Demand-supply, national income, inflation, monetary policy. UPSC, State PSC, RBI Grade B.',priority:'high',resources:[{t:'Khan Academy Economics (Free)',u:'https://www.khanacademy.org/economics-finance-domain'},{t:'YouTube: Economics NCERT',u:'https://www.youtube.com/results?search_query=economics+ncert+class+12+competitive+exam'}]},
+  {id:'eco2',fields:['general','accounting','bba','ca'],cat:'Core Commerce',title:'Financial Accounting',desc:'Balance sheet, P&L, journal entries. IBPS SO, RBI, SSC require basic accounting.',priority:'high',resources:[{t:'YouTube: Financial Accounting Hindi',u:'https://www.youtube.com/results?search_query=financial+accounting+basics+hindi'},{t:'IGNOU Study Material (Free)',u:'https://egyankosh.ac.in/'}]},
+  {id:'law1',fields:['llb','ballb'],cat:'Core Law',title:'Indian Penal Code — Key Sections',desc:'IPC Sec 302, 307, 376, 420, 498A. Essential for judiciary, legal aid, prosecution.',priority:'high',resources:[{t:'YouTube: IPC sections for judiciary',u:'https://www.youtube.com/results?search_query=IPC+important+sections+judiciary+exam'},{t:'DRISHTI IAS Law Notes (Free)',u:'https://www.drishtiias.com/legaliq'}]},
+  {id:'law2',fields:['llb','ballb'],cat:'Core Law',title:'Constitutional Law',desc:'FR, DPSP, Writs, judicial review. All judiciary exams + UPSC law optional.',priority:'high',resources:[{t:'YouTube: Constitutional law by LawSikho',u:'https://www.youtube.com/results?search_query=constitutional+law+india+judiciary+exam'},{t:'Indian Kanoon (Free case law)',u:'https://indiankanoon.org/'}]},
+  {id:'h1',fields:['history','polisci','english','sociology','hindi','journalism','geography'],cat:'Core Arts',title:'Modern India — Freedom Struggle',desc:'1857, Gandhi, INC, important Acts, Partition. UPSC, State PSC, SSC — very high weightage.',priority:'high',resources:[{t:'YouTube: Modern India complete series',u:'https://www.youtube.com/results?search_query=modern+history+india+freedom+struggle+complete'},{t:'NCERT Class 8-10 History (Free)',u:'https://ncert.nic.in/textbook.php?hess1=0-10'}]},
+  {id:'h2',fields:['history'],cat:'Core History',title:'Ancient & Medieval India',desc:'Vedic age, Maurya, Gupta, Delhi Sultanate, Mughals. 5–8 marks in every GK section.',priority:'high',resources:[{t:'YouTube: Ancient India NCERT',u:'https://www.youtube.com/results?search_query=ancient+india+ncert+exam'}]},
+  {id:'pol1',fields:['polisci','ballb','sociology'],cat:'Core Polity',title:'Indian Constitution — Basics',desc:'Preamble, FR & DPSP, Parliament structure, President, PM. Tested in EVERY competitive exam.',priority:'high',resources:[{t:'YouTube: Indian Polity by Laxmikanth',u:'https://www.youtube.com/results?search_query=indian+polity+laxmikanth+competitive+exam'},{t:'NCERT Political Science (Free)',u:'https://ncert.nic.in/textbook.php?ieps1=0-5'}]},
+  {id:'med1',fields:['mbbs','bds','bpt','bpharm'],cat:'Core Medical',title:'Human Anatomy — Gross & Regional',desc:'Organ systems, nerve pathways. NEET PG, USMLE, AIIMS faculty, govt hospital jobs.',priority:'high',resources:[{t:'YouTube: Anatomy lectures',u:'https://www.youtube.com/results?search_query=human+anatomy+medical+student+lecture'},{t:'Kenhub Anatomy (Free tier)',u:'https://www.kenhub.com/en/library/anatomy'}]},
+  {id:'med2',fields:['bpharm'],cat:'Core Pharmacy',title:'Pharmacology — Drug Classes',desc:'Antibiotics, antihypertensives, analgesics. GPAT, Drug Inspector, pharma jobs.',priority:'high',resources:[{t:'YouTube: Pharmacology drug classes',u:'https://www.youtube.com/results?search_query=pharmacology+drug+classification+GPAT'}]},
+  {id:'eng1',fields:['mech','civil','chemical','ece','poly_mech','poly_civil','poly_elec'],cat:'Core Engineering',title:'Engineering Mathematics',desc:'Linear algebra, calculus, probability. GATE — 13 marks common to all branches.',priority:'high',resources:[{t:'YouTube: Engineering Maths for GATE',u:'https://www.youtube.com/results?search_query=engineering+mathematics+GATE'},{t:'NPTEL Maths (Free)',u:'https://nptel.ac.in/courses/111/107/111107108/'}]},
+  {id:'eng2',fields:['cse','ece','mech','civil','ai'],cat:'Core Engineering',title:'GATE — Subject-specific preparation',desc:'GATE 2027 prep. PSU jobs (BHEL, ONGC, HPCL) require GATE score.',priority:'high',resources:[{t:'NPTEL GATE Lectures (Free)',u:'https://nptel.ac.in'},{t:'YouTube: GATE preparation strategy',u:'https://www.youtube.com/results?search_query=GATE+2027+preparation+strategy+branch'}]},
+  {id:'gk1',fields:['all'],cat:'GK / Current Affairs',title:'Current Affairs — This Month',desc:'National appointments, awards, sports, international summits. 10–15 marks in every exam.',priority:'high',resources:[{t:'GKToday Daily Current Affairs (Free)',u:'https://www.gktoday.in/current-affairs/'},{t:'YouTube: StudyIQ Daily CA',u:'https://www.youtube.com/c/StudyIQ'},{t:'Testbook Daily GK Quiz',u:'https://testbook.com/current-affairs-quiz'}]},
+  {id:'gk2',fields:['all'],cat:'Static GK',title:'Static GK — India & World',desc:'Countries/capitals, National parks, rivers, first in India, constitutional articles.',priority:'high',resources:[{t:'IndiaBix GK (Free practice)',u:'https://www.indiabix.com/general-knowledge/questions-and-answers/'},{t:'GKToday Static GK',u:'https://www.gktoday.in/general-knowledge/'}]},
+  {id:'r1',fields:['all'],cat:'Reasoning',title:'Reasoning — Coding, Series, Blood Relations',desc:'Coding-decoding, number series, blood relations, directions. 20–30 marks in SSC/IBPS/state exams.',priority:'high',resources:[{t:'IndiaBix Reasoning (Free)',u:'https://www.indiabix.com/logical-reasoning/questions-and-answers/'},{t:'YouTube: Reasoning tricks in Hindi',u:'https://www.youtube.com/results?search_query=reasoning+tricks+for+competitive+exam+hindi'},{t:'Testbook Reasoning Quiz',u:'https://testbook.com/reasoning-questions'}]},
+  {id:'r2',fields:['all'],cat:'Reasoning',title:'Syllogisms & Analogies',desc:'Venn diagram method. 10 guaranteed marks across SSC, IBPS, State PSC.',priority:'high',resources:[{t:'IndiaBix Syllogism (Free)',u:'https://www.indiabix.com/verbal-reasoning/syllogism/'},{t:'YouTube: Syllogism tricks',u:'https://www.youtube.com/results?search_query=syllogism+venn+diagram+method+tricks'}]},
+  {id:'b1',fields:['all'],cat:'Quant / Maths',title:'Number System & Simplification',desc:'BODMAS, squares, cubes, percentages. Most common in IBPS, SSC, state exams.',priority:'high',resources:[{t:'IndiaBix Aptitude (Free)',u:'https://www.indiabix.com/aptitude/questions-and-answers/'},{t:'YouTube: Quant shortcuts Hindi',u:'https://www.youtube.com/results?search_query=quantitative+aptitude+shortcuts+tricks+hindi'},{t:'Testbook Quant Quiz',u:'https://testbook.com/quantitative-aptitude-questions'}]},
+];
+
+const ALL_SKILLS=[
+  {id:'sk1',fields:['all'],cat:'must',name:'MS Office + Computer Basics',why:'Every govt and bank exam requires computer proficiency. Mandatory for DEO, LDC roles.',time:'2 weeks',url:'https://swayam.gov.in/nd2_cec20_cs23/preview'},
+  {id:'sk2',fields:['all'],cat:'govt',name:'Reasoning & Aptitude Mastery',why:'SSC + IBPS + State PSC = heavy reasoning. 30 min daily = 15+ extra marks.',time:'Ongoing',url:'https://testbook.com'},
+  {id:'sk3',fields:['all'],cat:'govt',name:'Current Affairs & GK',why:'Every competitive exam. Daily 20 min habit is enough to score 80%+ in GK sections.',time:'Ongoing',url:'https://www.gktoday.in/current-affairs/'},
+  {id:'sk4',fields:['forensic'],cat:'core',name:'Fingerprint Analysis Certificate',why:'Directly tested in FSL/police technical jobs. Matches Sem 3 Dermatoglyphics.',time:'3 weeks',url:'https://alison.com/courses/fingerprint-analysis'},
+  {id:'sk5',fields:['forensic'],cat:'core',name:'Forensic Toxicology Certificate',why:'FSL serology+tox section. Also covers NDPS Act drug cases.',time:'3 weeks',url:'https://alison.com/courses/toxicology'},
+  {id:'sk6',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'core',name:'Full Stack Web Development',why:'Highest-paying entry-level skill. React+Node = ₹4–8 LPA freshers. Huge demand.',time:'3 months',url:'https://www.theodinproject.com/'},
+  {id:'sk7',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'tech',name:'Python + Data Science',why:'Data analyst, data engineer, AI/ML roles. 2x salary compared to general grad jobs.',time:'2 months',url:'https://www.kaggle.com/learn'},
+  {id:'sk8',fields:['cse','ai','bca','mca','cs'],cat:'tech',name:'AWS / Cloud Fundamentals',why:'Cloud computing = fastest growing job. AWS Free tier + cert = ₹6+ LPA freshers.',time:'4 weeks',url:'https://aws.amazon.com/training/'},
+  {id:'sk9',fields:['biotech','chemistry'],cat:'core',name:'PCR & Lab Techniques Certificate',why:'CSIR-JRF, DBT, research labs all ask for hands-on lab training proof.',time:'4 weeks',url:'https://www.coursera.org/learn/dna-decoded'},
+  {id:'sk10',fields:['economics','general','bba','accounting','ca'],cat:'core',name:'Financial Modeling (Excel)',why:'Banking, CA, finance analyst roles. Excel + financial statements = strong resume.',time:'3 weeks',url:'https://corporatefinanceinstitute.com/resources/excel/'},
+  {id:'sk11',fields:['llb','ballb'],cat:'core',name:'Legal Drafting & Research',why:'Lawyers need drafting skills from day 1. SCC Online, Manupatra for case research.',time:'Ongoing',url:'https://indiankanoon.org/'},
+  {id:'sk12',fields:['mech','civil','chemical','poly_mech','poly_civil'],cat:'core',name:'AutoCAD / SolidWorks Basics',why:'Every engineering company and PSU recruiter expects CAD proficiency.',time:'4 weeks',url:'https://www.autodesk.com/education/free-software/autocad'},
+  {id:'sk13',fields:['mbbs','bds','bpt','bpharm'],cat:'must',name:'Medical Coding (ICD-10)',why:'Health informatics + medical billing — growing career in hospitals and insurance.',time:'3 weeks',url:'https://www.aapc.com/medical-coding/medical-coding.aspx'},
+  {id:'sk14',fields:['history','polisci','sociology','english','hindi','journalism'],cat:'core',name:'Content Writing & Blogging',why:'Monetise your writing: ₹500–2000/article. Good for side income while studying.',time:'2 weeks',url:'https://www.coursera.org/learn/everyday-writing'},
+  {id:'sk15',fields:['all'],cat:'must',name:'English Communication',why:'Better English = better SSC/IBPS scores + confident job interviews.',time:'Ongoing',url:'https://swayam.gov.in/nd1_noc19_hs45/preview'},
+  {id:'sk16',fields:['all'],cat:'govt',name:'IBPS / SSC Exam Preparation',why:'IBPS + SSC = 1 lakh+ vacancies/year. Any graduate can apply. Start now.',time:'2–3 months',url:'https://testbook.com/ibps-po'},
+];
+
+const ALL_JOBS=[
+  {id:1,title:'SSC CHSL — LDC / DEO',org:'SSC — Central Govt',type:'govt',fields:['all'],elig:'now',tags:['Central Govt','12th+'],dl:'2026-09-15',sal:'₹19,900/mo',desc:'12th pass eligible. Good parallel option while studying.',url:'https://ssc.gov.in',match:['govt','mixed']},
+  {id:2,title:'SSC MTS',org:'SSC — Multi Tasking Staff',type:'govt',fields:['all'],elig:'now',tags:['Central Govt','10th+'],dl:'2026-09-01',sal:'₹18,000/mo',desc:'Entry level central govt. 10th pass onwards.',url:'https://ssc.gov.in',match:['govt','mixed']},
+  {id:3,title:'RRB NTPC — Junior Clerk',org:'Railway Recruitment Board',type:'govt',fields:['all'],elig:'now',tags:['Central Govt','Railways'],dl:'2026-08-30',sal:'₹19,900/mo',desc:'Graduate level railways. Pan-India posting.',url:'https://www.rrbcdg.gov.in',match:['govt','mixed']},
+  {id:4,title:'IBPS Clerk',org:'IBPS — All PSU Banks',type:'bank',fields:['all'],elig:'now',tags:['Bank','Graduate'],dl:'2026-07-20',sal:'₹11,765/mo',desc:'Entry-level banking. Final-year students eligible.',url:'https://www.ibps.in',match:['bank','mixed']},
+  {id:5,title:'IBPS PO',org:'Public Sector Banks',type:'bank',fields:['all'],elig:'now',tags:['Bank','Officer'],dl:'2026-07-25',sal:'₹23,700/mo',desc:'Probationary Officer. Any graduate under 30.',url:'https://www.ibps.in',match:['bank','mixed']},
+  {id:6,title:'SBI Junior Associate',org:'State Bank of India',type:'bank',fields:['all'],elig:'now',tags:['Bank','SBI'],dl:'2026-07-30',sal:'₹13,730/mo',desc:'Clerical cadre. Local language preferred.',url:'https://sbi.co.in/web/careers',match:['bank','mixed']},
+  {id:7,title:'SBI PO',org:'State Bank of India',type:'bank',fields:['all'],elig:'now',tags:['Bank','Officer','SBI'],dl:'2026-08-10',sal:'₹27,620/mo',desc:'Probationary Officer.',url:'https://sbi.co.in/web/careers',match:['bank','mixed']},
+  {id:10,title:'Punjab Police Constable 2026',org:'Punjab Police',type:'state',fields:['all'],elig:'now',tags:['State Govt','Punjab','Police'],dl:'2026-08-15',sal:'₹19,900/mo',desc:'Written + PST. Science background helps in technical wing.',url:'https://punjabpolice.gov.in/recruitment',match:['govt','mixed']},
+  {id:11,title:'SSC CPO — Sub Inspector',org:'SSC — CAPF / Delhi Police',type:'govt',fields:['all'],elig:'now',tags:['Central Govt','Police','SSC'],dl:'2026-10-01',sal:'₹35,400/mo',desc:'PCM + ongoing BSc eligible. Science background preferred.',url:'https://ssc.gov.in',match:['govt','mixed']},
+  {id:12,title:'AIIMS Lab Technician',org:'AIIMS / Govt Hospitals',type:'govt',fields:['forensic','biotech','chemistry','nursing','bpharm','mbbs','bds','bpt'],elig:'now',tags:['Lab','Health','Central Govt'],dl:'2026-08-20',sal:'₹18,000/mo',desc:'Science students in final year eligible.',url:'https://aiimsexams.ac.in',match:['govt','core','mixed']},
+  {id:13,title:'CFSL — Junior Scientific Assistant',org:'Central Forensic Science Lab',type:'govt',fields:['forensic','biotech','chemistry'],elig:'after',tags:['Forensic','Central Govt','Lab'],dl:'After degree',sal:'₹25,500/mo',desc:'Requires BSc Forensic Science / Chemistry / Biotech degree.',url:'https://www.mha.gov.in',match:['core','govt']},
+  {id:14,title:'FSL Punjab — Forensic Scientist',org:'Forensic Science Lab Punjab',type:'state',fields:['forensic'],elig:'after',tags:['Forensic','State Govt'],dl:'After degree',sal:'₹35,400/mo',desc:'BSc Forensic Science required.',url:'https://punjabpolice.gov.in',match:['core','govt']},
+  {id:15,title:'IBPS SO — IT Officer',org:'IBPS — All Banks',type:'bank',fields:['cs','bca','mca','cse','ai','poly_cs'],elig:'now',tags:['Bank','IT Officer'],dl:'2026-09-01',sal:'₹23,700/mo',desc:'Specialist officer — IT. BCA/BTech/BSc CS eligible.',url:'https://www.ibps.in',match:['bank','core','mixed']},
+  {id:16,title:'NIC — Scientist B (IT)',org:'National Informatics Centre',type:'govt',fields:['cs','bca','mca','cse','ai'],elig:'after',tags:['Central Govt','IT','NIC'],dl:'Rolling',sal:'₹44,900/mo',desc:'Central govt IT jobs. BCA/BTech required.',url:'https://www.nic.in',match:['core','govt']},
+  {id:17,title:'Software Developer — Startup/MNC',org:'Private IT Companies',type:'private',fields:['cs','bca','mca','cse','ai','poly_cs'],elig:'now',tags:['Private','IT'],dl:'Rolling',sal:'₹3–8 LPA',desc:'Freshers eligible. Full-stack, backend, app dev roles.',url:'https://www.naukri.com/software-developer-jobs',match:['private','core']},
+  {id:18,title:'GATE + PSU (BHEL / ONGC / HPCL)',org:'Central PSUs via GATE',type:'govt',fields:['mech','civil','chemical','cse','ece','ai'],elig:'after',tags:['PSU','GATE','Central Govt'],dl:'After degree',sal:'₹50,000+/mo',desc:'GATE score required. Highest-paying central govt for engineers.',url:'https://bhel.com/careers',match:['core','govt']},
+  {id:19,title:'Judiciary — State Civil Judge',org:'State PSC (PCS-J)',type:'state',fields:['llb','ballb'],elig:'after',tags:['Judiciary','State Govt'],dl:'After degree',sal:'₹77,840/mo',desc:'LLB required. Most prestigious law career.',url:'https://highcourtchd.gov.in',match:['core','govt']},
+  {id:20,title:'District Legal Services Authority',org:'DLSA / State Legal Aid',type:'state',fields:['llb','ballb'],elig:'now',tags:['Law','Govt'],dl:'Rolling',sal:'₹20,000/mo',desc:'Panel lawyer + stipend. LLB final year eligible.',url:'https://nalsa.gov.in',match:['core','govt']},
+  {id:21,title:'DBT — Junior Research Fellow',org:'Dept. of Biotechnology',type:'govt',fields:['biotech','chemistry'],elig:'after',tags:['Research','Central Govt'],dl:'Rolling',sal:'₹31,000/mo',desc:'MSc/BSc+GATE eligible. Research career start.',url:'https://dbtindia.gov.in',match:['core','higher']},
+  {id:22,title:'Pharmacist (Govt Hospital)',org:'State Health Dept',type:'state',fields:['bpharm'],elig:'now',tags:['Pharma','State Govt'],dl:'Rolling',sal:'₹25,000/mo',desc:'B.Pharm + pharmacy council registration required.',url:'https://www.naukri.com/government-pharmacist-jobs',match:['core','govt']},
+  {id:23,title:'IB ACIO — Intelligence Bureau',org:'Ministry of Home Affairs',type:'govt',fields:['all'],elig:'after',tags:['IB','Intelligence','Central Govt'],dl:'After degree',sal:'₹44,900/mo',desc:'Any graduate. Written + interview.',url:'https://mha.gov.in',match:['govt','mixed']},
+  {id:24,title:'Journalist / Content Creator',org:'Media Houses / Self',type:'private',fields:['journalism','english','hindi'],elig:'now',tags:['Media','Private'],dl:'Rolling',sal:'₹15,000–40,000/mo',desc:'Mass comm + writing skills. Print, digital, broadcast.',url:'https://www.naukri.com/journalism-jobs',match:['core','private']},
+  {id:25,title:'Teacher / Lecturer (School)',org:'State Education Dept / KVS',type:'state',fields:['history','polisci','sociology','english','hindi','geography','economics'],elig:'after',tags:['Teaching','State Govt'],dl:'Rolling',sal:'₹29,200/mo',desc:'B.Ed + degree required. KVS/NVS central govt teaching.',url:'https://kvsangathan.nic.in',match:['core','govt']},
+  {id:26,title:'CBI Sub-Inspector',org:'CBI via SSC CPO',type:'govt',fields:['all'],elig:'after',tags:['CBI','Central Govt'],dl:'After degree',sal:'₹44,900/mo',desc:'Any degree + SSC CPO exam.',url:'https://ssc.gov.in',match:['govt','mixed']},
+];
+
+// PERSONALISATION
+function matcheField(item){if(!P)return true;if(item.fields.includes('all'))return true;return item.fields.includes(P.field);}
+function isMatch(job){if(!P)return false;return job.match&&job.match.includes(P.goal);}
+function getTopics(){return ALL_TOPICS.filter(t=>t.fields.includes('all')||t.fields.includes(P&&P.field));}
+function getSkills(){return ALL_SKILLS.filter(s=>s.fields.includes('all')||s.fields.includes(P&&P.field));}
+function getJobs(){return ALL_JOBS.filter(j=>j.fields.includes('all')||j.fields.includes(P&&P.field));}
+
+// SCHEDULE ENGINE — fully editable
+const today=new Date(),todayKey=today.toISOString().slice(0,10);
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function getSchedule(){
+  // sort by time HH:MM
+  return [...CUSTOM_TASKS].sort((a,b)=>a.time.localeCompare(b.time));
+}
+function fmtTime(t){
+  // "HH:MM" → "9:30 AM"
+  const [h,m]=t.split(':').map(Number);
+  const ap=h<12?'AM':'PM',h12=h===0?12:h>12?h-12:h;
+  return `${h12}:${m.toString().padStart(2,'0')} ${ap}`;
+}
+function timeToSort(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+
+function getTodayLog(){return TASK_LOG[todayKey]||{};}
+function setTaskDone(id,val){if(!TASK_LOG[todayKey])TASK_LOG[todayKey]={};TASK_LOG[todayKey][id]=val;saveAll();}
+function calcDayPct(key){const s=getSchedule(),l=TASK_LOG[key]||{};return s.length?Math.round((s.filter(t=>l[t.id]).length/s.length)*100):0;}
+
+function catColor(c){return{college:'#0C447C',gym:'#1D9E75',study:'#534AB7','job-prep':'#F5A623',sleep:'#999',free:'#ccc',custom:'#C084FC'}[c]||'#ccc';}
+function catIcon(c){return{college:'🏫',gym:'💪',study:'📚','job-prep':'💼',sleep:'😴',free:'🌿',custom:'⭐'}[c]||'📌';}
+
+function renderToday(){
+  const sched=getSchedule(),log=getTodayLog();
+  const done=sched.filter(t=>log[t.id]).length,pct=sched.length?Math.round((done/sched.length)*100):0;
+  document.getElementById('td-done').textContent=done;
+  document.getElementById('td-pct').textContent=pct+'%';
+  let streak=0;
+  for(let i=0;i<30;i++){const d=new Date(today);d.setDate(d.getDate()-i-1);const k=d.toISOString().slice(0,10);if((WEEK_LOG[k]||0)>=50)streak++;else break;}
+  document.getElementById('td-streak').textContent=streak+'🔥';
+  let wt=0,wc=0;
+  for(let i=0;i<7;i++){const d=new Date(today);d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const pp=calcDayPct(k);if(pp>0||TASK_LOG[k]){wt+=pp;wc++;}}
+  document.getElementById('td-week').textContent=wc?Math.round(wt/wc)+'%':'–';
+  const dn=DAYS[today.getDay()];
+  document.getElementById('today-date-label').textContent=`📅 ${dn}, ${today.getDate()} ${MONTHS[today.getMonth()]} ${today.getFullYear()}`;
+  const nowMin=today.getHours()*60+today.getMinutes();
+  let notifs=[];
+  const colTask=sched.find(t=>t.cat==='college');
+  const studyTask=sched.find(t=>t.cat==='study');
+  const gymTask=sched.find(t=>t.cat==='gym');
+  if(colTask){const sm=timeToSort(colTask.time);if(nowMin>=sm&&nowMin<sm+480)notifs.push({t:'info',m:'🏫 College time — stay focused!'});}
+  if(gymTask){const sm=timeToSort(gymTask.time);if(nowMin>=sm&&nowMin<sm+120)notifs.push({t:'info',m:'💪 Gym time!'});}
+  if(studyTask){const sm=timeToSort(studyTask.time);if(nowMin>=sm&&nowMin<sm+120)notifs.push({t:'urgent',m:'📚 Study session — open Study tab!'});}
+  if(pct>=80)notifs.push({t:'good',m:'🎉 '+pct+'% done — great day!'});
+  if(pct<30&&nowMin>20*60)notifs.push({t:'urgent',m:'⚠️ Only '+pct+'% done. Catch up!'});
+  document.getElementById('notif-area').innerHTML=notifs.map(n=>`<div class="notif-banner nb-${n.t}">${n.m}</div>`).join('');
+  document.getElementById('routine-list').innerHTML=sched.map(t=>{
+    const isDone=log[t.id],tMin=timeToSort(t.time),isNow=nowMin>=tMin&&nowMin<tMin+90;
+    return`<div class="routine-item" onclick="toggleTask('${t.id}')">
+      <div class="ri-time">${fmtTime(t.time)}</div>
+      <div class="ri-dot ${isDone?'done':isNow?'now':''}"></div>
+      <div class="ri-info">
+        <div class="ri-title" style="${isDone?'text-decoration:line-through;opacity:.5':''}">${catIcon(t.cat)} ${t.label}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px;">${t.desc||''}</div>
+      </div>
+      <div class="ri-check ${isDone?'done':''}">${isDone?'✓':'○'}</div>
+    </div>`;
+  }).join('');
+  const topics=getTopics().filter(t=>t.priority==='high');
+  if(topics.length){const topic=topics[today.getDate()%topics.length];document.getElementById('topic-of-day').innerHTML=`<div class="ibox" style="background:var(--pbg);color:var(--pt);"><b>📖 Today's focus: ${topic.title}</b><br>${topic.desc}</div>`;}
+  WEEK_LOG[todayKey]=pct;saveAll();
+}
+function toggleTask(id){const log=getTodayLog(),wasDone=log[id];setTaskDone(id,!wasDone);renderToday();renderTimetable();toast(wasDone?'Unmarked':'✓ Done!');}
+
+function renderTimetable(){
+  const sched=getSchedule(),log=getTodayLog();
+  document.getElementById('tt-blocks').innerHTML=sched.map((t,i)=>`
+    <div class="card" style="border-left:3px solid ${catColor(t.cat)};padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;font-weight:600;color:var(--text2);">${fmtTime(t.time)} ${log[t.id]?'<span style="color:#1D9E75">✓</span>':''}</div>
+        <div style="font-size:13px;font-weight:700;margin-top:2px;">${catIcon(t.cat)} ${t.label}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px;">${t.desc||''}</div>
+      </div>
+      <button onclick="openEditTask(${i})" style="background:var(--bg2);border:.5px solid var(--border2);border-radius:var(--rs);padding:6px 10px;font-size:11px;cursor:pointer;color:var(--text2);flex-shrink:0;">✏️ Edit</button>
+    </div>`).join('');
+  let wd=[];for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);wd.push(d);}
+  document.getElementById('week-bars').innerHTML=wd.map(d=>{const k=d.toISOString().slice(0,10),p=calcDayPct(k),h=Math.max(4,Math.round(p/100*60)),it=k===todayKey;return`<div class="wbar ${it?'today':''}" style="height:${h}px;" title="${p}%"></div>`;}).join('');
+  document.getElementById('week-days').innerHTML=wd.map(d=>`<div style="flex:1;"><div class="wday">${DAYS[d.getDay()]}</div></div>`).join('');
+  const avg=Math.round(wd.reduce((a,d)=>a+calcDayPct(d.toISOString().slice(0,10)),0)/7);
+  const g=avg>=80?['Excellent 🌟','var(--gt)']:avg>=60?['Good 👍','#F5A623']:avg>=40?['Okay 😐','var(--at)']:['Needs work 💪','var(--ct)'];
+  document.getElementById('week-summary').innerHTML=`Week average: <b style="color:${g[1]};">${avg}% — ${g[0]}</b>`;
+}
+
+// TASK ADD / EDIT / DELETE
+function openAddTask(){
+  document.getElementById('task-edit-title').textContent='+ Add task';
+  document.getElementById('te-idx').value='-1';
+  document.getElementById('te-label').value='';
+  document.getElementById('te-desc').value='';
+  document.getElementById('te-time').value='08:00';
+  document.getElementById('te-cat').value='free';
+  document.getElementById('te-del-btn').style.display='none';
+  openModal('task-edit-modal');
+}
+function openEditTask(i){
+  const sched=getSchedule(),t=sched[i];
+  // find real index in CUSTOM_TASKS
+  const realIdx=CUSTOM_TASKS.findIndex(ct=>ct.id===t.id);
+  document.getElementById('task-edit-title').textContent='✏️ Edit task';
+  document.getElementById('te-idx').value=realIdx;
+  document.getElementById('te-label').value=t.label;
+  document.getElementById('te-desc').value=t.desc||'';
+  document.getElementById('te-time').value=t.time;
+  document.getElementById('te-cat').value=t.cat;
+  document.getElementById('te-del-btn').style.display='inline-flex';
+  openModal('task-edit-modal');
+}
+function saveTaskEdit(){
+  const label=document.getElementById('te-label').value.trim();
+  if(!label){toast('Enter a task name!');return;}
+  const idx=parseInt(document.getElementById('te-idx').value);
+  const task={
+    label,
+    desc:document.getElementById('te-desc').value.trim(),
+    time:document.getElementById('te-time').value||'08:00',
+    cat:document.getElementById('te-cat').value
+  };
+  if(idx===-1){
+    // new task
+    task.id='t'+Date.now();
+    CUSTOM_TASKS.push(task);
+    toast('✓ Task added!');
+  } else {
+    task.id=CUSTOM_TASKS[idx].id;
+    CUSTOM_TASKS[idx]=task;
+    toast('✓ Task updated!');
+  }
+  saveAll();closeModal('task-edit-modal');renderToday();renderTimetable();
+}
+function deleteTask(){
+  const idx=parseInt(document.getElementById('te-idx').value);
+  if(idx<0)return;
+  if(!confirm('Delete this task?'))return;
+  const id=CUSTOM_TASKS[idx].id;
+  CUSTOM_TASKS.splice(idx,1);
+  // clean up logs for this task id
+  Object.keys(TASK_LOG).forEach(k=>{delete TASK_LOG[k][id];});
+  saveAll();closeModal('task-edit-modal');renderToday();renderTimetable();toast('🗑 Deleted.');
+}
+
+// STUDY
+let curSFilt='all';
+function renderStudy(){
+  const topics=getTopics();
+  const cats=[...new Set(topics.map(t=>t.cat))];
+  let filterHTML=`<button class="fp ${curSFilt==='all'?'active':''}" onclick="sfilt('all',this)">All</button>`;
+  cats.forEach(c=>{filterHTML+=`<button class="fp ${curSFilt===c?'active':''}" onclick="sfilt('${c}',this)">${c}</button>`;});
+  document.getElementById('study-filters').innerHTML=filterHTML;
+  document.getElementById('study-header-box').innerHTML=`<div class="ibox" style="background:var(--gbg);color:var(--gt);"><b>📚 Personalised for ${P?P.degreeLabel:'your degree'}</b><br>Topics matched to your field + free resources for every topic.</div>`;
+  let filtered=topics;
+  if(curSFilt!=='all') filtered=filtered.filter(t=>t.cat===curSFilt);
+  document.getElementById('study-list').innerHTML=filtered.map(t=>`<div class="topic-card">
+    <div class="topic-cat" style="color:var(--pt);">${t.cat}</div>
+    <div class="topic-title">${t.title}</div>
+    <div class="topic-desc">${t.desc}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap;">
+      <span class="topic-imp ${t.priority==='high'?'imp-high':t.priority==='med'?'imp-med':'imp-low'}">${t.priority.toUpperCase()}</span>
+    </div>
+    ${t.resources?`<div class="res-links"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">📺 Free resources</div>${t.resources.map(r=>`<a class="res-link" href="${r.u}" target="_blank" rel="noopener">▶ ${r.t}</a>`).join('')}</div>`:''}
+  </div>`).join('');
+}
+function sfilt(f,btn){curSFilt=f;renderStudy();}
+
+// SKILLS
+let curKFilt='all';
+function renderSkills(){
+  const skills=getSkills();
+  document.getElementById('skills-header-box').innerHTML=`<div class="ibox" style="background:var(--bbg);color:var(--bt);"><b>💡 Skills for ${P?P.degreeLabel:'your field'}</b><br>Curated for your degree + goal. All courses have free options.</div>`;
+  let filtered=skills;
+  if(curKFilt!=='all') filtered=filtered.filter(k=>k.cat===curKFilt);
+  document.getElementById('skill-list').innerHTML=filtered.map(k=>`<div class="skill-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+      <div class="skill-name">${k.name}</div>
+      <span class="tag tg" style="font-size:9px;">FREE</span>
+    </div>
+    <div class="skill-why">${k.why}</div>
+    <div class="skill-meta">
+      <span class="tag ${k.cat==='must'?'tc':k.cat==='core'?'tp':k.cat==='tech'?'tb':'ta'}">${k.cat==='must'?'Must-do':k.cat==='core'?'Core field':k.cat==='tech'?'Tech/Digital':'Govt exam'}</span>
+      <span style="font-size:11px;color:var(--text3);">⏱ ${k.time}</span>
+    </div>
+    <div class="jbtns"><a href="${k.url}" target="_blank" rel="noopener" style="text-decoration:none;"><button class="btn btn-p btn-sm">🔗 Start free</button></a></div>
+  </div>`).join('');
+}
+function kfilt(f,btn){curKFilt=f;document.querySelectorAll('#skill-filters .fp').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSkills();}
+
+// JOBS
+let curJFilt='all';
+function renderJobs(){
+  const jobs=getJobs();
+  const ul=P&&P.sem>=P.maxSem;
+  document.getElementById('jobs-header-box').innerHTML=`<div class="ibox" style="background:var(--cbg);color:var(--ct);"><b>💼 Jobs matched to ${P?P.degreeLabel:'your field'}</b><br>⭐ Best match = jobs suited to your goal (${P?goalLabel(P.goal):'—'}). Tap "Best match" to filter.</div>`;
+  const isApp=id=>APPLIED.includes(id);
+  let filtered=jobs;
+  if(curJFilt==='match') filtered=filtered.filter(j=>isMatch(j));
+  else if(curJFilt==='now') filtered=filtered.filter(j=>j.elig==='now');
+  else if(curJFilt==='govt') filtered=filtered.filter(j=>j.type==='govt');
+  else if(curJFilt==='state') filtered=filtered.filter(j=>j.type==='state');
+  else if(curJFilt==='bank') filtered=filtered.filter(j=>j.type==='bank');
+  else if(curJFilt==='core') filtered=filtered.filter(j=>j.type==='core'||j.type==='private'||(j.fields.length>1&&!j.fields.includes('all')));
+  else if(curJFilt==='after') filtered=filtered.filter(j=>j.elig==='after');
+  if(!filtered.length){document.getElementById('job-list').innerHTML='<div class="empty"><div class="empty-icon">💼</div>No jobs found for this filter. Try "All".</div>';return;}
+  document.getElementById('job-list').innerHTML=filtered.map(j=>{
+    const locked=j.elig==='after'&&!ul;
+    const matched=isMatch(j);
+    const dlTag=j.dl==='Rolling'?`<span class="tag ta">Rolling</span>`:j.dl==='After degree'?`<span class="tag" style="background:var(--bg3);color:var(--text3);">After degree</span>`:`<span class="tag tc">📅 ${fmtD(j.dl)}</span>`;
+    return`<div class="job-card" style="${locked?'opacity:.6':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;">
+        <div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px;">
+            ${matched?'<span class="match-badge">⭐ Best match</span>':''}
+            <span class="${locked?'tag':'tag tg'}" style="${locked?'background:var(--bg3);color:var(--text3)':''}">${isApp(j.id)?'✅ Applied':locked?'🔒 After degree':'✅ Apply now'}</span>
+          </div>
+          <div class="jtitle">${j.title}</div>
+          <div class="jorg">🏢 ${j.org}</div>
+        </div>
+        <div class="jsal">${j.sal}</div>
+      </div>
+      <div class="jdesc">${j.desc}</div>
+      <div class="tags">${j.tags.map(t=>`<span class="tag ${tc(t)}">${t}</span>`).join('')}${dlTag}</div>
+      <div class="jbtns">
+        ${locked?`<button class="btn btn-lock btn-sm" disabled>🔒 After degree</button>`:`<a href="${j.url}" target="_blank" rel="noopener" style="text-decoration:none;"><button class="btn btn-p btn-sm">🔗 Apply / Details</button></a>`}
+        ${!locked&&!isApp(j.id)?`<button class="btn btn-sm" onclick="markApplied(${j.id})">✓ Mark applied</button>`:''}
+        ${!locked&&isApp(j.id)?`<button class="btn btn-g btn-sm" disabled>✓ Applied</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  const cnt=APPLIED.length;
+  document.getElementById('nav-badge').style.display=cnt>0?'block':'none';
+  document.getElementById('nav-badge').textContent=cnt;
+  document.getElementById('applied-count2').textContent=cnt;
+}
+function goalLabel(g){return{govt:'Govt job',bank:'Bank job',core:'Core field',higher:'Higher studies',private:'Private sector',mixed:'All-round'}[g]||g;}
+function jfilt(f,btn){curJFilt=f;document.querySelectorAll('#job-filters .fp').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderJobs();}
+function markApplied(id){if(APPLIED.includes(id))return;APPLIED.push(id);saveAll();renderJobs();renderProfile();toast('✓ Applied! Saved.');}
+function tc(t){if(t.includes('Bank')||t.includes('SBI')||t.includes('IBPS'))return'tb';if(t.includes('Forensic')||t.includes('CBI')||t.includes('IB')||t.includes('NIC')||t.includes('GATE'))return'tp';if(t.includes('Govt')||t.includes('Central')||t.includes('SSC')||t.includes('Railway')||t.includes('PSU'))return'tc';if(t.includes('State')||t.includes('Punjab'))return'tg';return'ta';}
+function fmtD(d){return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}
+
+// PROFILE
+function renderProfile(){
+  if(!P)return;
+  document.getElementById('pro-display').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:12px;border-bottom:.5px solid var(--border);">
+      <div style="width:46px;height:46px;border-radius:50%;background:var(--pbg);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--pt);">${P.name?P.name[0].toUpperCase():'U'}</div>
+      <div><div style="font-size:16px;font-weight:800;">${P.name||'Student'}</div><div style="font-size:11px;color:var(--text2);margin-top:2px;">${P.degreeLabel} · Sem ${P.sem}</div></div>
+    </div>
+    <div class="pro-row"><span class="pro-lbl">Degree</span><span class="tag tp">${P.degreeLabel}</span></div>
+    <div class="pro-row"><span class="pro-lbl">Semester</span><span style="font-weight:600;">Sem ${P.sem}</span></div>
+    <div class="pro-row"><span class="pro-lbl">📱 Mobile</span><span style="font-weight:600;">${P.phone||'Not added'}</span></div>
+    <div class="pro-row"><span class="pro-lbl">College</span><span style="font-weight:500;">${P.college||'—'}</span></div>
+    <div class="pro-row"><span class="pro-lbl">State</span><span style="font-weight:500;">${P.state}</span></div>
+    <div class="pro-row"><span class="pro-lbl">12th marks</span><span style="font-weight:600;">${P.m12?P.m12+'%':'—'}</span></div>
+    <div class="pro-row"><span class="pro-lbl">Goal</span><span class="tag tb">${goalLabel(P.goal)}</span></div>
+    <div class="pro-row"><span class="pro-lbl">Applications sent</span><span class="tag tg">${APPLIED.length}</span></div>
+    <div class="pro-row"><span class="pro-lbl">Certificates</span><span class="tag ${CERTS.length?'tg':'ta'}">${CERTS.length}</span></div>`;
+  renderCerts();renderAppliedList();updateHeader();
+}
+function renderCerts(){
+  const el=document.getElementById('cert-list');
+  document.getElementById('cert-count').textContent=CERTS.length;
+  if(!CERTS.length){el.innerHTML='<div class="empty" style="padding:1.5rem;"><div class="empty-icon">🎓</div>No certificates yet.</div>';return;}
+  el.innerHTML=CERTS.map((c,i)=>`<div style="display:flex;align-items:center;gap:9px;padding:10px 12px;border-bottom:.5px solid var(--border);">
+    <div style="font-size:20px;">🎓</div>
+    <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${c.name}</div><div style="font-size:11px;color:var(--text2);">${c.prov}${c.dur?' · '+c.dur:''}${c.date?' · '+c.date:''}</div></div>
+    <button class="btn btn-r btn-sm" onclick="delCert(${i})">✕</button>
+  </div>`).join('');
+}
+function renderAppliedList(){
+  const al=document.getElementById('applied-list2');
+  const aj=ALL_JOBS.filter(j=>APPLIED.includes(j.id));
+  if(!aj.length){al.innerHTML='<div style="font-size:12px;color:var(--text3);padding:8px 0;">No applications yet — mark jobs as applied from the Jobs tab.</div>';return;}
+  al.innerHTML=aj.map(j=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:.5px solid var(--border);">
+    <span class="tag tg" style="font-size:10px;">✓</span>
+    <div style="flex:1;"><div style="font-size:13px;font-weight:600;">${j.title}</div><div style="font-size:11px;color:var(--text2);">${j.org}</div></div>
+    <a href="${j.url}" target="_blank" rel="noopener" style="text-decoration:none;"><button class="btn btn-sm btn-b">🔗</button></a>
+  </div>`).join('');
+}
+function saveCert(){const name=document.getElementById('c-name').value.trim();if(!name){toast('Enter course name!');return;}CERTS.push({name,prov:document.getElementById('c-prov').value.trim(),dur:document.getElementById('c-dur').value.trim(),date:document.getElementById('c-date').value});saveAll();renderProfile();closeModal('cert-modal');toast('🎓 Added!');}
+function delCert(i){CERTS.splice(i,1);saveAll();renderProfile();toast('Removed.');}
+function saveProfile(){if(!P)return;P.name=document.getElementById('f-name').value.trim();const rawPhone=document.getElementById('f-phone').value.trim();if(rawPhone)P.phone='+91'+rawPhone;P.college=document.getElementById('f-college').value.trim();P.degreeLabel=document.getElementById('f-degree').value.trim()||P.degreeLabel;P.sem=parseInt(document.getElementById('f-sem').value);P.m12=document.getElementById('f-12').value.trim();P.state=document.getElementById('f-state').value;P.goal=document.getElementById('f-goal').value;saveAll();closeModal('edit-modal');renderProfile();renderJobs();renderStudy();renderSkills();renderToday();toast('✓ Profile saved!');}
+function updateHeader(){if(!P)return;const nm=P.name?P.name+"'s ":'';document.getElementById('hdr-name').textContent='📚 '+nm+'Tracker';document.getElementById('hdr-sub').textContent=`${P.degreeLabel} · ${P.college||'College'} · Sem ${P.sem}`;const pct=Math.round((P.sem/P.maxSem)*100);document.getElementById('bar-fill').style.width=pct+'%';document.getElementById('bar-lbl').textContent=`Sem ${P.sem} of ${P.maxSem}`;document.getElementById('bar-label-left').textContent='Degree progress';}
+function openModal(id){if(id==='edit-modal'&&P){document.getElementById('f-name').value=P.name||'';document.getElementById('f-phone').value=(P.phone||'').replace('+91','');document.getElementById('f-college').value=P.college||'';document.getElementById('f-degree').value=P.degreeLabel||'';document.getElementById('f-sem').value=P.sem;document.getElementById('f-12').value=P.m12||'';document.getElementById('f-state').value=P.state||'Punjab';document.getElementById('f-goal').value=P.goal||'govt';}document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function sw(tab,btn){
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  const sec=document.getElementById('s-'+tab);
+  if(sec){sec.classList.add('active');}
+  const content=document.querySelector('.content');
+  if(content) content.scrollTo({top:0,behavior:'instant'});
+  // Trigger render if needed
+  if(tab==='study') renderStudy();
+  if(tab==='skills') renderSkills();
+  if(tab==='jobs') renderJobs();
+  if(tab==='schedule') renderTimetable();
+}
+function toast(msg){const t=document.getElementById('toast');t.innerHTML=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function resetApp(){
+  if(!confirm('Reset everything and restart? All data will be cleared.'))return;
+  try{['P2','CERTS2','APPLIED2','TASK_LOG2','WEEK_LOG2','CTASKS2'].forEach(k=>localStorage.removeItem(k));}catch(e){}
+  P=null;CERTS=[];APPLIED=[];TASK_LOG={};WEEK_LOG={};CUSTOM_TASKS=defaultTasks();
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('onboarding').classList.remove('hidden');
+  goOb(1);
+}
+function startApp(){
+  document.getElementById('onboarding').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  if(!CUSTOM_TASKS||!CUSTOM_TASKS.length) CUSTOM_TASKS=defaultTasks();
+  updateHeader();renderToday();renderTimetable();renderStudy();renderSkills();renderJobs();renderProfile();
+  toast('👋 Welcome, '+(P.name||'friend')+'!');
+  setTimeout(initMonetization, 300);
+}
+
+// ════════════════════════════════════════════
+// LEARN — AI STUDY PLANNER
+// ════════════════════════════════════════════
+let learnPlan = null;
+let learnFileText = '';
+
+function setLearnMode(mode, btn) {
+  document.querySelectorAll('#learn-mode-tabs .fp').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('lm-paste').style.display = mode === 'paste' ? 'block' : 'none';
+  document.getElementById('lm-file').style.display = mode === 'file' ? 'block' : 'none';
+}
+
+function handleLearnFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const nameEl = document.getElementById('learn-file-name');
+  nameEl.textContent = '📎 ' + file.name;
+  nameEl.style.display = 'block';
+  const reader = new FileReader();
+  reader.onload = e => {
+    learnFileText = e.target.result;
+    // For PDFs we just get what we can from text extraction
+    if (file.name.endsWith('.pdf')) {
+      learnFileText = '[PDF content - filename: ' + file.name + ']\n\n' + (learnFileText.replace(/[^\x20-\x7E\n]/g, ' ').substring(0, 4000));
+    }
+    toast('✅ File loaded: ' + file.name);
+  };
+  if (file.name.endsWith('.pdf')) {
+    reader.readAsBinaryString(file);
+  } else {
+    reader.readAsText(file);
+  }
+}
+
+async function generateLearnPlan() {
+  // Gather input
+  const pasteMode = document.getElementById('lm-paste').style.display !== 'none';
+  let inputText = pasteMode
+    ? document.getElementById('learn-text').value.trim()
+    : learnFileText.trim();
+
+  if (!inputText) {
+    toast('⚠️ Please enter your syllabus or topics first!');
+    return;
+  }
+
+  const hours = document.getElementById('learn-hours').value;
+  const weeks = document.getElementById('learn-weeks').value;
+  const userDegree = P ? P.degreeLabel : 'student';
+
+  // Show loading
+  document.getElementById('learn-upload-area').style.display = 'none';
+  document.getElementById('learn-result').style.display = 'none';
+  document.getElementById('learn-error').style.display = 'none';
+  document.getElementById('learn-loading').style.display = 'block';
+
+  const statuses = [
+    'Analysing your syllabus...',
+    'Breaking into topics...',
+    'Finding free courses...',
+    'Building your timetable...',
+    'Almost ready...'
+  ];
+  let si = 0;
+  const statusEl = document.getElementById('learn-status');
+  const statusTimer = setInterval(() => {
+    si = (si + 1) % statuses.length;
+    statusEl.textContent = statuses[si];
+  }, 2200);
+
+  const prompt = `You are an expert study planner for Indian students. The user is a ${userDegree} student.
+
+They want to learn the following (syllabus/topics/text):
+"""
+${inputText.substring(0, 3000)}
+"""
+
+They have ${hours} hour(s) per day and want to finish in ${weeks} week(s).
+
+Create a detailed, personalised study plan. Respond ONLY with a valid JSON object (no markdown, no backticks, no explanation) in this exact structure:
+
+{
+  "title": "short plan title",
+  "totalTopics": number,
+  "totalWeeks": number,
+  "hoursPerDay": number,
+  "summary": "2-sentence overview of the plan",
+  "topics": [
+    {
+      "id": "t1",
+      "title": "topic title",
+      "description": "what this covers in 1-2 sentences",
+      "week": 1,
+      "day": "Mon",
+      "duration": "45 min",
+      "difficulty": "Beginner|Intermediate|Advanced",
+      "resources": [
+        {"name": "resource name", "type": "YouTube|NPTEL|Website|Book|PDF", "url": "https://..."}
+      ]
+    }
+  ],
+  "weeklyPlan": [
+    {
+      "week": 1,
+      "theme": "week theme",
+      "days": [
+        {"day": "Mon", "topics": ["t1"], "totalTime": "45 min"},
+        {"day": "Tue", "topics": [], "totalTime": "Rest"},
+        {"day": "Wed", "topics": ["t2"], "totalTime": "1 hr"},
+        {"day": "Thu", "topics": [], "totalTime": "Rest"},
+        {"day": "Fri", "topics": ["t3"], "totalTime": "1 hr"},
+        {"day": "Sat", "topics": ["t4","t5"], "totalTime": "2 hr"},
+        {"day": "Sun", "topics": [], "totalTime": "Revision"}
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "name": "course name",
+      "provider": "NPTEL|Coursera|YouTube|Khan Academy|Udemy|GeeksforGeeks|etc",
+      "url": "https://...",
+      "duration": "e.g. 4 weeks",
+      "free": true,
+      "description": "what this course covers"
+    }
+  ]
+}
+
+Rules:
+- Make ${weeks} weeks of weeklyPlan (one entry per week)
+- Distribute topics logically across weeks and days
+- Include 3-6 high-quality free courses (prefer NPTEL, YouTube, Khan Academy, free resources)
+- Use real, valid URLs where possible (YouTube search URLs are fine: https://www.youtube.com/results?search_query=...)
+- Make topics specific and actionable, not vague
+- Keep difficulty realistic for the student level
+- Sunday = revision/rest day
+- Return ONLY the JSON, nothing else`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    clearInterval(statusTimer);
+
+    if (!response.ok) throw new Error('API error ' + response.status);
+    const data = await response.json();
+    let raw = data.content.map(c => c.text || '').join('');
+    raw = raw.replace(/```json|```/g, '').trim();
+
+    learnPlan = JSON.parse(raw);
+    saveLearnPlan();
+    renderLearnResult();
+
+  } catch (err) {
+    clearInterval(statusTimer);
+    document.getElementById('learn-loading').style.display = 'none';
+    document.getElementById('learn-upload-area').style.display = 'block';
+    const errEl = document.getElementById('learn-error');
+    errEl.style.display = 'block';
+    errEl.style.cssText = 'display:block;background:var(--cbg);color:var(--ct);border-radius:var(--r);padding:13px 14px;font-size:13px;margin-top:10px;border:1px solid rgba(185,28,28,0.2);';
+    errEl.textContent = '⚠️ Could not generate plan: ' + err.message + '. Please try again.';
+    toast('Error — try again');
+  }
+}
+
+function renderLearnResult() {
+  document.getElementById('learn-loading').style.display = 'none';
+  document.getElementById('learn-upload-area').style.display = 'none';
+  const res = document.getElementById('learn-result');
+  res.style.display = 'block';
+
+  const p = learnPlan;
+  document.getElementById('learn-plan-title').textContent = '📚 ' + (p.title || 'Your Study Plan');
+
+  // Summary pills
+  document.getElementById('learn-summary-pills').innerHTML = [
+    `<span class="tag tp">${p.totalTopics || '?'} topics</span>`,
+    `<span class="tag tb">${p.totalWeeks || '?'} weeks</span>`,
+    `<span class="tag tg">${p.hoursPerDay || '?'} hr/day</span>`,
+    `<span class="tag ta">${(p.courses||[]).length} courses</span>`
+  ].join('');
+
+  setLearnView('timetable', document.querySelector('#learn-result .fp.active') || document.createElement('button'));
+}
+
+function setLearnView(view, btn) {
+  document.querySelectorAll('#learn-result .frow .fp').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('lv-timetable').style.display = view === 'timetable' ? 'block' : 'none';
+  document.getElementById('lv-topics').style.display = view === 'topics' ? 'block' : 'none';
+  document.getElementById('lv-courses').style.display = view === 'courses' ? 'block' : 'none';
+
+  if (view === 'timetable') renderTimetableView();
+  if (view === 'topics') renderTopicsView();
+  if (view === 'courses') renderCoursesView();
+}
+
+function renderTimetableView() {
+  const p = learnPlan;
+  if (!p || !p.weeklyPlan) return;
+  const topicMap = {};
+  (p.topics || []).forEach(t => { topicMap[t.id] = t; });
+  const DAYCOLORS = { Mon:'var(--pbg)', Tue:'var(--bbg)', Wed:'var(--gbg)', Thu:'var(--abg)', Fri:'var(--cbg)', Sat:'var(--tbg)', Sun:'var(--bg3)' };
+  const DAYTXT = { Mon:'var(--pt)', Tue:'var(--bt)', Wed:'var(--gt)', Thu:'var(--at)', Fri:'var(--ct)', Sat:'var(--tt)', Sun:'var(--text3)' };
+
+  // Check if already added to schedule
+  const alreadyInSchedule = CUSTOM_TASKS.some(t => t.cat === 'study' && t.label.includes('📚 Study Plan'));
+
+  document.getElementById('lv-timetable').innerHTML = `
+    <div class="ibox" style="background:var(--gbg);color:var(--gt);border:1px solid rgba(13,110,69,0.15);margin-bottom:14px;">
+      <b>📅 ${p.title || 'Your Study Plan'}</b><br>${p.summary || ''}
+    </div>
+    <button class="btn ${alreadyInSchedule ? 'btn-g' : 'btn-p'}" style="width:100%;justify-content:center;margin-bottom:14px;" onclick="addPlanToSchedule()">
+      ${alreadyInSchedule ? '✓ Added to my daily schedule' : '+ Add study sessions to my schedule'}
+    </button>
+    ${(p.weeklyPlan || []).map(week => `
+    <div style="margin-bottom:18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <div style="background:var(--grad);color:#fff;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;">Week ${week.week}</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text2);">${week.theme || ''}</div>
+      </div>
+      <!-- Day list view (more readable on mobile) -->
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${(week.days || []).map(day => {
+          const dayTopics = (day.topics || []).map(id => topicMap[id]).filter(Boolean);
+          const isEmpty = !dayTopics.length;
+          return `<div style="border-radius:${isEmpty?'10px':'12px'};padding:${isEmpty?'8px 12px':'11px 13px'};background:${isEmpty?'var(--bg3)':DAYCOLORS[day.day]||'var(--pbg)'};display:flex;align-items:${isEmpty?'center':'flex-start'};gap:10px;">
+            <div style="min-width:30px;font-size:11px;font-weight:800;color:${isEmpty?'var(--text3)':DAYTXT[day.day]||'var(--pt)'};">${day.day}</div>
+            <div style="flex:1;">
+              ${isEmpty
+                ? `<span style="font-size:11px;color:var(--text3);">${day.totalTime || 'Rest / Revision'}</span>`
+                : dayTopics.map(t => `<div style="font-size:12px;font-weight:700;color:${DAYTXT[day.day]||'var(--pt)'};line-height:1.4;">${t.title}</div>
+                   <div style="font-size:10px;color:${DAYTXT[day.day]||'var(--pt)'};opacity:.75;margin-top:1px;">⏱ ${t.duration} · ${t.difficulty||''}</div>`).join('<div style="height:5px;"></div>')
+              }
+            </div>
+            ${!isEmpty ? `<div style="font-size:10px;font-weight:700;color:${DAYTXT[day.day]||'var(--pt)'};opacity:.8;flex-shrink:0;">${day.totalTime}</div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('')}`;
+}
+
+function addPlanToSchedule() {
+  if (!learnPlan) return;
+  // Remove existing plan tasks to avoid duplicates
+  CUSTOM_TASKS = CUSTOM_TASKS.filter(t => !(t.cat === 'study' && t.label.startsWith('📚')));
+  // Find study task time from existing schedule or default to 21:00
+  const existingStudy = CUSTOM_TASKS.find(t => t.cat === 'study');
+  const studyTime = existingStudy ? existingStudy.time : '21:00';
+  // Add one consolidated study block
+  CUSTOM_TASKS.push({
+    id: 'plan-study-' + Date.now(),
+    label: '📚 Study Plan: ' + (learnPlan.title || 'My Plan'),
+    desc: `${learnPlan.hoursPerDay || 1} hr/day · ${learnPlan.totalTopics || '?'} topics · ${learnPlan.totalWeeks || '?'} weeks`,
+    time: studyTime,
+    cat: 'study'
+  });
+  saveAll();
+  renderTimetable();
+  renderToday();
+  setLearnView('timetable', null);
+  toast('✅ Study sessions added to your schedule!');
+}
+
+function renderTopicsView() {
+  const p = learnPlan;
+  if (!p || !p.topics) return;
+  const diffColor = { 'Beginner':'tg', 'Intermediate':'ta', 'Advanced':'tc' };
+  document.getElementById('lv-topics').innerHTML = `
+    <div style="margin-bottom:8px;font-size:12px;color:var(--text3);">${p.summary || ''}</div>
+    ${p.topics.map((t, i) => `
+    <div class="topic-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--acc);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;">Week ${t.week} · ${t.day}</div>
+          <div class="topic-title">${i+1}. ${t.title}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+          <span class="tag ${diffColor[t.difficulty]||'tb'}">${t.difficulty||'—'}</span>
+          <span style="font-size:10px;color:var(--text3);font-weight:600;">⏱ ${t.duration}</span>
+        </div>
+      </div>
+      <div class="topic-desc">${t.description}</div>
+      ${t.resources && t.resources.length ? `
+        <div class="res-links">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">📺 Resources</div>
+          ${t.resources.map(r => `<a class="res-link" href="${r.url}" target="_blank" rel="noopener">${r.type==='YouTube'?'▶':r.type==='NPTEL'?'🎓':r.type==='Website'?'🌐':'📖'} ${r.name}</a>`).join('')}
+        </div>` : ''}
+    </div>`).join('')}`;
+}
+
+function renderCoursesView() {
+  const p = learnPlan;
+  if (!p || !p.courses) return;
+  document.getElementById('lv-courses').innerHTML = `
+    <div style="margin-bottom:12px;font-size:12px;color:var(--text2);">
+      ${p.courses.length} courses recommended for <b>${p.title||'your plan'}</b>. All verified free resources.
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="fp active" onclick="filterCourses('all',this)" style="font-size:11px;padding:5px 11px;">All</button>
+      <button class="fp" onclick="filterCourses('free',this)" style="font-size:11px;padding:5px 11px;">Free only</button>
+      <button class="fp" onclick="filterCourses('youtube',this)" style="font-size:11px;padding:5px 11px;">▶ YouTube</button>
+      <button class="fp" onclick="filterCourses('nptel',this)" style="font-size:11px;padding:5px 11px;">🎓 NPTEL</button>
+    </div>
+    <div id="courses-list">
+    ${p.courses.map((c,i) => `
+    <div class="skill-card" data-free="${c.free}" data-provider="${(c.provider||'').toLowerCase()}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-size:10px;font-weight:700;color:var(--acc);letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px;">${c.provider}</div>
+          <div class="skill-name">${c.name}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+          <span class="tag ${c.free?'tg':'ta'}">${c.free?'FREE':'Paid'}</span>
+          <span style="font-size:10px;color:var(--text3);font-weight:600;">⏱ ${c.duration}</span>
+        </div>
+      </div>
+      <div class="skill-why">${c.description}</div>
+      <div class="jbtns">
+        <a href="${c.url}" target="_blank" rel="noopener" style="text-decoration:none;">
+          <button class="btn btn-p btn-sm">${c.provider&&c.provider.toLowerCase().includes('youtube')?'▶ Watch free':'🔗 Open course'}</button>
+        </a>
+        <button class="btn btn-sm btn-g" onclick="addCourseAsCert(${i})">+ Add to certificates</button>
+      </div>
+    </div>`).join('')}
+    </div>`;
+}
+
+function filterCourses(f, btn) {
+  document.querySelectorAll('#lv-courses .fp').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('#courses-list .skill-card').forEach(card => {
+    const free = card.dataset.free === 'true';
+    const prov = card.dataset.provider || '';
+    if(f==='all') card.style.display='';
+    else if(f==='free') card.style.display=free?'':'none';
+    else if(f==='youtube') card.style.display=prov.includes('youtube')?'':'none';
+    else if(f==='nptel') card.style.display=prov.includes('nptel')?'':'none';
+  });
+}
+
+function addCourseAsCert(i) {
+  if(!learnPlan||!learnPlan.courses) return;
+  const c = learnPlan.courses[i];
+  if(!c) return;
+  if(CERTS.find(x=>x.name===c.name)){toast('Already in your certificates!');return;}
+  CERTS.push({name:c.name, prov:c.provider, dur:c.duration, date:''});
+  saveAll();renderProfile();
+  toast('🎓 Added to certificates!');
+}
+
+function resetLearnPlan() {
+  learnPlan = null;
+  learnFileText = '';
+  document.getElementById('learn-result').style.display = 'none';
+  document.getElementById('learn-error').style.display = 'none';
+  document.getElementById('learn-upload-area').style.display = 'block';
+  document.getElementById('learn-text').value = '';
+  document.getElementById('learn-file-input').value = '';
+  document.getElementById('learn-file-name').style.display = 'none';
+  try { localStorage.removeItem('LPLAN2'); } catch(e) {}
+}
+
+async function saveLearnPlan() {
+  try { localStorage.setItem('LPLAN2', JSON.stringify(learnPlan)); } catch(e) {}
+}
+async function loadLearnPlan() {
+  try {
+    const r = localStorage.getItem('LPLAN2');
+    if (r) {
+      learnPlan = JSON.parse(r);
+      if (learnPlan) renderLearnResult();
+    }
+  } catch(e) {}
+}
+
+
+// ════════════════════════════════════════════
+// MONETIZATION — ADS + SUBSCRIPTION
+// ════════════════════════════════════════════
+
+// ── PLAN CONFIG ──
+const PLANS = [
+  {
+    id:'monthly', name:'Monthly', price:49, unit:'/month',
+    tag:'', popular:false,
+    desc:'Try Premium for just ₹49',
+    features:['All free features','AI Study Planner (unlimited)','Job alerts by email','Remove ads','Priority support']
+  },
+  {
+    id:'annual', name:'Annual', price:299, unit:'/year',
+    tag:'Most Popular', popular:true,
+    desc:'Best value — save ₹289 vs monthly',
+    features:['Everything in Monthly','Advanced schedule analytics','Resume builder (coming soon)','Exam reminder calls','Lifetime job updates']
+  },
+  {
+    id:'lifetime', name:'Lifetime', price:499, unit:'one-time',
+    tag:'Best Deal', popular:false,
+    desc:'Pay once, use forever',
+    features:['Everything in Annual','Early access to new features','Founding member badge','Direct WhatsApp support','Free future app updates']
+  }
+];
+
+const FREE_FEATURES = [
+  {name:'Today schedule & tasks', free:true, pro:true},
+  {name:'Study topics (basic)', free:true, pro:true},
+  {name:'Job listings', free:true, pro:true},
+  {name:'AI Study Planner', free:'3 uses', pro:'Unlimited'},
+  {name:'Ads shown', free:'Yes', pro:'No ads'},
+  {name:'Job deadline alerts', free:false, pro:true},
+  {name:'Weekly performance report', free:'Basic', pro:'Full report'},
+  {name:'Certificate tracker', free:'5 max', pro:'Unlimited'},
+  {name:'Resume builder', free:false, pro:'Coming soon'},
+  {name:'Exam reminder notifications', free:false, pro:true},
+];
+
+const PAYMENT_METHODS = [
+  {id:'gpay', icon:'🟢', name:'Google Pay', sub:'Scan QR or send to UPI ID', color:'#34A853', upiId:'yourname@okicici'},
+  {id:'phonepe', icon:'🟣', name:'PhonePe', sub:'Send to UPI ID', color:'#5F259F', upiId:'yourname@ybl'},
+  {id:'paytm', icon:'💙', name:'Paytm', sub:'Scan QR or Paytm number', color:'#002970', upiId:'yourname@paytm'},
+  {id:'upi', icon:'🏦', name:'Any UPI App', sub:'Use UPI ID directly', color:'#FF6B00', upiId:'yourname@upi'},
+  {id:'bank', icon:'💳', name:'Bank Transfer / NEFT', sub:'Account details after selecting plan', color:'#1A4FD6', upiId:''},
+];
+
+// ── PREMIUM STATE ──
+let isPremium = false;
+let premiumPlan = null;
+let premiumExpiry = null;
+let selectedPlan = 'annual';
+
+function loadPremiumState(){
+  try {
+    const ps = localStorage.getItem('premium_state');
+    if(ps){
+      const obj = JSON.parse(ps);
+      isPremium = obj.active || false;
+      premiumPlan = obj.plan || null;
+      premiumExpiry = obj.expiry || null;
+      // check if expired
+      if(premiumExpiry && new Date(premiumExpiry) < new Date()){
+        isPremium = false;
+        premiumPlan = null;
+        localStorage.removeItem('premium_state');
+      }
+    }
+  } catch(e){}
+}
+
+function savePremiumState(){
+  localStorage.setItem('premium_state', JSON.stringify({
+    active: isPremium, plan: premiumPlan, expiry: premiumExpiry
+  }));
+}
+
+// For demo: activate premium (in real app, server verifies payment)
+function activatePremium(plan, months){
+  isPremium = true;
+  premiumPlan = plan;
+  const expiry = months === 9999 ? '2099-12-31' : new Date(Date.now() + months*30*24*60*60*1000).toISOString().slice(0,10);
+  premiumExpiry = expiry;
+  savePremiumState();
+  renderPremiumTab();
+  updatePremiumNav();
+  toast('🎉 Premium activated! Enjoy the full experience.');
+}
+
+function updatePremiumNav(){
+  const btn = document.getElementById('premium-nav-btn');
+  if(!btn) return;
+  if(isPremium){
+    btn.style.color = '#F5A623';
+    btn.querySelector('svg').style.fill = '#F5A623';
+  }
+}
+
+// ── AD BANNERS ──
+const AD_DATA = [
+  {icon:'📚', title:'Testbook — Free Mock Tests', sub:'IBPS, SSC, Punjab Police — 1000+ free tests', url:'https://testbook.com', color:'#1A4FD6'},
+  {icon:'🎓', title:'NPTEL Free Courses', sub:'IIT professors, free certificates, govt recognized', url:'https://nptel.ac.in', color:'#0D6E45'},
+  {icon:'💼', title:'Naukri — Find Jobs Now', sub:'1 lakh+ govt & private jobs updated daily', url:'https://naukri.com', color:'#EF5A29'},
+  {icon:'🏦', title:'IBPS Clerk 2026 — Apply Now', sub:'Deadline: July 20. Final year students eligible', url:'https://ibps.in', color:'#1A4FD6'},
+  {icon:'🔬', title:'Forensic Science Courses', sub:'Free on Swayam — get UGC certified certificate', url:'https://swayam.gov.in', color:'#6C63FF'},
+];
+
+let adRotateIdx = 0;
+function getNextAd(){
+  const ad = AD_DATA[adRotateIdx % AD_DATA.length];
+  adRotateIdx++;
+  return ad;
+}
+
+function renderAdBanner(containerId){
+  if(isPremium) return; // no ads for premium users
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  const ad = getNextAd();
+  container.innerHTML = `
+    <div class="ad-banner" onclick="window.open('${ad.url}','_blank');" style="cursor:pointer;">
+      <div class="ad-label">Ad</div>
+      <div class="ad-icon">${ad.icon}</div>
+      <div class="ad-text">
+        <div class="ad-title">${ad.title}</div>
+        <div class="ad-sub">${ad.sub}</div>
+      </div>
+      <button class="ad-btn" style="background:${ad.color};">Open →</button>
+    </div>`;
+}
+
+// ── RENDER PREMIUM TAB ──
+function renderPremiumTab(){
+  renderPremiumStatus();
+  renderPlanCards();
+  renderFeatureCompare();
+  renderPaymentMethods();
+  renderReferral();
+}
+
+function renderPremiumStatus(){
+  const el = document.getElementById('premium-status-banner');
+  if(!el) return;
+  if(isPremium){
+    const plan = PLANS.find(p=>p.id===premiumPlan);
+    el.innerHTML = `<div style="background:linear-gradient(135deg,#F5A623,#FF6B35);color:#fff;border-radius:var(--rs);padding:12px 16px;display:inline-block;min-width:200px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.05em;opacity:.85;">ACTIVE PLAN</div>
+      <div style="font-size:16px;font-weight:800;margin-top:2px;">${plan?plan.name+' Premium':'Premium'} ✓</div>
+      ${premiumExpiry&&premiumExpiry!=='2099-12-31'?`<div style="font-size:11px;opacity:.85;margin-top:2px;">Valid until ${premiumExpiry}</div>`:'<div style="font-size:11px;opacity:.85;margin-top:2px;">Lifetime access 🎉</div>'}
+    </div>`;
+  } else {
+    el.innerHTML = `<span class="tag" style="background:var(--bg3);color:var(--text3);font-size:11px;">Free plan — upgrade below</span>`;
+  }
+}
+
+function renderPlanCards(){
+  const el = document.getElementById('plan-cards');
+  if(!el) return;
+  el.innerHTML = PLANS.map(p=>`
+    <div class="plan-card ${p.popular?'popular':''} ${selectedPlan===p.id?'selected':''}" onclick="selectPlan('${p.id}')">
+      ${p.tag?`<div class="plan-popular-badge">${p.tag}</div>`:''}
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;margin-top:${p.tag?'8px':'0'}">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text2);">${p.name}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${p.desc}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="plan-price">₹${p.price}<span>${p.unit}</span></div>
+        </div>
+      </div>
+      ${p.features.map(f=>`<div class="plan-feature"><span class="tick">✓</span>${f}</div>`).join('')}
+      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:12px;font-size:13px;" onclick="event.stopPropagation();startPayment('${p.id}')">
+        ${isPremium&&premiumPlan===p.id?'✓ Current plan':'Get '+p.name+' — ₹'+p.price}
+      </button>
+    </div>`).join('');
+}
+
+function selectPlan(id){
+  selectedPlan = id;
+  renderPlanCards();
+  document.getElementById('txn-plan-select').value = id;
+}
+
+function renderFeatureCompare(){
+  const el = document.getElementById('feature-compare');
+  if(!el) return;
+  el.innerHTML = FREE_FEATURES.map(f=>`
+    <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:0;padding:9px 14px;border-bottom:.5px solid var(--border);font-size:12px;align-items:center;">
+      <div style="color:var(--text2);font-weight:500;">${f.name}</div>
+      <div style="text-align:center;">${f.free===true?'<span style="color:#3ECFB2;font-weight:700;">✓</span>':f.free===false?'<span style="color:var(--ct);">✕</span>':`<span style="font-size:10px;color:var(--at);">${f.free}</span>`}</div>
+      <div style="text-align:center;">${f.pro===true?'<span style="color:#3ECFB2;font-weight:700;">✓</span>':f.pro===false?'<span style="color:var(--ct);">✕</span>':`<span style="font-size:10px;color:var(--gt);">${f.pro}</span>`}</div>
+    </div>`).join('');
+}
+
+function renderPaymentMethods(){
+  const el = document.getElementById('payment-methods');
+  if(!el) return;
+  const plan = PLANS.find(p=>p.id===selectedPlan)||PLANS[1];
+  el.innerHTML = `
+    <div class="ibox" style="background:var(--pbg);color:var(--pt);margin-bottom:10px;">
+      Selected: <b>${plan.name} Plan — ₹${plan.price}</b>. Pay using any method below.
+    </div>
+    ${PAYMENT_METHODS.map(m=>`
+    <button class="upi-btn" onclick="openPayment('${m.id}','${m.upiId}',${plan.price})">
+      <div class="upi-icon" style="background:${m.color}22;">${m.icon}</div>
+      <div>
+        <div class="upi-name">${m.name}</div>
+        <div class="upi-sub">${m.sub}</div>
+      </div>
+      <div style="margin-left:auto;font-size:13px;font-weight:800;color:var(--text);">₹${plan.price}</div>
+    </button>`).join('')}`;
+}
+
+function openPayment(method, upiId, amount){
+  if(method==='bank'){
+    showPaymentDetails(amount);
+    return;
+  }
+  // Deep link to UPI apps
+  const upiLinks = {
+    gpay: `gpay://upi/pay?pa=${upiId}&pn=FSTracker&am=${amount}&cu=INR&tn=FSTracker+Premium`,
+    phonepe: `phonepe://pay?pa=${upiId}&pn=FSTracker&am=${amount}&cu=INR`,
+    paytm: `paytmmp://pay?pa=${upiId}&pn=FSTracker&am=${amount}&cu=INR`,
+    upi: `upi://pay?pa=${upiId}&pn=FS+Life+Tracker+Premium&am=${amount}&cu=INR&tn=Premium+Plan`,
+  };
+  const link = upiLinks[method] || upiLinks.upi;
+  // Try to open UPI app, fallback to instructions
+  const a = document.createElement('a');
+  a.href = link;
+  a.click();
+  setTimeout(()=>{
+    toast('After paying, enter your transaction ID below ↓');
+  }, 1500);
+}
+
+function showPaymentDetails(amount){
+  alert(`Bank Transfer Details:
+
+Account Name: [Your Name]
+Account No: XXXXXXXXXXXXXXXX
+IFSC: XXXXXXXXX
+Bank: [Your Bank]
+Amount: ₹${amount}
+
+After transfer, enter reference number below.`);
+}
+
+function submitTxn(){
+  const txnId = document.getElementById('txn-id-input').value.trim();
+  const plan = document.getElementById('txn-plan-select').value;
+  if(!txnId || txnId.length < 8){
+    toast('⚠️ Please enter a valid transaction ID');
+    return;
+  }
+  const el = document.getElementById('txn-result');
+  el.innerHTML = '<span style="color:var(--at);">⏳ Verifying... we will activate within 2 hours.</span>';
+  // Save pending verification
+  localStorage.setItem('pending_txn', JSON.stringify({txnId, plan, time:new Date().toISOString()}));
+  // For DEMO: auto-activate after 3 seconds (in real app, you verify server-side)
+  setTimeout(()=>{
+    const months = plan==='monthly'?1:plan==='annual'?12:9999;
+    activatePremium(plan, months);
+    el.innerHTML = '<span style="color:var(--gt);">✅ Premium activated! Enjoy!</span>';
+  }, 3000);
+}
+
+// ── REFERRAL ──
+function generateReferralCode(){
+  if(!P) return 'FS0000';
+  const base = (P.name||'FS').substring(0,2).toUpperCase();
+  const num = Math.abs((P.name||'student').split('').reduce((a,c)=>a+c.charCodeAt(0),0)) % 9000 + 1000;
+  return base + num;
+}
+
+function renderReferral(){
+  const code = generateReferralCode();
+  const el = document.getElementById('referral-code');
+  if(el) el.textContent = code;
+}
+
+function copyReferral(){
+  const code = document.getElementById('referral-code')?.textContent || 'FS0000';
+  navigator.clipboard?.writeText('Download Life Tracker - India\'s best student career app! Use my code '+code+' for free premium month. Download: https://play.google.com/store/apps/details?id=com.fstracker').catch(()=>{});
+  toast('📋 Referral link copied!');
+}
+
+function shareReferral(){
+  const code = document.getElementById('referral-code')?.textContent || 'FS0000';
+  if(navigator.share){
+    navigator.share({
+      title:'Life Tracker — Free Student App',
+      text:'Check out this amazing free app for students — schedule, jobs, study planner, AI courses! Use my code '+code+' for 1 month free Premium.',
+      url:'https://play.google.com/store/apps/details?id=com.fstracker'
+    });
+  } else {
+    copyReferral();
+  }
+}
+
+// ── AI USAGE LIMIT (free: 3 uses) ──
+function checkAiLimit(){
+  if(isPremium) return true;
+  const used = parseInt(localStorage.getItem('ai_uses')||'0');
+  if(used >= 3){
+    showPaywall('ai');
+    return false;
+  }
+  localStorage.setItem('ai_uses', used+1);
+  return true;
+}
+
+function showPaywall(feature){
+  const features = {
+    ai:'AI Study Planner (unlimited)',
+    report:'Full weekly performance report',
+    certs:'Unlimited certificate tracking',
+  };
+  const overlay = document.createElement('div');
+  overlay.className = 'paywall-overlay';
+  overlay.id = 'paywall-overlay';
+  overlay.innerHTML = `
+    <div class="paywall-sheet">
+      <div style="text-align:center;padding:10px 0 20px;">
+        <div style="font-size:40px;margin-bottom:10px;">🔒</div>
+        <div style="font-size:18px;font-weight:800;color:var(--text);">Premium Feature</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:6px;line-height:1.5;max-width:280px;margin-left:auto;margin-right:auto;">
+          <b>${features[feature]||'This feature'}</b> requires a Premium plan.
+          Get unlimited access starting at just <b>₹49/month</b>.
+        </div>
+      </div>
+      <button class="btn btn-p" style="width:100%;justify-content:center;font-size:14px;padding:15px;margin-bottom:10px;" onclick="closePW();sw('premium',document.getElementById('premium-nav-btn'))">
+        🚀 See Premium Plans
+      </button>
+      <button class="btn" style="width:100%;justify-content:center;" onclick="closePW()">Maybe later</button>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function closePW(){
+  document.getElementById('paywall-overlay')?.remove();
+}
+
+// Patch generateLearnPlan to check AI limit
+const _origGenLearn = generateLearnPlan;
+generateLearnPlan = async function(){
+  if(!checkAiLimit()) return;
+  return _origGenLearn.apply(this, arguments);
+};
+
+// ── AD INJECTION — show ads in study/jobs/today tabs ──
+function injectAds(){
+  if(isPremium) return;
+  // Inject ad placeholders into sections
+  const studyEl = document.getElementById('s-study');
+  if(studyEl && !document.getElementById('ad-study')){
+    const adDiv = document.createElement('div');
+    adDiv.id = 'ad-study';
+    studyEl.insertBefore(adDiv, studyEl.firstChild);
+  }
+  const jobEl = document.getElementById('s-jobs');
+  if(jobEl && !document.getElementById('ad-jobs')){
+    const adDiv = document.createElement('div');
+    adDiv.id = 'ad-jobs';
+    jobEl.insertBefore(adDiv, jobEl.firstChild);
+  }
+  renderAdBanner('ad-study');
+  renderAdBanner('ad-jobs');
+  // Rotate ads every 30 seconds
+  setInterval(()=>{
+    renderAdBanner('ad-study');
+    renderAdBanner('ad-jobs');
+  }, 30000);
+}
+
+// Initialise monetization
+function initMonetization(){
+  loadPremiumState();
+  updatePremiumNav();
+  injectAds();
+  renderPremiumTab();
+  // Generate referral code
+  const code = generateReferralCode();
+  const refEl = document.getElementById('referral-code');
+  if(refEl) refEl.textContent = code;
+}
+
+async function init(){
+  // Check if already logged in (stored credentials)
+  const savedUID = localStorage.getItem('auth_uid');
+  const savedHash = localStorage.getItem('auth_hash');
+
+  if(savedUID && savedHash){
+    // Verify credentials still valid
+    currentUID = savedUID;
+    // Load local cache first for instant startup
+    await loadAll();
+    // Then sync from cloud in background
+    if(!savedUID.startsWith('GUEST_')){
+      loadUserDataFromCloud(savedUID).then(()=>{
+        if(P && P.setupDone){ renderToday(); renderProfile(); }
+      });
+    }
+    if(P && P.setupDone){
+      document.getElementById('login-screen').classList.add('hidden');
+      startApp();
+      await loadLearnPlan();
+      initMonetization();
+    } else {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+    }
+  } else {
+    // Show login screen
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('onboarding').classList.add('hidden');
+    document.getElementById('app').classList.add('hidden');
+  }
+}
+
+// ════════════════════════════════════════════
+// AUTH SYSTEM — Login / Register / Cloud Sync
+// ════════════════════════════════════════════
+
+// ════════════════════════════════════════════
+// AUTH & CLOUD SYNC — Phone + Password Login
+// Each user gets own bin. No race conditions.
+// ════════════════════════════════════════════
+
+// ACCOUNTS BIN — stores all user accounts index
+// This single bin just maps phone->uid and stores account info
+const ACCOUNTS_BIN_ID = '6a3f4cd5f5f4af5e2937656d';
+const BIN_KEY = '$2a$10$.5/n4a3NQ1CFNYDPiuVsBuwC.l4cORZMupEj3bujJZ8a.nSftzNKW';
+// const API = ''; // migrated to Firebase
+
+let currentUID = null;
+let currentUserBinID = null; // each user's own private data bin
+let isSyncing = false;
+
+// ── HELPERS ──
+function generateUID(){
+  const L='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  return L[Math.floor(Math.random()*L.length)]+L[Math.floor(Math.random()*L.length)]+Math.floor(1000+Math.random()*9000);
+}
+
+function hashPass(pass){
+  let h=5381;
+  for(let i=0;i<pass.length;i++) h=((h<<5)+h)^pass.charCodeAt(i);
+  return (h>>>0).toString(36).padStart(8,'0');
+}
+
+// Read accounts index bin
+async function readAccounts(){
+  const byUID = await fbGet('accounts/byUID') || {};
+  const byPhone = await fbGet('accounts/byPhone') || {};
+  return {byUID, byPhone};
+}
+
+// Write to accounts index bin
+async function writeAccounts(data){
+  // Write each account separately for efficiency
+  if(data.byUID){
+    for(const uid of Object.keys(data.byUID)){
+      await fbSet('accounts/byUID/'+uid, data.byUID[uid]);
+    }
+  }
+  if(data.byPhone){
+    for(const phone of Object.keys(data.byPhone)){
+      await fbSet('accounts/byPhone/'+phone.replace(/[^0-9]/g,''), data.byPhone[phone]);
+    }
+  }
+  return true;
+}
+
+// Create a NEW private bin for a user (called once at register)
+async function createUserBin(initialData, uid){
+  // Firebase: store data at users path using uid as key
+  await fbSet('userData/'+uid, initialData);
+  return uid; // return uid as the "bin ID"
+}
+
+// Read from a user's private bin
+async function readUserBin(uid){
+  return await fbGet('userData/'+uid);
+}
+
+// Write to a user's private bin
+async function writeUserBin(uid, data){
+  return await fbSet('userData/'+uid, data);
+}
+
+// ── UI HELPERS ──
+function switchAuthTab(tab,btn){
+  document.querySelectorAll('.ls-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('auth-login').style.display=tab==='login'?'block':'none';
+  document.getElementById('auth-register').style.display=tab==='register'?'block':'none';
+  document.getElementById('l-err').style.display='none';
+  document.getElementById('r-err').style.display='none';
+}
+
+function showErr(id,msg){
+  const el=document.getElementById(id);
+  el.textContent=msg;
+  el.style.display='block';
+}
+
+function showSpinner(id,show){
+  document.getElementById(id).style.display=show?'block':'none';
+}
+
+// ── REGISTER ──
+async function doRegister(){
+  const name=document.getElementById('r-name').value.trim();
+  const phone=document.getElementById('r-phone').value.trim();
+  const pass=document.getElementById('r-pass').value;
+  const pass2=document.getElementById('r-pass2').value;
+
+  if(!name){showErr('r-err','Please enter your full name');return;}
+  if(!phone||!/^[6-9][0-9]{9}$/.test(phone)){showErr('r-err','Enter a valid 10-digit Indian mobile number');return;}
+  if(pass.length<6){showErr('r-err','Password must be at least 6 characters');return;}
+  if(pass!==pass2){showErr('r-err','Passwords do not match');return;}
+
+  showSpinner('r-spinner',true);
+  document.getElementById('r-err').style.display='none';
+  document.getElementById('r-btn').disabled=true;
+
+  // Read accounts index
+  let accounts=await readAccounts()||{byPhone:{},byUID:{}};
+  if(!accounts.byPhone) accounts.byPhone={};
+  if(!accounts.byUID) accounts.byUID={};
+
+  // Check if phone already registered
+  if(accounts.byPhone[phone]){
+    showSpinner('r-spinner',false);
+    document.getElementById('r-btn').disabled=false;
+    showErr('r-err','This mobile number is already registered. Please login with your phone number.');
+    return;
+  }
+
+  const uid=generateUID();
+  const passHash=hashPass(pass);
+  const now=new Date().toISOString();
+
+  // Create user's own private data bin first
+  const userBinId = uid; // Firebase uses uid as key
+  await fbSet('userData/'+uid, {userData:{P:null,CERTS:[],APPLIED:[],TASK_LOG:{},WEEK_LOG:{},CUSTOM_TASKS:null},meta:{uid,name,phone,createdAt:now}});
+
+  if(!userBinId){
+    showSpinner('r-spinner',false);
+    document.getElementById('r-btn').disabled=false;
+    showErr('r-err','Network error creating your account. Check connection and try again.');
+    return;
+  }
+
+  // Save account to index
+  accounts.byPhone[phone]={uid,passHash,binId:userBinId,name,joinedAt:now,lastSeen:now};
+  accounts.byUID[uid]={uid,phone,passHash,binId:userBinId,name,joinedAt:now,lastSeen:now};
+
+  const ok=await writeAccounts(accounts);
+  showSpinner('r-spinner',false);
+  document.getElementById('r-btn').disabled=false;
+
+  if(!ok){
+    showErr('r-err','Account created but could not save index. Please try registering again.');
+    return;
+  }
+
+  // Store credentials locally
+  localStorage.setItem('auth_uid',uid);
+  localStorage.setItem('auth_binId',userBinId);
+  localStorage.setItem('auth_hash',passHash);
+  localStorage.setItem('auth_name',name);
+  localStorage.setItem('auth_phone',phone);
+  currentUID=uid;
+  currentUserBinID=userBinId;
+
+  // Show credentials to user
+  document.getElementById('r-show-uid').textContent=uid;
+  document.getElementById('r-show-phone').textContent='+91 '+phone;
+  document.getElementById('r-show-pass').textContent=pass;
+  document.getElementById('r-cred-box').style.display='block';
+  document.getElementById('r-btn').style.display='none';
+
+  // Send welcome SMS
+  sendWelcomeSMS(phone, name, uid, pass);
+
+  // Pre-fill onboarding name
+  setTimeout(()=>{const el=document.getElementById('ob-name');if(el)el.value=name;},100);
+}
+
+async function proceedAfterRegister(){
+  document.getElementById('login-screen').classList.add('hidden');
+  if(P&&P.setupDone){
+    startApp();
+    try{await loadLearnPlan();}catch(e){}
+    try{initMonetization();}catch(e){}
+  } else {
+    document.getElementById('onboarding').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+  }
+}
+
+// ── LOGIN (by phone + password) ──
+async function doLogin(){
+  const phone=document.getElementById('l-phone').value.trim();
+  const pass=document.getElementById('l-pass').value;
+
+  if(!phone||!/^[6-9][0-9]{9}$/.test(phone)){showErr('l-err','Enter a valid 10-digit mobile number');return;}
+  if(!pass){showErr('l-err','Please enter your password');return;}
+
+  showSpinner('l-spinner',true);
+  document.getElementById('l-err').style.display='none';
+  document.getElementById('l-btn').disabled=true;
+
+  const accounts=await readAccounts();
+  showSpinner('l-spinner',false);
+  document.getElementById('l-btn').disabled=false;
+
+  if(!accounts||!accounts.byPhone){
+    showErr('l-err','Could not connect. Check your internet connection and try again.');
+    return;
+  }
+
+  const account=accounts.byPhone[phone];
+  if(!account){
+    showErr('l-err','Mobile number not registered. Please register first.');
+    return;
+  }
+
+  const passHash=hashPass(pass);
+  if(account.passHash!==passHash){
+    showErr('l-err','Wrong password. Please try again.');
+    return;
+  }
+
+  // Login success
+  currentUID=account.uid;
+  currentUserBinID=account.binId;
+
+  localStorage.setItem('auth_uid',account.uid);
+  localStorage.setItem('auth_binId',account.binId);
+  localStorage.setItem('auth_hash',passHash);
+  localStorage.setItem('auth_name',account.name);
+  localStorage.setItem('auth_phone',phone);
+
+  // Update last seen in background
+  try{
+    const acc2=await readAccounts();
+    if(acc2){
+      const now=new Date().toISOString();
+      if(acc2.byPhone[phone]) acc2.byPhone[phone].lastSeen=now;
+      if(acc2.byUID[account.uid]) acc2.byUID[account.uid].lastSeen=now;
+      writeAccounts(acc2); // don't await, let it run in background
+    }
+  }catch(e){}
+
+  toast('Welcome back, '+account.name+'!');
+
+  // Load user data from their private bin
+  await loadUserDataFromCloud();
+
+  document.getElementById('login-screen').classList.add('hidden');
+  if(P&&P.setupDone){
+    startApp();
+    try{await loadLearnPlan();}catch(e){}
+    try{initMonetization();}catch(e){}
+  } else {
+    setTimeout(()=>{const n=document.getElementById('ob-name');if(n)n.value=account.name;},100);
+    document.getElementById('onboarding').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+  }
+}
+
+// ── LOAD USER DATA FROM THEIR OWN BIN ──
+async function loadUserDataFromCloud(){
+  if(!currentUserBinID) return;
+  try{
+    const d=await readUserBin(currentUserBinID);
+    if(!d||!d.userData) return;
+    const ud=d.userData;
+    if(ud.P) P=ud.P;
+    if(ud.CERTS) CERTS=ud.CERTS;
+    if(ud.APPLIED) APPLIED=ud.APPLIED;
+    if(ud.TASK_LOG) TASK_LOG=ud.TASK_LOG;
+    if(ud.WEEK_LOG) WEEK_LOG=ud.WEEK_LOG;
+    if(ud.CUSTOM_TASKS) CUSTOM_TASKS=ud.CUSTOM_TASKS;
+    // Cache locally
+    localStorage.setItem('P2',JSON.stringify(P));
+    localStorage.setItem('CERTS2',JSON.stringify(CERTS));
+    localStorage.setItem('APPLIED2',JSON.stringify(APPLIED));
+    localStorage.setItem('TASK_LOG2',JSON.stringify(TASK_LOG));
+    localStorage.setItem('WEEK_LOG2',JSON.stringify(WEEK_LOG));
+    localStorage.setItem('CTASKS2',JSON.stringify(CUSTOM_TASKS));
+  }catch(e){}
+}
+
+// ── SAVE USER DATA TO THEIR OWN BIN ──
+async function saveUserDataToCloud(){
+  if(!currentUID||!currentUserBinID||isSyncing) return;
+  if(currentUID.startsWith('GUEST_')) return;
+  isSyncing=true;
+  try{
+    // Save full data to user's private bin
+    await writeUserBin(currentUserBinID,{
+      userData:{P,CERTS,APPLIED,TASK_LOG,WEEK_LOG,CUSTOM_TASKS,lastSaved:new Date().toISOString()},
+      meta:{uid:currentUID,lastSaved:new Date().toISOString()}
+    });
+    // Update admin snapshot in accounts bin
+    if(P&&P.setupDone){
+      const accounts=await readAccounts();
+      if(accounts&&accounts.byUID&&accounts.byUID[currentUID]){
+        const sched=CUSTOM_TASKS||[];
+        const tlog=TASK_LOG[todayKey]||{};
+        const todayPct=sched.length?Math.round(sched.filter(t=>tlog[t.id]).length/sched.length*100):0;
+        let wt=0,wc=0;
+        for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const l=TASK_LOG[k]||{};const pp=sched.length?Math.round(sched.filter(t=>l[t.id]).length/sched.length*100):0;if(TASK_LOG[k]){wt+=pp;wc++;}}
+        const weekAvg=wc?Math.round(wt/wc):0;
+        let streak=0;
+        for(let i=1;i<30;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const l=TASK_LOG[k]||{};const pp=sched.length?Math.round(sched.filter(t=>l[t.id]).length/sched.length*100):0;if(pp>=50)streak++;else break;}
+        accounts.byUID[currentUID].snapshot={
+          degree:P.degreeLabel||'',field:P.field||'',college:P.college||'',
+          state:P.state||'',sem:P.sem||3,goal:P.goal||'',
+          applied:(APPLIED||[]).length,certs:(CERTS||[]).length,
+          todayPct,weekAvg,streak,lastSeen:new Date().toISOString()
+        };
+        writeAccounts(accounts); // background, no await
+      }
+    }
+  }catch(e){}
+  isSyncing=false;
+}
+
+// ── GUEST MODE ──
+function showGuestMode(){
+  currentUID='GUEST_'+Date.now();
+  currentUserBinID=null;
+  localStorage.setItem('auth_uid',currentUID);
+  document.getElementById('login-screen').classList.add('hidden');
+  if(P&&P.setupDone){
+    startApp();
+    try{loadLearnPlan();}catch(e){}
+    try{initMonetization();}catch(e){}
+  } else {
+    document.getElementById('onboarding').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+  }
+}
+
+// ── COPY HELPER ──
+function copyText(text,msg){
+  navigator.clipboard?.writeText(text).then(()=>toast(msg)).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast(msg);
+  });
+}
+
+// ── LOGOUT ──
+function logoutUser(){
+  if(!confirm('Log out? Your data is saved to the cloud.')) return;
+  saveUserDataToCloud().finally(()=>{localStorage.clear();location.reload();});
+}
+
+
+// ════════════════════════════════════════════
+// SMS NOTIFICATION — Fast2SMS (India)
+// ════════════════════════════════════════════
+// HOW TO SET UP (free):
+// 1. Go to https://www.fast2sms.com and sign up
+// 2. Verify your account (free ₹50 credits given)
+// 3. Go to Dev API → API Key → copy your key
+// 4. Paste it below replacing YOUR_FAST2SMS_API_KEY
+// 5. That's it — users will get SMS on registration!
+
+const FAST2SMS_KEY = '38e7wfQqgAiGIyvXOU6uYhMlnmH24p1LPB05jSVaWZNJDCrdTRv6PNY9iyVfS57qaKgoupZRzUl3HIQW';
+
+async function sendWelcomeSMS(phone, name, uid, pass){
+  // Don't try if API key not set
+  if(!FAST2SMS_KEY || FAST2SMS_KEY === 'YOUR_FAST2SMS_API_KEY'){
+    console.log('SMS skipped: Fast2SMS API key not configured.');
+    showSMSStatus('sms-status', false, 'Add your Fast2SMS key to enable SMS.');
+    return;
+  }
+
+  const firstName = name.split(' ')[0];
+  const message =
+    'Welcome to Life Tracker, '+firstName+'! '+
+    'Your account is created. '+
+    'Login: Mobile '+phone+' | Password: '+pass+' | User ID: '+uid+'. '+
+    'Keep your password safe. - Life Tracker';
+
+  try{
+    // Fast2SMS Quick SMS API
+    const res = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+      method: 'POST',
+      headers: {
+        'authorization': FAST2SMS_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        route: 'q',           // Quick SMS route (no DLT needed for quick)
+        message: message,
+        language: 'english',
+        flash: 0,
+        numbers: phone
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.return === true){
+      showSMSStatus('sms-status', true, 'SMS sent to +91 '+phone+'!');
+    } else {
+      // API responded but SMS failed (insufficient credits, wrong key etc.)
+      const reason = data.message || 'SMS could not be sent.';
+      showSMSStatus('sms-status', false, reason);
+      console.warn('Fast2SMS error:', data);
+    }
+  } catch(e){
+    // Network error or CORS issue
+    // Fast2SMS blocks direct browser calls on some plans — use server proxy if needed
+    showSMSStatus('sms-status', false, 'SMS network error. Credentials shown above.');
+    console.warn('SMS fetch error:', e);
+  }
+}
+
+function showSMSStatus(elId, success, msg){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  el.style.display = 'block';
+  el.textContent = (success ? '✅ ' : 'ℹ️ ') + msg;
+  el.style.color = success ? 'var(--gt)' : 'var(--at)';
+}
+
+// ── AUTO RESTORE from localStorage on startup (fast, before cloud loads) ──
+async function initAuth(){
+  const savedUID=localStorage.getItem('auth_uid');
+  const savedBinId=localStorage.getItem('auth_binId');
+  const savedHash=localStorage.getItem('auth_hash');
+
+  if(savedUID&&savedBinId&&savedHash&&!savedUID.startsWith('GUEST_')){
+    currentUID=savedUID;
+    currentUserBinID=savedBinId;
+    await loadAll(); // load localStorage cache immediately
+    if(!CUSTOM_TASKS) CUSTOM_TASKS=defaultTasks();
+    if(P&&P.setupDone){
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('onboarding').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      startApp();
+      try{await loadLearnPlan();}catch(e){}
+      try{initMonetization();}catch(e){}
+      // Sync from cloud in background
+      setTimeout(async()=>{
+        await loadUserDataFromCloud();
+        renderToday();renderTimetable();renderStudy();renderSkills();renderJobs();renderProfile();
+      },1500);
+    } else {
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('login-screen').classList.add('hidden');
+    }
+  } else if(savedUID&&savedUID.startsWith('GUEST_')){
+    currentUID=savedUID;
+    await loadAll();
+    if(!CUSTOM_TASKS) CUSTOM_TASKS=defaultTasks();
+    if(P&&P.setupDone){
+      document.getElementById('login-screen').classList.add('hidden');
+      startApp();
+      try{await loadLearnPlan();}catch(e){}
+      try{initMonetization();}catch(e){}
+    } else {
+      document.getElementById('onboarding').classList.remove('hidden');
+      document.getElementById('login-screen').classList.add('hidden');
+    }
+  } else {
+    // Show login screen
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('onboarding').classList.add('hidden');
+    document.getElementById('app').classList.add('hidden');
+  }
+}
+
+// ── AUTO CLOUD SAVE every 90 seconds ──
+setInterval(()=>{ if(currentUID&&!currentUID.startsWith('GUEST_')) saveUserDataToCloud(); }, 90000);
+
+initAuth();
+
+
+// ════════════════════════════════════════════
+// PWA — Service Worker + Install + Updates
+// ════════════════════════════════════════════
+
+let _deferredPrompt = null;
+let _swRegistration = null;
+
+// ── Register Service Worker ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      _swRegistration = await navigator.serviceWorker.register('./sw.js', {scope: './'});
+
+      // Check for updates every time the page loads
+      _swRegistration.addEventListener('updatefound', () => {
+        const newWorker = _swRegistration.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // New version is ready — show update banner
+            showUpdateBanner(newWorker);
+          }
+        });
+      });
+
+      // Listen for controller change (after update applied)
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      });
+
+    } catch(e) {
+      console.warn('Service worker registration failed:', e);
+    }
+  });
+}
+
+// ── Install Banner Logic ──
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredPrompt = e;
+
+  // Only show if not already dismissed this session
+  if (!sessionStorage.getItem('pwa-banner-dismissed')) {
+    setTimeout(() => {
+      document.getElementById('pwa-install-banner')?.classList.add('show');
+    }, 3000); // show after 3 seconds
+  }
+});
+
+document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
+  if (!_deferredPrompt) return;
+  _deferredPrompt.prompt();
+  const { outcome } = await _deferredPrompt.userChoice;
+  _deferredPrompt = null;
+  document.getElementById('pwa-install-banner')?.classList.remove('show');
+  if (outcome === 'accepted') toast('✅ App installed! Find it on your home screen.');
+});
+
+document.getElementById('pwa-close-btn')?.addEventListener('click', () => {
+  document.getElementById('pwa-install-banner')?.classList.remove('show');
+  sessionStorage.setItem('pwa-banner-dismissed', '1');
+});
+
+// Hide install banner if already installed (standalone mode)
+if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+  document.getElementById('pwa-install-banner')?.remove();
+}
+
+// ── Update Banner Logic ──
+function showUpdateBanner(newWorker) {
+  const banner = document.getElementById('pwa-update-banner');
+  if (!banner) return;
+  banner.classList.add('show');
+  document.getElementById('pwa-update-btn')?.addEventListener('click', () => {
+    newWorker.postMessage('SKIP_WAITING');
+    banner.classList.remove('show');
+    toast('Updating... please wait');
+  });
+}
+
+// ── App installed event ──
+window.addEventListener('appinstalled', () => {
+  toast('✅ Life Tracker installed as app!');
+  document.getElementById('pwa-install-banner')?.classList.remove('show');
+  _deferredPrompt = null;
+});
+
+// ═══════════════════════════════════════════
+// SMART NOTIFICATIONS — task reminders + daily check-ins
+// ═══════════════════════════════════════════
+let _notifTimers = [];
+
+// Task-specific messages by category
+const NOTIF_CAT_MSG = {
+  free:     { emoji:'🌅', msgs:['Rise & shine! Morning routine time.', 'Good morning! Start strong today 💪', 'Wake up champ! New day, new goals 🌟'] },
+  college:  { emoji:'🎓', msgs:['Classes starting soon! Pack your bag 🎒', 'Time for college — stay focused in lectures!', 'Head to class! Every session counts 📖'] },
+  gym:      { emoji:'💪', msgs:["Gym time! Don't skip — consistency is key.", 'Your workout is waiting. Let\'s go! 🏋️', 'Time to train! Remember why you started 🔥'] },
+  study:    { emoji:'📚', msgs:['Study session starting! Put your phone down (after this 😄)', 'Time to hit the books — future you will thank you!', 'Study time! One focused hour = massive progress 🧠'] },
+  'job-prep':{ emoji:'💼', msgs:['Job prep time! 30 mins of focused prep today.', 'Career time! One topic from your jobs tab 🎯', 'Quick job prep session — your future self is watching! 🚀'] },
+  sleep:    { emoji:'😴', msgs:["Time to wind down. Great work today! 🌙", "Sleep time! Rest is part of the grind 💤", "Log off and rest — tomorrow's goals need energy! 🌙"] },
+  default:  { emoji:'⏰', msgs:['Time for your next task!', 'Up next on your schedule!', 'Task reminder from Life Tracker 📋'] }
+};
+
+// Fixed daily check-in notifications
+const DAILY_CHECKINS = [
+  { id:'gm',    time:'06:00', title:'🌅 Good Morning!',        body: () => `Rise and shine${P&&P.name?' '+P.name.split(' ')[0]:''}! Your schedule is ready. Let's make today count! 💪` },
+  { id:'perf',  time:'14:00', title:'📊 Performance Check',    body: () => {
+      const done = Object.values(TASK_LOG).filter(v=>v===true).length;
+      const total = (CUSTOM_TASKS||defaultTasks()).length;
+      return `You've completed ${done}/${total} tasks so far today. ${done>=total/2?'Great pace! Keep going 🔥':'You can catch up — stay focused! 💡'}`;
+  }},
+  { id:'growth',time:'18:00', title:'📈 Your Growth Update',   body: () => {
+      const days = parseInt(localStorage.getItem('lt_streak')||'0');
+      return `You're on a ${days}-day streak! 🏆 Check your Study & Skills tabs — you're building something great.`;
+  }},
+  { id:'night', time:'22:00', title:'🌙 End of Day',           body: () => {
+      const done = Object.values(TASK_LOG).filter(v=>v===true).length;
+      const total = (CUSTOM_TASKS||defaultTasks()).length;
+      const pct = Math.round((done/total)*100)||0;
+      return `Today: ${done}/${total} tasks done (${pct}%). ${pct>=80?'Incredible day! 🌟':pct>=50?'Solid effort! Tomorrow, aim higher 💪':'Rest up and go stronger tomorrow! 🌙'}`;
+  }}
+];
+
+function openNotifModal() {
+  updateNotifStatusUI();
+  openModal('notif-modal');
+}
+
+function updateNotifStatusUI() {
+  const status = document.getElementById('notif-status-box');
+  const controls = document.getElementById('notif-controls');
+  const enableWrap = document.getElementById('notif-enable-btn-wrap');
+  const perm = Notification.permission;
+
+  if (perm === 'granted') {
+    const tasks = CUSTOM_TASKS || defaultTasks();
+    status.style.background = '#d4edda';
+    status.style.color = '#155724';
+    status.innerHTML = `
+      ✅ <b>Smart Notifications ON</b><br>
+      <span style="font-size:12px;opacity:.8">
+        📋 ${tasks.length} task reminders scheduled<br>
+        🌅 Good morning · 📊 Afternoon check · 📈 Growth update · 🌙 Night summary
+      </span>`;
+    controls.style.display = 'block';
+    enableWrap.style.display = 'none';
+  } else if (perm === 'denied') {
+    status.style.background = '#f8d7da';
+    status.style.color = '#721c24';
+    status.innerHTML = `🚫 Notifications <b>blocked</b>.<br>Go to phone Settings → Apps → Browser → Notifications → Allow.`;
+    controls.style.display = 'none';
+    enableWrap.style.display = 'none';
+  } else {
+    status.style.background = '#fff3cd';
+    status.style.color = '#856404';
+    status.innerHTML = `⚠️ Not enabled yet. Tap below to get smart reminders for all your tasks!`;
+    controls.style.display = 'none';
+    enableWrap.style.display = 'block';
+  }
+}
+
+async function enableNotifs() {
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    localStorage.setItem('lt_notif_enabled', '1');
+    scheduleAllNotifs();
+    toast('🔔 Smart notifications enabled!');
+    updateNotifStatusUI();
+  } else {
+    toast('❌ Permission denied. Check browser settings.');
+    updateNotifStatusUI();
+  }
+}
+
+function disableNotifs() {
+  localStorage.removeItem('lt_notif_enabled');
+  _notifTimers.forEach(t => clearTimeout(t));
+  _notifTimers = [];
+  toast('🔕 Notifications disabled.');
+  updateNotifStatusUI();
+}
+
+function sendTestNotif() {
+  if (Notification.permission !== 'granted') { toast('Enable notifications first!'); return; }
+  const name = P && P.name ? P.name.split(' ')[0] : 'there';
+  fireNotif('lt-test', '🧪 Life Tracker Test', `Hey ${name}! Notifications are working perfectly 🎉`);
+  toast('🧪 Test sent!');
+}
+
+function fireNotif(tag, title, body) {
+  if (Notification.permission !== 'granted') return;
+  try {
+    new Notification(title, {
+      body,
+      icon: '/lifetracker/icon-192.png',
+      badge: '/lifetracker/icon-192.png',
+      tag,
+      requireInteraction: false
+    });
+  } catch(e) {}
+}
+
+function msUntil(timeStr) {
+  const [h, m] = timeStr.split(':').map(Number);
+  const now = new Date();
+  const next = new Date();
+  next.setHours(h, m, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  return next - now;
+}
+
+function scheduleAllNotifs() {
+  // Clear existing
+  _notifTimers.forEach(t => clearTimeout(t));
+  _notifTimers = [];
+  if (Notification.permission !== 'granted') return;
+  if (!localStorage.getItem('lt_notif_enabled')) return;
+
+  const tasks = CUSTOM_TASKS || defaultTasks();
+
+  // 1. Schedule task reminders
+  tasks.forEach(task => {
+    if (!task.time) return;
+    const cat = task.cat || 'default';
+    const catData = NOTIF_CAT_MSG[cat] || NOTIF_CAT_MSG.default;
+    const msg = catData.msgs[Math.floor(Math.random() * catData.msgs.length)];
+    const title = `${catData.emoji} ${task.label}`;
+
+    const ms = msUntil(task.time);
+    const t = setTimeout(() => {
+      fireNotif('task-'+task.id, title, msg);
+      // Reschedule for tomorrow
+      const t2 = setTimeout(() => scheduleAllNotifs(), 24*60*60*1000);
+      _notifTimers.push(t2);
+    }, ms);
+    _notifTimers.push(t);
+  });
+
+  // 2. Schedule daily check-ins
+  DAILY_CHECKINS.forEach(ci => {
+    const ms = msUntil(ci.time);
+    const t = setTimeout(() => {
+      fireNotif('checkin-'+ci.id, ci.title, ci.body());
+    }, ms);
+    _notifTimers.push(t);
+  });
+}
+
+// Reschedule every midnight to refresh for new day
+function scheduleMidnightRefresh() {
+  const ms = msUntil('00:01');
+  setTimeout(() => {
+    scheduleAllNotifs();
+    scheduleMidnightRefresh();
+  }, ms);
+}
+
+// Init on load
+(function initNotifs() {
+  if (localStorage.getItem('lt_notif_enabled') && Notification.permission === 'granted') {
+    scheduleAllNotifs();
+    scheduleMidnightRefresh();
+  }
+})();
+
+</script>
+
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-install-banner">
+  <div class="pwa-icon">📲</div>
+  <div class="pwa-text">
+    <div class="pwa-title">Install Life Tracker</div>
+    <div class="pwa-sub">Add to home screen for app experience</div>
+  </div>
+  <button class="pwa-install-btn" id="pwa-install-btn">Install</button>
+  <button class="pwa-close-btn" id="pwa-close-btn">✕</button>
+</div>
+
+<!-- PWA UPDATE BANNER -->
+<div id="pwa-update-banner">
+  <div class="pwa-update-text">🔄 New update available!</div>
+  <button class="pwa-update-btn" id="pwa-update-btn">Update now</button>
+</div>
+
+</body>
+</html>
