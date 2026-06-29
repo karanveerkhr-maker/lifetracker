@@ -11,7 +11,6 @@
 <meta name="theme-color" content="#0F1017" media="(prefers-color-scheme: dark)">
 <meta name="description" content="Your personal career & study companion">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>Life Tracker</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -516,6 +515,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
         <div class="hdr-sub" id="hdr-sub">Loading...</div>
       </div>
       <button onclick="openModal('edit-modal')" class="hdr-edit-btn" title="Edit profile">✏️</button>
+      <button onclick="openNotifModal()" class="hdr-edit-btn" id="notif-bell-btn" title="Notifications">🔔</button>
     </div>
     <div class="bar-wrap">
       <div class="bar-lbl"><span id="bar-label-left">Progress</span><b id="bar-lbl">—</b></div>
@@ -853,6 +853,32 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 </div>
 
 <div id="toast"></div>
+
+<!-- NOTIFICATION MODAL -->
+<div class="modal-bg" id="notif-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>🔔 Notifications</h3>
+    <div id="notif-status-box" style="margin:12px 0;padding:12px;border-radius:12px;background:var(--card);text-align:center;font-size:14px;"></div>
+    <div id="notif-controls" style="display:none;">
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">⏰ Daily Reminder Time</label>
+      <input type="time" id="notif-time-input" value="08:00" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border);font-size:16px;margin-bottom:12px;background:var(--card);color:var(--text);">
+      <label style="font-size:13px;font-weight:600;display:block;margin-bottom:6px;">📝 Reminder Message</label>
+      <input type="text" id="notif-msg-input" placeholder="Time to check your Life Tracker! 📚" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;margin-bottom:16px;background:var(--card);color:var(--text);">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-p" style="flex:1;justify-content:center;" onclick="saveNotifSettings()">✓ Save Reminder</button>
+        <button class="btn" onclick="sendTestNotif()" style="flex:1;justify-content:center;">🧪 Test Now</button>
+      </div>
+      <button class="btn btn-r" style="width:100%;justify-content:center;margin-top:8px;" onclick="disableNotifs()">🔕 Disable Notifications</button>
+    </div>
+    <div id="notif-enable-btn-wrap">
+      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:8px;" onclick="enableNotifs()">🔔 Enable Notifications</button>
+    </div>
+    <div class="modal-btns" style="margin-top:12px;">
+      <button class="btn" onclick="closeModal('notif-modal')" style="width:100%;justify-content:center;">Close</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // STORAGE
@@ -2760,6 +2786,118 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('pwa-install-banner')?.classList.remove('show');
   _deferredPrompt = null;
 });
+
+// ═══════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════
+let notifTimer = null;
+
+function openNotifModal() {
+  updateNotifStatusUI();
+  openModal('notif-modal');
+}
+
+function updateNotifStatusUI() {
+  const status = document.getElementById('notif-status-box');
+  const controls = document.getElementById('notif-controls');
+  const enableWrap = document.getElementById('notif-enable-btn-wrap');
+  const perm = Notification.permission;
+
+  if (perm === 'granted') {
+    const saved = JSON.parse(localStorage.getItem('lt_notif') || '{}');
+    status.style.background = '#d4edda';
+    status.style.color = '#155724';
+    status.innerHTML = `✅ Notifications are <b>enabled</b>${saved.time ? `<br>⏰ Daily reminder at <b>${saved.time}</b>` : ''}`;
+    controls.style.display = 'block';
+    enableWrap.style.display = 'none';
+    if (saved.time) {
+      document.getElementById('notif-time-input').value = saved.time;
+      document.getElementById('notif-msg-input').value = saved.msg || '';
+    }
+  } else if (perm === 'denied') {
+    status.style.background = '#f8d7da';
+    status.style.color = '#721c24';
+    status.innerHTML = `🚫 Notifications are <b>blocked</b>.<br>Go to browser/phone Settings → Site Settings → allow notifications for this site.`;
+    controls.style.display = 'none';
+    enableWrap.style.display = 'none';
+  } else {
+    status.style.background = '#fff3cd';
+    status.style.color = '#856404';
+    status.innerHTML = `⚠️ Notifications not enabled yet.<br>Tap the button below to allow.`;
+    controls.style.display = 'none';
+    enableWrap.style.display = 'block';
+  }
+}
+
+async function enableNotifs() {
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    toast('🔔 Notifications enabled!');
+    updateNotifStatusUI();
+    scheduleNotifs();
+  } else {
+    toast('❌ Permission denied. Check browser settings.');
+    updateNotifStatusUI();
+  }
+}
+
+function saveNotifSettings() {
+  const time = document.getElementById('notif-time-input').value;
+  const msg = document.getElementById('notif-msg-input').value.trim() || 'Time to check your Life Tracker! 📚';
+  localStorage.setItem('lt_notif', JSON.stringify({ time, msg, enabled: true }));
+  scheduleNotifs();
+  toast(`✅ Reminder set for ${time} daily!`);
+  updateNotifStatusUI();
+}
+
+function disableNotifs() {
+  localStorage.setItem('lt_notif', JSON.stringify({ enabled: false }));
+  if (notifTimer) clearTimeout(notifTimer);
+  toast('🔕 Daily reminder disabled.');
+  updateNotifStatusUI();
+}
+
+function sendTestNotif() {
+  if (Notification.permission !== 'granted') { toast('Enable notifications first!'); return; }
+  const msg = document.getElementById('notif-msg-input').value.trim() || 'Time to check your Life Tracker! 📚';
+  new Notification('📚 Life Tracker', {
+    body: msg,
+    icon: '/lifetracker/icon-192.png',
+    badge: '/lifetracker/icon-192.png',
+    tag: 'lt-test'
+  });
+  toast('🧪 Test notification sent!');
+}
+
+function scheduleNotifs() {
+  if (notifTimer) clearTimeout(notifTimer);
+  const saved = JSON.parse(localStorage.getItem('lt_notif') || '{}');
+  if (!saved.enabled || !saved.time || Notification.permission !== 'granted') return;
+
+  const [h, m] = saved.time.split(':').map(Number);
+  const now = new Date();
+  const next = new Date();
+  next.setHours(h, m, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+
+  const ms = next - now;
+  notifTimer = setTimeout(() => {
+    new Notification('📚 Life Tracker', {
+      body: saved.msg || 'Time to check your Life Tracker! 📚',
+      icon: '/lifetracker/icon-192.png',
+      badge: '/lifetracker/icon-192.png',
+      tag: 'lt-daily'
+    });
+    scheduleNotifs();
+  }, ms);
+}
+
+(function initNotifs() {
+  const saved = JSON.parse(localStorage.getItem('lt_notif') || '{}');
+  if (saved.enabled && Notification.permission === 'granted') {
+    scheduleNotifs();
+  }
+})();
 
 </script>
 
