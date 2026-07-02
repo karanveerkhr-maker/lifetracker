@@ -743,11 +743,60 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       </div>
     </div>
 
+    <!-- STATS SECTION -->
+    <div id="s-stats" class="sec">
+      <div class="stitle">Your performance</div>
+
+      <!-- Streak + summary cards -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+        <div class="card" style="padding:10px 12px;text-align:center;margin-bottom:0;">
+          <div style="font-size:22px;font-weight:800;color:var(--acc);" id="stat-streak">0</div>
+          <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;">Day streak</div>
+        </div>
+        <div class="card" style="padding:10px 12px;text-align:center;margin-bottom:0;">
+          <div style="font-size:22px;font-weight:800;color:#1baf7a;" id="stat-week-pct">0%</div>
+          <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;">This week</div>
+        </div>
+        <div class="card" style="padding:10px 12px;text-align:center;margin-bottom:0;">
+          <div style="font-size:22px;font-weight:800;color:#eda100;" id="stat-today">0/0</div>
+          <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;">Today</div>
+        </div>
+      </div>
+
+      <!-- Weekly Bar Chart -->
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;letter-spacing:.03em;">📅 WEEKLY PROGRESS</div>
+        <div style="position:relative;width:100%;height:160px;">
+          <canvas id="weeklyChart" role="img" aria-label="Bar chart showing tasks completed each day this week"></canvas>
+        </div>
+      </div>
+
+      <!-- Category Pie Chart -->
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;letter-spacing:.03em;">🗂 TIME BY CATEGORY</div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="position:relative;width:130px;height:130px;flex-shrink:0;">
+            <canvas id="categoryChart" role="img" aria-label="Pie chart showing task distribution by category"></canvas>
+          </div>
+          <div id="cat-legend" style="flex:1;font-size:12px;"></div>
+        </div>
+      </div>
+
+      <!-- Best day -->
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.03em;">🏆 INSIGHTS</div>
+        <div id="stats-insights" style="font-size:13px;color:var(--text2);line-height:1.8;"></div>
+      </div>
+    </div>
+
   </div>
 
   <nav class="nav">
     <button class="nb active" onclick="sw('today',this)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Today<div class="nb-pip"></div>
+    </button>
+    <button class="nb" onclick="window.sw('stats',this)" id="stats-nav-btn">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Stats<div class="nb-pip"></div>
     </button>
     <button class="nb" onclick="sw('schedule',this)">
       <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Plan<div class="nb-pip"></div>
@@ -2788,6 +2837,200 @@ window.addEventListener('appinstalled', () => {
   toast('✅ Life Tracker installed as app!');
   document.getElementById('pwa-install-banner')?.classList.remove('show');
   _deferredPrompt = null;
+});
+
+// ═══════════════════════════════════════════
+// STATS & GRAPHS
+// ═══════════════════════════════════════════
+let _weeklyChart = null, _categoryChart = null;
+
+function renderStats() {
+  renderStatCards();
+  renderWeeklyChart();
+  renderCategoryChart();
+  renderInsights();
+}
+
+function renderStatCards() {
+  const streak = parseInt(localStorage.getItem('lt_streak') || '0');
+  document.getElementById('stat-streak').textContent = streak;
+
+  const tasks = CUSTOM_TASKS || defaultTasks();
+  const total = tasks.length;
+  const todayDone = Object.values(TASK_LOG).filter(v => v === true).length;
+  document.getElementById('stat-today').textContent = `${todayDone}/${total}`;
+
+  // Weekly %: average of last 7 days from WEEK_LOG
+  const days = getLast7Days();
+  let weekTotal = 0, weekDone = 0;
+  days.forEach(d => {
+    const log = WEEK_LOG[d] || {};
+    weekTotal += total;
+    weekDone += Object.values(log).filter(v => v === true).length;
+  });
+  const weekPct = weekTotal > 0 ? Math.round((weekDone / weekTotal) * 100) : 0;
+  document.getElementById('stat-week-pct').textContent = `${weekPct}%`;
+}
+
+function getLast7Days() {
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  return days;
+}
+
+function getDayLabel(dateStr) {
+  const d = new Date(dateStr);
+  return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+}
+
+function renderWeeklyChart() {
+  const canvas = document.getElementById('weeklyChart');
+  if (!canvas || !window.Chart) return;
+  if (_weeklyChart) { _weeklyChart.destroy(); _weeklyChart = null; }
+
+  const tasks = CUSTOM_TASKS || defaultTasks();
+  const total = tasks.length || 1;
+  const days = getLast7Days();
+  const labels = days.map(getDayLabel);
+  const data = days.map(d => {
+    const log = WEEK_LOG[d] || {};
+    return Object.values(log).filter(v => v === true).length;
+  });
+  // today uses live TASK_LOG
+  data[6] = Object.values(TASK_LOG).filter(v => v === true).length;
+
+  const colors = data.map((v, i) => {
+    if (i === 6) return '#2a78d6';
+    return v >= total * 0.7 ? '#1baf7a' : v >= total * 0.4 ? '#2a78d6' : '#e34948';
+  });
+
+  _weeklyChart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Tasks done',
+        data,
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: 'bottom',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.raw} / ${total} tasks`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: total,
+          ticks: { stepSize: 1, color: '#888', font: { size: 11 } },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        },
+        x: {
+          ticks: { color: '#888', font: { size: 11 } },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function renderCategoryChart() {
+  const canvas = document.getElementById('categoryChart');
+  if (!canvas || !window.Chart) return;
+  if (_categoryChart) { _categoryChart.destroy(); _categoryChart = null; }
+
+  const tasks = CUSTOM_TASKS || defaultTasks();
+  const catCount = {};
+  tasks.forEach(t => {
+    const c = t.cat || 'other';
+    catCount[c] = (catCount[c] || 0) + 1;
+  });
+
+  const CAT_NAMES = { free:'Morning', college:'College', gym:'Gym', study:'Study', 'job-prep':'Job Prep', sleep:'Night', other:'Other' };
+  const COLORS = ['#2a78d6','#1baf7a','#eda100','#4a3aa7','#e34948','#e87ba4','#eb6834'];
+
+  const labels = Object.keys(catCount).map(k => CAT_NAMES[k] || k);
+  const data = Object.values(catCount);
+  const total = data.reduce((a, b) => a + b, 0);
+  const bgColors = COLORS.slice(0, labels.length);
+
+  if (_categoryChart) _categoryChart.destroy();
+  _categoryChart = new Chart(canvas, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: bgColors, borderWidth: 2, borderColor: 'var(--bg2)' }] },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw} tasks` } } }
+    }
+  });
+
+  // Custom legend
+  const legend = document.getElementById('cat-legend');
+  legend.innerHTML = labels.map((l, i) => `
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+      <div style="width:10px;height:10px;border-radius:2px;background:${bgColors[i]};flex-shrink:0;"></div>
+      <span style="color:var(--text2);">${l}</span>
+      <span style="margin-left:auto;font-weight:700;color:var(--text);">${Math.round((data[i]/total)*100)}%</span>
+    </div>`).join('');
+}
+
+function renderInsights() {
+  const tasks = CUSTOM_TASKS || defaultTasks();
+  const total = tasks.length || 1;
+  const days = getLast7Days();
+  const dayData = days.map(d => {
+    const log = d === days[6] ? TASK_LOG : (WEEK_LOG[d] || {});
+    return { day: getDayLabel(d), done: Object.values(log).filter(v=>v===true).length };
+  });
+
+  const best = dayData.reduce((a,b) => a.done >= b.done ? a : b);
+  const worst = dayData.reduce((a,b) => a.done <= b.done ? a : b);
+  const streak = parseInt(localStorage.getItem('lt_streak') || '0');
+  const todayDone = Object.values(TASK_LOG).filter(v=>v===true).length;
+  const pct = Math.round((todayDone/total)*100);
+
+  let html = '';
+  if (best.done > 0) html += `🏆 Best day this week: <b>${best.day}</b> (${best.done}/${total} tasks)<br>`;
+  if (streak >= 3) html += `🔥 You're on a <b>${streak}-day streak</b> — keep it up!<br>`;
+  else if (streak === 0) html += `💡 Complete today's tasks to start a streak!<br>`;
+  html += `📊 Today you're at <b>${pct}%</b> — ${pct>=80?'amazing! 🌟':pct>=50?'good progress 💪':'keep pushing 🎯'}<br>`;
+  if (worst.done === 0 && dayData.some(d=>d.done>0)) html += `⚠️ Missed day: <b>${worst.day}</b> — rest days are okay too 😊`;
+
+  document.getElementById('stats-insights').innerHTML = html || 'Complete tasks to see your insights!';
+}
+
+// Patch sw() to render stats when Stats tab opens
+document.addEventListener('DOMContentLoaded', () => {
+  const _orig = window.sw;
+  window.sw = function(tab, btn) {
+    _orig(tab, btn);
+    if (tab === 'stats') {
+      setTimeout(() => {
+        if (window.Chart) renderStats();
+        else {
+          const s = document.createElement('script');
+          s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+          s.onload = renderStats;
+          document.head.appendChild(s);
+        }
+      }, 50);
+    }
+  };
 });
 
 // ═══════════════════════════════════════════
