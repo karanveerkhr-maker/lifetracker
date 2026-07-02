@@ -241,8 +241,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .plan-feature:last-child{border-bottom:none;}
 .plan-feature .tick{color:#3ECFB2;font-weight:700;flex-shrink:0;}
 .plan-feature .cross{color:var(--ct);flex-shrink:0;}
-.paywall-overlay{position:fixed;inset:0;background:rgba(10,12,30,0.7);backdrop-filter:blur(6px);z-index:300;display:flex;align-items:flex-end;justify-content:center;}
-.paywall-sheet{background:var(--bg2);border-radius:24px 24px 0 0;padding:24px 18px calc(var(--safe-bot)+24px);width:100%;max-height:92vh;overflow-y:auto;}
+
+
 .feature-lock{position:relative;overflow:hidden;}
 .feature-lock::after{content:'🔒 Premium';position:absolute;inset:0;background:rgba(var(--bg2-rgb,255,255,255),0.85);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--pt);backdrop-filter:blur(2px);}
 .upi-btn{display:flex;align-items:center;gap:10px;padding:14px 16px;border:1.5px solid var(--border2);border-radius:var(--rs);cursor:pointer;background:var(--bg2);width:100%;margin-bottom:8px;transition:all .15s;font-family:inherit;}
@@ -676,120 +676,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     </div>
 
     <!-- PREMIUM TAB -->
-    <div id="s-premium" class="sec">
-      <div style="text-align:center;padding:20px 0 16px;">
-        <div style="font-size:36px;margin-bottom:8px;">🚀</div>
-        <div style="font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Go Premium</div>
-        <div style="font-size:13px;color:var(--text2);margin-top:5px;">Unlock the full Life Tracker experience</div>
-        <div id="premium-status-banner" style="margin-top:12px;"></div>
-      </div>
-
-      <!-- PLANS -->
-      <div id="plan-cards"></div>
-
-      <!-- WHAT YOU GET -->
-      <div class="stitle" style="margin-top:4px;">Free vs Premium</div>
-      <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px;">
-        <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:0;font-size:11px;font-weight:700;color:var(--text3);padding:10px 14px;background:var(--bg3);letter-spacing:.04em;text-transform:uppercase;">
-          <div>Feature</div><div style="text-align:center;">Free</div><div style="text-align:center;">Pro</div>
-        </div>
-        <div id="feature-compare"></div>
-      </div>
-
-      <!-- HOW TO PAY -->
-      <div class="stitle">Pay with UPI / Card</div>
-      <div class="ibox" style="background:var(--abg);color:var(--at);margin-bottom:12px;">
-        <b>💡 How payment works</b><br>
-        Tap a payment method below → pay the plan amount → send your UPI transaction ID here → we activate your premium within 2 hours.
-      </div>
-      <div id="payment-methods"></div>
-
-      <!-- AFTER PAYING -->
-      <div class="stitle" style="margin-top:4px;">Already paid? Enter transaction ID</div>
-      <div class="card">
-        <div class="field" style="margin-bottom:10px;">
-          <label>UPI Transaction / Reference ID</label>
-          <input id="txn-id-input" type="text" placeholder="e.g. 4256789012345678" style="width:100%;padding:11px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;">
-        </div>
-        <div class="field" style="margin-bottom:10px;">
-          <label>Plan you paid for</label>
-          <select id="txn-plan-select" style="width:100%;padding:11px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;">
-            <option value="monthly">Monthly — ₹49</option>
-            <option value="annual">Annual — ₹299</option>
-            <option value="lifetime">Lifetime — ₹499</option>
-          </select>
-        </div>
-        <button class="btn btn-p" style="width:100%;justify-content:center;" onclick="submitTxn()">✓ Submit for verification</button>
-        <div id="txn-result" style="margin-top:10px;font-size:12px;text-align:center;color:var(--text2);"></div>
-      </div>
-
-      <!-- REFERRAL -->
-      <div class="stitle" style="margin-top:4px;">🎁 Refer & earn free Premium</div>
-      <div class="card">
-        <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px;">
-          Share your referral code with friends. <b>Every 3 friends who install = 1 month free Premium</b> for you!
-        </div>
-        <div style="background:var(--bg3);border-radius:var(--rs);padding:12px;text-align:center;margin-bottom:10px;">
-          <div style="font-size:11px;color:var(--text3);font-weight:700;letter-spacing:.04em;margin-bottom:4px;">YOUR REFERRAL CODE</div>
-          <div style="font-size:22px;font-weight:800;letter-spacing:.08em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="referral-code">FS0000</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button class="btn btn-b" style="justify-content:center;" onclick="copyReferral()">📋 Copy code</button>
-          <button class="btn btn-p" style="justify-content:center;" onclick="shareReferral()">📤 Share</button>
-        </div>
-        <div style="margin-top:10px;font-size:12px;color:var(--text2);">
-          Referrals used: <b id="ref-count">0</b> / 3 for next free month
-        </div>
-      </div>
     </div>
-
-    <!-- STATS SECTION -->
-    <div id="s-stats" class="sec">
-      <div class="stitle">Your performance</div>
-
-      <!-- Streak + summary cards -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
-        <div class="card" style="padding:10px 12px;text-align:center;margin-bottom:0;">
-          <div style="font-size:22px;font-weight:800;color:var(--acc);" id="stat-streak">0</div>
-          <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;">Day streak</div>
-        </div>
-        <div class="card" style="padding:10px 12px;text-align:center;margin-bottom:0;">
-          <div style="font-size:22px;font-weight:800;color:#1baf7a;" id="stat-week-pct">0%</div>
-          <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;">This week</div>
-        </div>
-        <div class="card" style="padding:10px 12px;text-align:center;margin-bottom:0;">
-          <div style="font-size:22px;font-weight:800;color:#eda100;" id="stat-today">0/0</div>
-          <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;">Today</div>
-        </div>
-      </div>
-
-      <!-- Weekly Bar Chart -->
-      <div class="card" style="margin-bottom:12px;">
-        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;letter-spacing:.03em;">📅 WEEKLY PROGRESS</div>
-        <div style="position:relative;width:100%;height:160px;">
-          <canvas id="weeklyChart" role="img" aria-label="Bar chart showing tasks completed each day this week"></canvas>
-        </div>
-      </div>
-
-      <!-- Category Pie Chart -->
-      <div class="card" style="margin-bottom:12px;">
-        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;letter-spacing:.03em;">🗂 TIME BY CATEGORY</div>
-        <div style="display:flex;align-items:center;gap:16px;">
-          <div style="position:relative;width:130px;height:130px;flex-shrink:0;">
-            <canvas id="categoryChart" role="img" aria-label="Pie chart showing task distribution by category"></canvas>
-          </div>
-          <div id="cat-legend" style="flex:1;font-size:12px;"></div>
-        </div>
-      </div>
-
-      <!-- Best day -->
-      <div class="card" style="margin-bottom:12px;">
-        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.03em;">🏆 INSIGHTS</div>
-        <div id="stats-insights" style="font-size:13px;color:var(--text2);line-height:1.8;"></div>
-      </div>
-    </div>
-
-  </div>
 
   <nav class="nav">
     <button class="nb active" onclick="sw('today',this)">
@@ -1483,7 +1370,7 @@ function startApp(){
   if(!CUSTOM_TASKS||!CUSTOM_TASKS.length) CUSTOM_TASKS=defaultTasks();
   updateHeader();renderToday();renderTimetable();renderStudy();renderSkills();renderJobs();renderProfile();
   toast('👋 Welcome, '+(P.name||'friend')+'!');
-  setTimeout(initMonetization, 300);
+  
 }
 
 // ════════════════════════════════════════════
@@ -1932,230 +1819,6 @@ const PAYMENT_METHODS = [
 
 // ── PREMIUM STATE ──
 let isPremium = false;
-let premiumPlan = null;
-let premiumExpiry = null;
-let selectedPlan = 'annual';
-
-function loadPremiumState(){
-  try {
-    const ps = localStorage.getItem('premium_state');
-    if(ps){
-      const obj = JSON.parse(ps);
-      isPremium = obj.active || false;
-      premiumPlan = obj.plan || null;
-      premiumExpiry = obj.expiry || null;
-      // check if expired
-      if(premiumExpiry && new Date(premiumExpiry) < new Date()){
-        isPremium = false;
-        premiumPlan = null;
-        localStorage.removeItem('premium_state');
-      }
-    }
-  } catch(e){}
-}
-
-function savePremiumState(){
-  localStorage.setItem('premium_state', JSON.stringify({
-    active: isPremium, plan: premiumPlan, expiry: premiumExpiry
-  }));
-}
-
-// For demo: activate premium (in real app, server verifies payment)
-function activatePremium(plan, months){
-  isPremium = true;
-  premiumPlan = plan;
-  const expiry = months === 9999 ? '2099-12-31' : new Date(Date.now() + months*30*24*60*60*1000).toISOString().slice(0,10);
-  premiumExpiry = expiry;
-  savePremiumState();
-  renderPremiumTab();
-  updatePremiumNav();
-  toast('🎉 Premium activated! Enjoy the full experience.');
-}
-
-function updatePremiumNav(){
-  const btn = document.getElementById('premium-nav-btn');
-  if(!btn) return;
-  if(isPremium){
-    btn.style.color = '#F5A623';
-    btn.querySelector('svg').style.fill = '#F5A623';
-  }
-}
-
-// ── AD BANNERS ──
-const AD_DATA = [
-  {icon:'📚', title:'Testbook — Free Mock Tests', sub:'IBPS, SSC, Punjab Police — 1000+ free tests', url:'https://testbook.com', color:'#1A4FD6'},
-  {icon:'🎓', title:'NPTEL Free Courses', sub:'IIT professors, free certificates, govt recognized', url:'https://nptel.ac.in', color:'#0D6E45'},
-  {icon:'💼', title:'Naukri — Find Jobs Now', sub:'1 lakh+ govt & private jobs updated daily', url:'https://naukri.com', color:'#EF5A29'},
-  {icon:'🏦', title:'IBPS Clerk 2026 — Apply Now', sub:'Deadline: July 20. Final year students eligible', url:'https://ibps.in', color:'#1A4FD6'},
-  {icon:'🔬', title:'Forensic Science Courses', sub:'Free on Swayam — get UGC certified certificate', url:'https://swayam.gov.in', color:'#6C63FF'},
-];
-
-let adRotateIdx = 0;
-function getNextAd(){
-  const ad = AD_DATA[adRotateIdx % AD_DATA.length];
-  adRotateIdx++;
-  return ad;
-}
-
-function renderAdBanner(containerId){
-  if(isPremium) return; // no ads for premium users
-  const container = document.getElementById(containerId);
-  if(!container) return;
-  const ad = getNextAd();
-  container.innerHTML = `
-    <div class="ad-banner" onclick="window.open('${ad.url}','_blank');" style="cursor:pointer;">
-      <div class="ad-label">Ad</div>
-      <div class="ad-icon">${ad.icon}</div>
-      <div class="ad-text">
-        <div class="ad-title">${ad.title}</div>
-        <div class="ad-sub">${ad.sub}</div>
-      </div>
-      <button class="ad-btn" style="background:${ad.color};">Open →</button>
-    </div>`;
-}
-
-// ── RENDER PREMIUM TAB ──
-function renderPremiumTab(){
-  renderPremiumStatus();
-  renderPlanCards();
-  renderFeatureCompare();
-  renderPaymentMethods();
-  renderReferral();
-}
-
-function renderPremiumStatus(){
-  const el = document.getElementById('premium-status-banner');
-  if(!el) return;
-  if(isPremium){
-    const plan = PLANS.find(p=>p.id===premiumPlan);
-    el.innerHTML = `<div style="background:linear-gradient(135deg,#F5A623,#FF6B35);color:#fff;border-radius:var(--rs);padding:12px 16px;display:inline-block;min-width:200px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.05em;opacity:.85;">ACTIVE PLAN</div>
-      <div style="font-size:16px;font-weight:800;margin-top:2px;">${plan?plan.name+' Premium':'Premium'} ✓</div>
-      ${premiumExpiry&&premiumExpiry!=='2099-12-31'?`<div style="font-size:11px;opacity:.85;margin-top:2px;">Valid until ${premiumExpiry}</div>`:'<div style="font-size:11px;opacity:.85;margin-top:2px;">Lifetime access 🎉</div>'}
-    </div>`;
-  } else {
-    el.innerHTML = `<span class="tag" style="background:var(--bg3);color:var(--text3);font-size:11px;">Free plan — upgrade below</span>`;
-  }
-}
-
-function renderPlanCards(){
-  const el = document.getElementById('plan-cards');
-  if(!el) return;
-  el.innerHTML = PLANS.map(p=>`
-    <div class="plan-card ${p.popular?'popular':''} ${selectedPlan===p.id?'selected':''}" onclick="selectPlan('${p.id}')">
-      ${p.tag?`<div class="plan-popular-badge">${p.tag}</div>`:''}
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;margin-top:${p.tag?'8px':'0'}">
-        <div>
-          <div style="font-size:13px;font-weight:700;color:var(--text2);">${p.name}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:2px;">${p.desc}</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="plan-price">₹${p.price}<span>${p.unit}</span></div>
-        </div>
-      </div>
-      ${p.features.map(f=>`<div class="plan-feature"><span class="tick">✓</span>${f}</div>`).join('')}
-      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:12px;font-size:13px;" onclick="event.stopPropagation();startPayment('${p.id}')">
-        ${isPremium&&premiumPlan===p.id?'✓ Current plan':'Get '+p.name+' — ₹'+p.price}
-      </button>
-    </div>`).join('');
-}
-
-function selectPlan(id){
-  selectedPlan = id;
-  renderPlanCards();
-  document.getElementById('txn-plan-select').value = id;
-}
-
-function renderFeatureCompare(){
-  const el = document.getElementById('feature-compare');
-  if(!el) return;
-  el.innerHTML = FREE_FEATURES.map(f=>`
-    <div style="display:grid;grid-template-columns:1fr 80px 80px;gap:0;padding:9px 14px;border-bottom:.5px solid var(--border);font-size:12px;align-items:center;">
-      <div style="color:var(--text2);font-weight:500;">${f.name}</div>
-      <div style="text-align:center;">${f.free===true?'<span style="color:#3ECFB2;font-weight:700;">✓</span>':f.free===false?'<span style="color:var(--ct);">✕</span>':`<span style="font-size:10px;color:var(--at);">${f.free}</span>`}</div>
-      <div style="text-align:center;">${f.pro===true?'<span style="color:#3ECFB2;font-weight:700;">✓</span>':f.pro===false?'<span style="color:var(--ct);">✕</span>':`<span style="font-size:10px;color:var(--gt);">${f.pro}</span>`}</div>
-    </div>`).join('');
-}
-
-function renderPaymentMethods(){
-  const el = document.getElementById('payment-methods');
-  if(!el) return;
-  const plan = PLANS.find(p=>p.id===selectedPlan)||PLANS[1];
-  el.innerHTML = `
-    <div class="ibox" style="background:var(--pbg);color:var(--pt);margin-bottom:10px;">
-      Selected: <b>${plan.name} Plan — ₹${plan.price}</b>. Pay using any method below.
-    </div>
-    ${PAYMENT_METHODS.map(m=>`
-    <button class="upi-btn" onclick="openPayment('${m.id}','${m.upiId}',${plan.price})">
-      <div class="upi-icon" style="background:${m.color}22;">${m.icon}</div>
-      <div>
-        <div class="upi-name">${m.name}</div>
-        <div class="upi-sub">${m.sub}</div>
-      </div>
-      <div style="margin-left:auto;font-size:13px;font-weight:800;color:var(--text);">₹${plan.price}</div>
-    </button>`).join('')}`;
-}
-
-function openPayment(method, upiId, amount){
-  if(method==='bank'){
-    showPaymentDetails(amount);
-    return;
-  }
-  // Deep link to UPI apps
-  const upiLinks = {
-    gpay: `gpay://upi/pay?pa=${upiId}&pn=FSTracker&am=${amount}&cu=INR&tn=FSTracker+Premium`,
-    phonepe: `phonepe://pay?pa=${upiId}&pn=FSTracker&am=${amount}&cu=INR`,
-    paytm: `paytmmp://pay?pa=${upiId}&pn=FSTracker&am=${amount}&cu=INR`,
-    upi: `upi://pay?pa=${upiId}&pn=FS+Life+Tracker+Premium&am=${amount}&cu=INR&tn=Premium+Plan`,
-  };
-  const link = upiLinks[method] || upiLinks.upi;
-  // Try to open UPI app, fallback to instructions
-  const a = document.createElement('a');
-  a.href = link;
-  a.click();
-  setTimeout(()=>{
-    toast('After paying, enter your transaction ID below ↓');
-  }, 1500);
-}
-
-function showPaymentDetails(amount){
-  alert(`Bank Transfer Details:
-
-Account Name: [Your Name]
-Account No: XXXXXXXXXXXXXXXX
-IFSC: XXXXXXXXX
-Bank: [Your Bank]
-Amount: ₹${amount}
-
-After transfer, enter reference number below.`);
-}
-
-function submitTxn(){
-  const txnId = document.getElementById('txn-id-input').value.trim();
-  const plan = document.getElementById('txn-plan-select').value;
-  if(!txnId || txnId.length < 8){
-    toast('⚠️ Please enter a valid transaction ID');
-    return;
-  }
-  const el = document.getElementById('txn-result');
-  el.innerHTML = '<span style="color:var(--at);">⏳ Verifying... we will activate within 2 hours.</span>';
-  // Save pending verification
-  localStorage.setItem('pending_txn', JSON.stringify({txnId, plan, time:new Date().toISOString()}));
-  // For DEMO: auto-activate after 3 seconds (in real app, you verify server-side)
-  setTimeout(()=>{
-    const months = plan==='monthly'?1:plan==='annual'?12:9999;
-    activatePremium(plan, months);
-    el.innerHTML = '<span style="color:var(--gt);">✅ Premium activated! Enjoy!</span>';
-  }, 3000);
-}
-
-// ── REFERRAL ──
-function generateReferralCode(){
-  if(!P) return 'FS0000';
-  const base = (P.name||'FS').substring(0,2).toUpperCase();
-  const num = Math.abs((P.name||'student').split('').reduce((a,c)=>a+c.charCodeAt(0),0)) % 9000 + 1000;
-  return base + num;
-}
 
 function renderReferral(){
   const code = generateReferralCode();
@@ -2182,92 +1845,7 @@ function shareReferral(){
   }
 }
 
-// ── AI USAGE LIMIT (free: 3 uses) ──
-function checkAiLimit(){
-  if(isPremium) return true;
-  const used = parseInt(localStorage.getItem('ai_uses')||'0');
-  if(used >= 3){
-    showPaywall('ai');
-    return false;
-  }
-  localStorage.setItem('ai_uses', used+1);
-  return true;
-}
-
-function showPaywall(feature){
-  const features = {
-    ai:'AI Study Planner (unlimited)',
-    report:'Full weekly performance report',
-    certs:'Unlimited certificate tracking',
-  };
-  const overlay = document.createElement('div');
-  overlay.className = 'paywall-overlay';
-  overlay.id = 'paywall-overlay';
-  overlay.innerHTML = `
-    <div class="paywall-sheet">
-      <div style="text-align:center;padding:10px 0 20px;">
-        <div style="font-size:40px;margin-bottom:10px;">🔒</div>
-        <div style="font-size:18px;font-weight:800;color:var(--text);">Premium Feature</div>
-        <div style="font-size:13px;color:var(--text2);margin-top:6px;line-height:1.5;max-width:280px;margin-left:auto;margin-right:auto;">
-          <b>${features[feature]||'This feature'}</b> requires a Premium plan.
-          Get unlimited access starting at just <b>₹49/month</b>.
-        </div>
-      </div>
-      <button class="btn btn-p" style="width:100%;justify-content:center;font-size:14px;padding:15px;margin-bottom:10px;" onclick="closePW();sw('premium',document.getElementById('premium-nav-btn'))">
-        🚀 See Premium Plans
-      </button>
-      <button class="btn" style="width:100%;justify-content:center;" onclick="closePW()">Maybe later</button>
-    </div>`;
-  document.body.appendChild(overlay);
-}
-
-function closePW(){
-  document.getElementById('paywall-overlay')?.remove();
-}
-
-// Patch generateLearnPlan to check AI limit
-const _origGenLearn = generateLearnPlan;
-generateLearnPlan = async function(){
-  if(!checkAiLimit()) return;
-  return _origGenLearn.apply(this, arguments);
-};
-
-// ── AD INJECTION — show ads in study/jobs/today tabs ──
-function injectAds(){
-  if(isPremium) return;
-  // Inject ad placeholders into sections
-  const studyEl = document.getElementById('s-study');
-  if(studyEl && !document.getElementById('ad-study')){
-    const adDiv = document.createElement('div');
-    adDiv.id = 'ad-study';
-    studyEl.insertBefore(adDiv, studyEl.firstChild);
-  }
-  const jobEl = document.getElementById('s-jobs');
-  if(jobEl && !document.getElementById('ad-jobs')){
-    const adDiv = document.createElement('div');
-    adDiv.id = 'ad-jobs';
-    jobEl.insertBefore(adDiv, jobEl.firstChild);
-  }
-  renderAdBanner('ad-study');
-  renderAdBanner('ad-jobs');
-  // Rotate ads every 30 seconds
-  setInterval(()=>{
-    renderAdBanner('ad-study');
-    renderAdBanner('ad-jobs');
-  }, 30000);
-}
-
-// Initialise monetization
-function initMonetization(){
-  loadPremiumState();
-  updatePremiumNav();
-  injectAds();
-  renderPremiumTab();
-  // Generate referral code
-  const code = generateReferralCode();
-  const refEl = document.getElementById('referral-code');
-  if(refEl) refEl.textContent = code;
-}
+function checkAiLimit(){ return true; } // Premium removed — all features free
 
 async function init(){
   // Check if already logged in (stored credentials)
@@ -2289,7 +1867,7 @@ async function init(){
       document.getElementById('login-screen').classList.add('hidden');
       startApp();
       await loadLearnPlan();
-      initMonetization();
+      
     } else {
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('onboarding').classList.remove('hidden');
@@ -2479,7 +2057,7 @@ async function proceedAfterRegister(){
   if(P&&P.setupDone){
     startApp();
     try{await loadLearnPlan();}catch(e){}
-    try{initMonetization();}catch(e){}
+    
   } else {
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
@@ -2549,7 +2127,7 @@ async function doLogin(){
   if(P&&P.setupDone){
     startApp();
     try{await loadLearnPlan();}catch(e){}
-    try{initMonetization();}catch(e){}
+    
   } else {
     setTimeout(()=>{const n=document.getElementById('ob-name');if(n)n.value=account.name;},100);
     document.getElementById('onboarding').classList.remove('hidden');
@@ -2628,7 +2206,7 @@ function showGuestMode(){
   if(P&&P.setupDone){
     startApp();
     try{loadLearnPlan();}catch(e){}
-    try{initMonetization();}catch(e){}
+    
   } else {
     document.getElementById('onboarding').classList.remove('hidden');
     document.getElementById('app').classList.add('hidden');
@@ -2736,7 +2314,7 @@ async function initAuth(){
       document.getElementById('app').classList.remove('hidden');
       startApp();
       try{await loadLearnPlan();}catch(e){}
-      try{initMonetization();}catch(e){}
+      
       // Sync from cloud in background
       setTimeout(async()=>{
         await loadUserDataFromCloud();
@@ -2755,7 +2333,7 @@ async function initAuth(){
       document.getElementById('login-screen').classList.add('hidden');
       startApp();
       try{await loadLearnPlan();}catch(e){}
-      try{initMonetization();}catch(e){}
+      
     } else {
       document.getElementById('onboarding').classList.remove('hidden');
       document.getElementById('login-screen').classList.add('hidden');
