@@ -939,6 +939,7 @@ let P=null,CERTS=[],APPLIED=[],TASK_LOG={},WEEK_LOG={};
 // CUSTOM TASKS — fully editable schedule
 // Each task: {id, label, desc, time:'HH:MM', cat, sort}
 let CUSTOM_TASKS=null; // null = not yet initialised
+const DEFAULT_TASKS_VERSION = 'v1'; // bump this when you change defaultTasks
 function defaultTasks(){
   return[
     {id:'wake',label:'Wake up & Morning routine',desc:'Freshen up, breakfast, get ready.',time:'05:30',cat:'free'},
@@ -949,6 +950,13 @@ function defaultTasks(){
     {id:'jobprep',label:'Job prep — 30 min',desc:'One topic from Jobs/Study tab.',time:'23:00',cat:'job-prep'},
     {id:'sleep',label:'Sleep 😴',desc:'6+ hours non-negotiable.',time:'23:30',cat:'sleep'},
   ];
+}
+function isNewUser(){
+  // A user is "new" if they have never saved custom tasks
+  return !localStorage.getItem('CTASKS2') && !localStorage.getItem('CTASKS_SET');
+}
+function markTasksAsCustomised(){
+  localStorage.setItem('CTASKS_SET','1');
 }
 
 async function saveAll(){
@@ -962,6 +970,7 @@ async function saveAll(){
     localStorage.setItem('TASK_LOG2',JSON.stringify(TASK_LOG));
     localStorage.setItem('WEEK_LOG2',JSON.stringify(WEEK_LOG));
     localStorage.setItem('CTASKS2',JSON.stringify(CUSTOM_TASKS));
+    markTasksAsCustomised();
   }catch(e){}
   // ── ADMIN SYNC via JSONBin ──
   try{
@@ -1024,7 +1033,8 @@ async function loadAll(){
   if(map.TASK_LOG2)TASK_LOG=map.TASK_LOG2;
   if(map.WEEK_LOG2)WEEK_LOG=map.WEEK_LOG2;
   if(map.CTASKS2)CUSTOM_TASKS=map.CTASKS2;
-  if(!CUSTOM_TASKS)CUSTOM_TASKS=defaultTasks();
+  if(!CUSTOM_TASKS && isNewUser()) CUSTOM_TASKS=defaultTasks();
+  else if(!CUSTOM_TASKS) CUSTOM_TASKS=defaultTasks(); // fallback only
 }
 
 // ONBOARDING DATA
@@ -2550,7 +2560,10 @@ async function loadUserDataFromCloud(){
     if(ud.APPLIED) APPLIED=ud.APPLIED;
     if(ud.TASK_LOG) TASK_LOG=ud.TASK_LOG;
     if(ud.WEEK_LOG) WEEK_LOG=ud.WEEK_LOG;
-    if(ud.CUSTOM_TASKS) CUSTOM_TASKS=ud.CUSTOM_TASKS;
+    // Only restore cloud tasks if user has no local custom tasks saved
+    if(ud.CUSTOM_TASKS && !localStorage.getItem('CTASKS_SET')) CUSTOM_TASKS=ud.CUSTOM_TASKS;
+    else if(ud.CUSTOM_TASKS && localStorage.getItem('CTASKS2')) { /* keep local tasks */ }
+    else if(ud.CUSTOM_TASKS) CUSTOM_TASKS=ud.CUSTOM_TASKS;
     // Cache locally
     localStorage.setItem('P2',JSON.stringify(P));
     localStorage.setItem('CERTS2',JSON.stringify(CERTS));
