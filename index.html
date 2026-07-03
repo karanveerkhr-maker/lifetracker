@@ -656,6 +656,44 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
       <div id="job-list"></div>
     </div>
 
+    <!-- STATS SECTION -->
+    <div id="s-stats" class="sec">
+      <div class="stitle">Your performance</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+        <div class="card" style="padding:10px 12px;text-align:center;margin-bottom:0;">
+          <div style="font-size:22px;font-weight:800;color:var(--acc);" id="stat-streak">0</div>
+          <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;">Day streak</div>
+        </div>
+        <div class="card" style="padding:10px 12px;text-align:center;margin-bottom:0;">
+          <div style="font-size:22px;font-weight:800;color:#1baf7a;" id="stat-week-pct">0%</div>
+          <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;">This week</div>
+        </div>
+        <div class="card" style="padding:10px 12px;text-align:center;margin-bottom:0;">
+          <div style="font-size:22px;font-weight:800;color:#eda100;" id="stat-today">0/0</div>
+          <div style="font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;">Today</div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;letter-spacing:.03em;">📅 WEEKLY PROGRESS</div>
+        <div style="position:relative;width:100%;height:160px;">
+          <canvas id="weeklyChart" role="img" aria-label="Bar chart showing tasks completed each day this week"></canvas>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;letter-spacing:.03em;">🗂 TIME BY CATEGORY</div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="position:relative;width:130px;height:130px;flex-shrink:0;">
+            <canvas id="categoryChart" role="img" aria-label="Pie chart showing task distribution by category"></canvas>
+          </div>
+          <div id="cat-legend" style="flex:1;font-size:12px;"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.03em;">🏆 INSIGHTS</div>
+        <div id="stats-insights" style="font-size:13px;color:var(--text2);line-height:1.8;"></div>
+      </div>
+    </div>
+
     <div id="s-profile" class="sec">
       <div class="card" id="pro-display"></div>
       <button class="btn" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="openModal('edit-modal')">✏️ Edit profile</button>
@@ -1522,17 +1560,36 @@ Rules:
 
   try {
     const encoded = encodeURIComponent(prompt);
-    const response = await fetch(`https://text.pollinations.ai/${encoded}`, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
-    });
+
+    // Try up to 3 times with delay on 429
+    let response, lastErr;
+    const endpoints = [
+      `https://text.pollinations.ai/${encoded}`,
+      `https://text.pollinations.ai/openai/${encoded}`,
+    ];
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const url = endpoints[attempt % endpoints.length];
+        response = await fetch(url, { method: 'GET' });
+        if (response.status === 429) {
+          statusEl.textContent = '⏳ Server busy, retrying in 5s...';
+          await new Promise(r => setTimeout(r, 5000));
+          continue;
+        }
+        if (response.ok) break;
+        throw new Error('API error ' + response.status);
+      } catch(e) {
+        lastErr = e;
+        if (attempt < 2) await new Promise(r => setTimeout(r, 3000));
+      }
+    }
 
     clearInterval(statusTimer);
 
-    if (!response.ok) throw new Error('API error ' + response.status);
+    if (!response || !response.ok) throw new Error(lastErr?.message || 'API unavailable');
     let raw = await response.text();
     raw = raw.replace(/```json|```/g, '').trim();
-    // Extract JSON if wrapped in text
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (jsonMatch) raw = jsonMatch[0];
 
@@ -2610,6 +2667,11 @@ function renderInsights() {
 
 // Patch sw() to render stats when Stats tab opens
 document.addEventListener('DOMContentLoaded', () => {
+  // Pre-load Chart.js immediately so stats tab is instant
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+  document.head.appendChild(s);
+
   const _orig = window.sw;
   window.sw = function(tab, btn) {
     _orig(tab, btn);
@@ -2617,12 +2679,10 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         if (window.Chart) renderStats();
         else {
-          const s = document.createElement('script');
-          s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+          // Fallback if CDN was slow
           s.onload = renderStats;
-          document.head.appendChild(s);
         }
-      }, 50);
+      }, 100);
     }
   };
 });
