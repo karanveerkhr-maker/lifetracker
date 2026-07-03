@@ -1510,14 +1510,37 @@ async function generateLearnPlan() {
     statusEl.textContent = statuses[si];
   }, 2200);
 
-  const prompt = `You are a study planner for Indian students. Create a study plan for a ${userDegree} student.
+  const topic = inputText.substring(0, 300);
+  const prompt = `Create a ${weeks}-week study plan for an Indian ${userDegree} student to learn: "${topic}". ${hours} hours/day.
 
-Topic: ${inputText.substring(0, 500)}
-Hours/day: ${hours}
-Weeks: ${weeks}
+Rules: Write REAL content, not placeholders like "...". Give actual topic names, real descriptions, real YouTube URLs.
 
-Return ONLY valid JSON, no markdown, no explanation:
-{"title":"...","summary":"...","totalTopics":5,"totalWeeks":${weeks},"hoursPerDay":${hours},"topics":[{"id":"t1","title":"...","description":"...","week":1,"day":"Mon","duration":"1 hr","difficulty":"Beginner","resources":[{"name":"...","type":"YouTube","url":"https://www.youtube.com/results?search_query=..."}]}],"weeklyPlan":[{"week":1,"theme":"...","days":[{"day":"Mon","topics":["t1"],"totalTime":"1 hr"},{"day":"Tue","topics":[],"totalTime":"Rest"},{"day":"Wed","topics":["t2"],"totalTime":"1 hr"},{"day":"Thu","topics":[],"totalTime":"Rest"},{"day":"Fri","topics":["t3"],"totalTime":"1 hr"},{"day":"Sat","topics":["t4"],"totalTime":"1 hr"},{"day":"Sun","topics":[],"totalTime":"Revision"}]}],"courses":[{"name":"...","provider":"YouTube","url":"https://www.youtube.com/results?search_query=...","duration":"4 weeks","free":true,"description":"..."}]}`;
+Return ONLY this JSON structure (no markdown):
+{
+  "title": "actual plan title",
+  "summary": "2 sentence description of what they will learn",
+  "totalTopics": 6,
+  "totalWeeks": ${weeks},
+  "hoursPerDay": ${hours},
+  "topics": [
+    {"id":"t1","title":"actual topic name","description":"what this covers","week":1,"day":"Mon","duration":"${hours} hr","difficulty":"Beginner","resources":[{"name":"actual resource name","type":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+tutorial"}]},
+    {"id":"t2","title":"actual topic name 2","description":"what this covers","week":1,"day":"Wed","duration":"${hours} hr","difficulty":"Beginner","resources":[{"name":"actual resource","type":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+basics"}]},
+    {"id":"t3","title":"actual topic name 3","description":"what this covers","week":1,"day":"Fri","duration":"${hours} hr","difficulty":"Intermediate","resources":[{"name":"actual resource","type":"Website","url":"https://www.google.com/search?q=${encodeURIComponent(topic)}+study+material"}]},
+    {"id":"t4","title":"actual topic name 4","description":"what this covers","week":2,"day":"Mon","duration":"${hours} hr","difficulty":"Intermediate","resources":[{"name":"actual resource","type":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+advanced"}]},
+    {"id":"t5","title":"actual topic name 5","description":"what this covers","week":2,"day":"Wed","duration":"${hours} hr","difficulty":"Advanced","resources":[{"name":"actual resource","type":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+exam"}]},
+    {"id":"t6","title":"Revision and Mock Test","description":"Revise all topics and attempt practice questions","week":2,"day":"Fri","duration":"${hours} hr","difficulty":"Advanced","resources":[{"name":"Practice questions","type":"Website","url":"https://www.google.com/search?q=${encodeURIComponent(topic)}+practice+questions"}]}
+  ],
+  "weeklyPlan": [
+    {"week":1,"theme":"Foundation","days":[{"day":"Mon","topics":["t1"],"totalTime":"${hours} hr"},{"day":"Tue","topics":[],"totalTime":"Rest"},{"day":"Wed","topics":["t2"],"totalTime":"${hours} hr"},{"day":"Thu","topics":[],"totalTime":"Rest"},{"day":"Fri","topics":["t3"],"totalTime":"${hours} hr"},{"day":"Sat","topics":[],"totalTime":"Revision"},{"day":"Sun","topics":[],"totalTime":"Rest"}]},
+    {"week":2,"theme":"Advanced","days":[{"day":"Mon","topics":["t4"],"totalTime":"${hours} hr"},{"day":"Tue","topics":[],"totalTime":"Rest"},{"day":"Wed","topics":["t5"],"totalTime":"${hours} hr"},{"day":"Thu","topics":[],"totalTime":"Rest"},{"day":"Fri","topics":["t6"],"totalTime":"${hours} hr"},{"day":"Sat","topics":[],"totalTime":"Revision"},{"day":"Sun","topics":[],"totalTime":"Rest"}]}
+  ],
+  "courses": [
+    {"name":"actual course name","provider":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+full+course","duration":"${weeks} weeks","free":true,"description":"Complete course covering all topics"},
+    {"name":"actual resource name","provider":"Website","url":"https://www.google.com/search?q=${encodeURIComponent(topic)}+free+notes+pdf","duration":"Self-paced","free":true,"description":"Free notes and study material"}
+  ]
+}
+
+Replace ALL "actual topic name", "actual resource name" etc with REAL content specific to "${topic}". The topics array must have real subject-specific content.`;
 
   try {
     const encoded = encodeURIComponent(prompt);
@@ -1557,7 +1580,30 @@ Return ONLY valid JSON, no markdown, no explanation:
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (jsonMatch) raw = jsonMatch[0];
 
-    learnPlan = JSON.parse(raw);
+    let parsed;
+    try { parsed = JSON.parse(raw); } catch(e) { throw new Error('Bad response from AI — try again'); }
+
+    // Ensure required fields exist
+    if (!parsed.topics || !parsed.topics.length) throw new Error('AI returned empty plan — try again');
+    if (!parsed.weeklyPlan || !parsed.weeklyPlan.length) {
+      // Auto-build weeklyPlan from topics
+      const wks = {};
+      parsed.topics.forEach(t => {
+        const w = t.week || 1;
+        if (!wks[w]) wks[w] = { week: w, theme: `Week ${w}`, days: [
+          {day:'Mon',topics:[],totalTime:'Rest'},{day:'Tue',topics:[],totalTime:'Rest'},
+          {day:'Wed',topics:[],totalTime:'Rest'},{day:'Thu',topics:[],totalTime:'Rest'},
+          {day:'Fri',topics:[],totalTime:'Rest'},{day:'Sat',topics:[],totalTime:'Rest'},
+          {day:'Sun',topics:[],totalTime:'Revision'}
+        ]};
+        const dayIdx = ['Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(t.day);
+        if (dayIdx >= 0) { wks[w].days[dayIdx].topics.push(t.id); wks[w].days[dayIdx].totalTime = t.duration; }
+      });
+      parsed.weeklyPlan = Object.values(wks);
+    }
+    if (!parsed.courses) parsed.courses = [];
+
+    learnPlan = parsed;
     saveLearnPlan();
     renderLearnResult();
 
