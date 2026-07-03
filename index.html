@@ -52,7 +52,7 @@
   --sh2:0 4px 24px rgba(0,0,0,0.5);
 }}
 
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;}
 
 /* ══ ONBOARDING ══ */
@@ -127,7 +127,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 
 /* ══ BUTTONS ══ */
 .btn{padding:9px 14px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:12px;cursor:pointer;background:transparent;color:var(--text);font-family:inherit;font-weight:600;display:inline-flex;align-items:center;gap:5px;text-decoration:none;transition:all .15s;}
-.btn:active{transform:scale(0.97);}
+.btn:active,.nb:active,.ob-card:active,.ls-btn:active,.ls-tab:active,[onclick]:active{transform:scale(0.97);opacity:0.75;transition:none!important;}
 .btn-p{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--sh2);}
 .btn-g{background:var(--gbg);color:var(--gt);border-color:transparent;}
 .btn-b{background:var(--bbg);color:var(--bt);border-color:transparent;}
@@ -2489,6 +2489,21 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('pwa-install-banner')?.classList.remove('show');
   _deferredPrompt = null;
 });
+
+// ── INSTANT TOUCH RESPONSE ──
+// Eliminates any remaining tap delay on Android/iOS
+document.addEventListener('touchstart', function(){}, {passive: true});
+
+// Make all buttons respond instantly on touchend
+document.addEventListener('touchend', function(e) {
+  const el = e.target.closest('button, [onclick], .nb, .ob-card, .ls-tab, .ls-btn');
+  if (el) el.style.opacity = '1';
+}, {passive: true});
+
+document.addEventListener('touchstart', function(e) {
+  const el = e.target.closest('button, [onclick], .nb, .ob-card, .ls-tab, .ls-btn');
+  if (el) el.style.opacity = '0.75';
+}, {passive: true});
 
 // ═══════════════════════════════════════════
 // STATS & GRAPHS
