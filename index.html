@@ -527,6 +527,34 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 
     <div id="s-today" class="sec active">
       <div id="notif-area"></div>
+
+      <!-- MOTIVATIONAL WIDGET -->
+      <div id="motive-widget" style="margin-bottom:14px;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:var(--bg2);box-shadow:var(--sh);">
+        <div style="padding:14px 16px 10px;border-bottom:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--text3);margin-bottom:8px;">💬 DAILY MOTIVATION</div>
+          <div id="motive-quote" style="font-size:13px;font-style:italic;color:var(--acc);line-height:1.6;">"Loading your daily quote..."</div>
+        </div>
+        <div style="display:flex;border-bottom:1px solid var(--border);">
+          <div style="flex:1;padding:10px 14px;text-align:center;border-right:1px solid var(--border);">
+            <div id="mw-streak" style="font-size:22px;font-weight:800;color:var(--acc);">0🔥</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--text3);text-transform:uppercase;">Day streak</div>
+          </div>
+          <div style="flex:1;padding:10px 14px;text-align:center;border-right:1px solid var(--border);">
+            <div id="mw-today" style="font-size:22px;font-weight:800;color:#1baf7a;">0/0</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--text3);text-transform:uppercase;">Done today</div>
+          </div>
+          <div style="flex:1;padding:10px 14px;text-align:center;">
+            <div id="mw-pct" style="font-size:22px;font-weight:800;color:#eda100;">0%</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--text3);text-transform:uppercase;">This week</div>
+          </div>
+        </div>
+        <div id="mw-next-wrap" style="padding:10px 14px;display:flex;align-items:center;gap:10px;">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--text3);white-space:nowrap;">⏭ NEXT UP</div>
+          <div id="mw-next" style="font-size:13px;font-weight:600;color:var(--text);flex:1;">—</div>
+          <div id="mw-next-time" style="font-size:12px;color:var(--text3);white-space:nowrap;"></div>
+        </div>
+      </div>
+
       <div class="today-grid">
         <div class="today-stat"><div class="today-n" id="td-done">0</div><div class="today-l">Done today</div></div>
         <div class="today-stat"><div class="today-n" id="td-pct">0%</div><div class="today-l">Completion</div></div>
@@ -1159,7 +1187,7 @@ function renderToday(){
   if(topics.length){const topic=topics[today.getDate()%topics.length];document.getElementById('topic-of-day').innerHTML=`<div class="ibox" style="background:var(--pbg);color:var(--pt);"><b>📖 Today's focus: ${topic.title}</b><br>${topic.desc}</div>`;}
   WEEK_LOG[todayKey]=pct;saveAll();
 }
-function toggleTask(id){const log=getTodayLog(),wasDone=log[id];setTaskDone(id,!wasDone);renderToday();renderTimetable();toast(wasDone?'Unmarked':'✓ Done!');}
+function toggleTask(id){const log=getTodayLog(),wasDone=log[id];setTaskDone(id,!wasDone);renderToday();renderTimetable();updateMotiveWidget();toast(wasDone?'Unmarked':'✓ Done!');}
 
 function renderTimetable(){
   const sched=getSchedule(),log=getTodayLog();
@@ -1406,7 +1434,7 @@ function startApp(){
   document.getElementById('onboarding').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   if(!CUSTOM_TASKS||!CUSTOM_TASKS.length) CUSTOM_TASKS=defaultTasks();
-  updateHeader();renderToday();renderTimetable();renderStudy();renderSkills();renderJobs();renderProfile();
+  updateHeader();renderToday();renderTimetable();renderStudy();renderSkills();renderJobs();renderProfile();updateMotiveWidget();
   toast('👋 Welcome, '+(P.name||'friend')+'!');
   
 }
@@ -1482,99 +1510,35 @@ async function generateLearnPlan() {
     statusEl.textContent = statuses[si];
   }, 2200);
 
-  const prompt = `You are an expert study planner for Indian students. The user is a ${userDegree} student.
+  const prompt = `You are a study planner for Indian students. Create a study plan for a ${userDegree} student.
 
-They want to learn the following (syllabus/topics/exam/subject):
-"""
-${inputText.substring(0, 3000)}
-"""
+Topic: ${inputText.substring(0, 500)}
+Hours/day: ${hours}
+Weeks: ${weeks}
 
-They have ${hours} hour(s) per day and want to finish in ${weeks} week(s).
-
-IMPORTANT RULES:
-- Handle ANY topic: competitive exams (SSC, police constable, UPSC, bank, railway), academic subjects (psychology, history, science), skills (coding, design), or any custom topic
-- For police/constable/govt exams: include GK, reasoning, maths, Hindi/English, and subject-specific topics
-- For psychology or social science: include theory, key psychologists, experiments, applications
-- For any exam with a specific date mentioned: prioritise urgent topics first and create a countdown-aware plan
-- Always find real free resources: YouTube search URLs, NCERT, NPTEL, government sites, free apps
-- Make the plan specific, actionable and realistic — not generic
-
-Respond ONLY with a valid JSON object (no markdown, no backticks, no explanation) in this exact structure:
-
-{
-  "title": "short plan title",
-  "totalTopics": number,
-  "totalWeeks": number,
-  "hoursPerDay": number,
-  "summary": "2-sentence overview of the plan",
-  "topics": [
-    {
-      "id": "t1",
-      "title": "topic title",
-      "description": "what this covers in 1-2 sentences",
-      "week": 1,
-      "day": "Mon",
-      "duration": "45 min",
-      "difficulty": "Beginner|Intermediate|Advanced",
-      "resources": [
-        {"name": "resource name", "type": "YouTube|NPTEL|Website|Book|PDF|App", "url": "https://..."}
-      ]
-    }
-  ],
-  "weeklyPlan": [
-    {
-      "week": 1,
-      "theme": "week theme",
-      "days": [
-        {"day": "Mon", "topics": ["t1"], "totalTime": "45 min"},
-        {"day": "Tue", "topics": [], "totalTime": "Rest"},
-        {"day": "Wed", "topics": ["t2"], "totalTime": "1 hr"},
-        {"day": "Thu", "topics": [], "totalTime": "Rest"},
-        {"day": "Fri", "topics": ["t3"], "totalTime": "1 hr"},
-        {"day": "Sat", "topics": ["t4","t5"], "totalTime": "2 hr"},
-        {"day": "Sun", "topics": [], "totalTime": "Revision"}
-      ]
-    }
-  ],
-  "courses": [
-    {
-      "name": "course name",
-      "provider": "NPTEL|Coursera|YouTube|Khan Academy|Udemy|GeeksforGeeks|etc",
-      "url": "https://...",
-      "duration": "e.g. 4 weeks",
-      "free": true,
-      "description": "what this course covers"
-    }
-  ]
-}
-
-Rules:
-- Make ${weeks} weeks of weeklyPlan (one entry per week)
-- Distribute topics logically across weeks and days
-- Include 3-6 high-quality free courses/resources
-- Use real URLs — YouTube search URLs are fine: https://www.youtube.com/results?search_query=...
-- Make topics specific and actionable
-- Keep difficulty realistic for the student level
-- Sunday = revision/rest day
-- Return ONLY the JSON, nothing else`;
+Return ONLY valid JSON, no markdown, no explanation:
+{"title":"...","summary":"...","totalTopics":5,"totalWeeks":${weeks},"hoursPerDay":${hours},"topics":[{"id":"t1","title":"...","description":"...","week":1,"day":"Mon","duration":"1 hr","difficulty":"Beginner","resources":[{"name":"...","type":"YouTube","url":"https://www.youtube.com/results?search_query=..."}]}],"weeklyPlan":[{"week":1,"theme":"...","days":[{"day":"Mon","topics":["t1"],"totalTime":"1 hr"},{"day":"Tue","topics":[],"totalTime":"Rest"},{"day":"Wed","topics":["t2"],"totalTime":"1 hr"},{"day":"Thu","topics":[],"totalTime":"Rest"},{"day":"Fri","topics":["t3"],"totalTime":"1 hr"},{"day":"Sat","topics":["t4"],"totalTime":"1 hr"},{"day":"Sun","topics":[],"totalTime":"Revision"}]}],"courses":[{"name":"...","provider":"YouTube","url":"https://www.youtube.com/results?search_query=...","duration":"4 weeks","free":true,"description":"..."}]}`;
 
   try {
     const encoded = encodeURIComponent(prompt);
 
-    // Try up to 3 times with delay on 429
+    // Try up to 3 times with delay on 429/500
     let response, lastErr;
-    const endpoints = [
-      `https://text.pollinations.ai/${encoded}`,
-      `https://text.pollinations.ai/openai/${encoded}`,
-    ];
 
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
-        const url = endpoints[attempt % endpoints.length];
-        response = await fetch(url, { method: 'GET' });
-        if (response.status === 429) {
-          statusEl.textContent = '⏳ Server busy, retrying in 5s...';
-          await new Promise(r => setTimeout(r, 5000));
+        response = await fetch('https://text.pollinations.ai/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [{ role: 'user', content: prompt }],
+            model: 'openai',
+            jsonMode: true
+          })
+        });
+        if (response.status === 429 || response.status === 500) {
+          statusEl.textContent = `⏳ Server busy, retrying (${attempt + 1}/3)...`;
+          await new Promise(r => setTimeout(r, 4000));
           continue;
         }
         if (response.ok) break;
@@ -2401,6 +2365,95 @@ async function initAuth(){
 setInterval(()=>{ if(currentUID&&!currentUID.startsWith('GUEST_')) saveUserDataToCloud(); }, 90000);
 
 initAuth();
+
+// ═══════════════════════════════════════════
+// MOTIVATIONAL WIDGET
+// ═══════════════════════════════════════════
+const QUOTES = [
+  "Push yourself, because no one else is going to do it for you.",
+  "Small daily improvements lead to stunning results.",
+  "Discipline is doing what needs to be done, even when you don't feel like it.",
+  "Your future self is watching you right now through memories.",
+  "Success is the sum of small efforts repeated day in and day out.",
+  "Don't wish it were easier. Wish you were better.",
+  "You don't have to be great to start, but you have to start to be great.",
+  "The secret of getting ahead is getting started.",
+  "Dream big. Start small. Act now.",
+  "Every day is a chance to be better than yesterday.",
+  "Consistency is more important than perfection.",
+  "Hard work beats talent when talent doesn't work hard.",
+  "One day or day one. You decide.",
+  "Believe you can and you're halfway there.",
+  "Focus on progress, not perfection.",
+  "Your only limit is your mind.",
+  "Stay hungry. Stay foolish.",
+  "Do it now. Sometimes later becomes never.",
+  "Great things never come from comfort zones.",
+  "Work hard in silence. Let success make the noise."
+];
+
+function getDailyQuote() {
+  const day = new Date().getDate() + new Date().getMonth() * 31;
+  return QUOTES[day % QUOTES.length];
+}
+
+function getNextTask() {
+  const tasks = CUSTOM_TASKS || defaultTasks();
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const upcoming = tasks
+    .filter(t => t.time)
+    .map(t => { const [h,m] = t.time.split(':').map(Number); return {...t, mins: h*60+m}; })
+    .filter(t => t.mins > nowMins)
+    .sort((a,b) => a.mins - b.mins);
+  if (upcoming.length > 0) {
+    const next = upcoming[0];
+    const diff = next.mins - nowMins;
+    const timeStr = diff < 60 ? `in ${diff} min` : `at ${next.time}`;
+    return { label: next.label, time: timeStr };
+  }
+  return { label: 'All tasks done for today!', time: '' };
+}
+
+function getWeekPct() {
+  const tasks = CUSTOM_TASKS || defaultTasks();
+  const total = tasks.length || 1;
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    days.push(d.toISOString().split('T')[0]);
+  }
+  let weekDone = 0;
+  days.forEach(d => { const log = WEEK_LOG[d]||{}; weekDone += Object.values(log).filter(v=>v===true).length; });
+  return Math.round((weekDone / (total * 7)) * 100);
+}
+
+function updateMotiveWidget() {
+  const quoteEl = document.getElementById('motive-quote');
+  if (quoteEl) quoteEl.textContent = `"${getDailyQuote()}"`;
+
+  const streak = parseInt(localStorage.getItem('lt_streak') || '0');
+  const streakEl = document.getElementById('mw-streak');
+  if (streakEl) streakEl.textContent = `${streak}🔥`;
+
+  const tasks = CUSTOM_TASKS || defaultTasks();
+  const done = Object.values(TASK_LOG).filter(v=>v===true).length;
+  const total = tasks.length;
+  const todayEl = document.getElementById('mw-today');
+  if (todayEl) {
+    todayEl.textContent = `${done}/${total}`;
+    todayEl.style.color = done>=total ? '#1baf7a' : done>=total/2 ? '#eda100' : 'var(--acc)';
+  }
+
+  const pctEl = document.getElementById('mw-pct');
+  if (pctEl) pctEl.textContent = `${getWeekPct()}%`;
+
+  const next = getNextTask();
+  const nextEl = document.getElementById('mw-next');
+  const nextTime = document.getElementById('mw-next-time');
+  if (nextEl) nextEl.textContent = next.label;
+  if (nextTime) nextTime.textContent = next.time;
+}
 
 
 // ════════════════════════════════════════════
