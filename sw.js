@@ -87,3 +87,36 @@ self.addEventListener('message', event => {
     event.ports[0].postMessage(CACHE_NAME);
   }
 });
+
+// ── NOTIFICATION CLICK: open app when user taps notification ──
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const url = '/lifetracker/index.html';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+      // If app is already open, focus it
+      for (const client of clientList) {
+        if (client.url.includes('/lifetracker') && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // Otherwise open a new window
+      if (clients.openWindow) return clients.openWindow(url);
+    })
+  );
+});
+
+// ── PUSH: handle background push notifications (future use) ──
+self.addEventListener('push', event => {
+  if (!event.data) return;
+  const data = event.data.json();
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'Life Tracker', {
+      body: data.body || '',
+      icon: '/lifetracker/icons/icon-192.png',
+      badge: '/lifetracker/icons/icon-192.png',
+      tag: data.tag || 'lt-push',
+      vibrate: [200, 100, 200]
+    })
+  );
+});

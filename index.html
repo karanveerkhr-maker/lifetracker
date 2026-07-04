@@ -602,23 +602,40 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 
     <!-- ══ LEARN TAB ══ -->
     <div id="s-learn" class="sec">
+
+      <!-- Input area -->
       <div id="learn-upload-area">
         <div class="ibox" style="background:var(--pbg);color:var(--pt);border:1px solid rgba(108,99,255,0.2);">
-          <b>📥 AI Study Planner</b><br>
-          Upload your syllabus PDF, paste topics, or just write what you want to learn — e.g. <i>"Python, Django, REST APIs"</i> or <i>"Unit 1: Fingerprints, Unit 2: DNA"</i>. Claude AI builds a full course list + weekly timetable for you — free resources only.
+          <b>✨ AI Study Planner</b><br>
+          Type any topic, exam, or paste your syllabus — AI builds a full weekly plan with free resources instantly.
         </div>
-        <div class="frow" id="learn-mode-tabs">
+
+        <!-- Quick topic chips -->
+        <div style="margin:10px 0 4px;">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Quick pick</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="fp" onclick="quickTopic('Python programming')">🐍 Python</button>
+            <button class="fp" onclick="quickTopic('SSC CGL exam preparation')">📋 SSC CGL</button>
+            <button class="fp" onclick="quickTopic('Human psychology basics')">🧠 Psychology</button>
+            <button class="fp" onclick="quickTopic('Police constable exam')">👮 Constable</button>
+            <button class="fp" onclick="quickTopic('Data structures and algorithms')">💻 DSA</button>
+            <button class="fp" onclick="quickTopic('English grammar and vocabulary')">📖 English</button>
+          </div>
+        </div>
+
+        <div class="frow" id="learn-mode-tabs" style="margin-top:10px;">
           <button class="fp active" onclick="setLearnMode('paste',this)">✏️ Type / Paste</button>
           <button class="fp" onclick="setLearnMode('file',this)">📄 Upload file</button>
         </div>
+
         <div id="lm-paste">
           <div class="field" style="margin-top:4px;">
             <label>Syllabus / Topics to learn</label>
-            <textarea id="learn-text" rows="8" placeholder="e.g.&#10;Unit 1: Fingerprint Analysis&#10;Unit 2: Bloodstain Patterns&#10;&#10;Or just write:&#10;I want to learn Python, Django and REST APIs" style="width:100%;padding:12px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;resize:vertical;line-height:1.6;box-shadow:var(--sh);"></textarea>
+            <textarea id="learn-text" rows="6" placeholder="e.g.&#10;Human Psychology — Perception, Memory, Emotion&#10;&#10;or:&#10;PP Constable exam on 16 June&#10;&#10;or:&#10;Python, Django, REST APIs" style="width:100%;padding:12px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;resize:vertical;line-height:1.6;box-shadow:var(--sh);"></textarea>
           </div>
         </div>
         <div id="lm-file" style="display:none;">
-          <label for="learn-file-input" id="learn-file-label" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed var(--border2);border-radius:var(--r);padding:30px 16px;cursor:pointer;background:var(--bg2);gap:8px;margin-top:6px;">
+          <label for="learn-file-input" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed var(--border2);border-radius:var(--r);padding:30px 16px;cursor:pointer;background:var(--bg2);gap:8px;margin-top:6px;">
             <div style="font-size:36px;">📄</div>
             <div style="font-size:14px;font-weight:700;color:var(--text);">Tap to upload file</div>
             <div style="font-size:12px;color:var(--text3);">PDF, TXT, DOCX, MD supported</div>
@@ -626,6 +643,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
           <input type="file" id="learn-file-input" accept=".txt,.pdf,.docx,.doc,.md" style="display:none;" onchange="handleLearnFile(this)">
           <div id="learn-file-name" style="font-size:12px;color:var(--acc);margin-top:8px;text-align:center;display:none;font-weight:600;"></div>
         </div>
+
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
           <div>
             <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Study hours/day</div>
@@ -642,30 +660,59 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
             </select>
           </div>
         </div>
+
         <button class="btn btn-p" id="learn-gen-btn" style="width:100%;justify-content:center;margin-top:16px;font-size:14px;padding:15px;" onclick="generateLearnPlan()">
           ✨ Generate my study plan
         </button>
+
+        <!-- Saved plans -->
+        <div id="saved-plans-wrap" style="display:none;margin-top:16px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">📂 Your saved plans</div>
+          <div id="saved-plans-list"></div>
+        </div>
       </div>
+
+      <!-- Loading -->
       <div id="learn-loading" style="display:none;text-align:center;padding:50px 20px;">
         <div style="width:48px;height:48px;border:3px solid var(--bg3);border-top-color:var(--acc);border-radius:50%;margin:0 auto 16px;animation:spin .8s linear infinite;"></div>
         <div style="font-size:15px;font-weight:700;color:var(--text);" id="learn-status">Analysing your syllabus...</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:6px;">Claude AI is building your personalised plan</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:6px;">Building your personalised plan</div>
       </div>
+
+      <!-- Result -->
       <div id="learn-result" style="display:none;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
           <div style="font-size:16px;font-weight:800;" id="learn-plan-title">📚 Your Study Plan</div>
-          <button class="btn btn-sm" onclick="resetLearnPlan()">↺ New plan</button>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm" onclick="saveCurrentPlan()" id="save-plan-btn">💾 Save</button>
+            <button class="btn btn-sm" onclick="resetLearnPlan()">↺ New</button>
+          </div>
         </div>
-        <div id="learn-summary-pills" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;"></div>
+
+        <!-- Progress bar -->
+        <div id="learn-progress-wrap" style="margin-bottom:12px;background:var(--bg2);border-radius:var(--r);padding:10px 12px;border:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:12px;font-weight:700;color:var(--text2);">📊 Your progress</span>
+            <span style="font-size:12px;font-weight:800;color:var(--acc);" id="learn-prog-pct">0%</span>
+          </div>
+          <div style="height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;">
+            <div id="learn-prog-bar" style="height:100%;background:var(--grad);border-radius:4px;width:0%;transition:width .4s;"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:5px;" id="learn-prog-label">0 of 0 topics completed</div>
+        </div>
+
+        <div id="learn-summary-pills" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;"></div>
+
         <div class="frow" style="margin-bottom:12px;">
-          <button class="fp active" onclick="setLearnView('timetable',this)">📅 Timetable</button>
-          <button class="fp" onclick="setLearnView('topics',this)">📖 Topics</button>
-          <button class="fp" onclick="setLearnView('courses',this)">🔗 Courses</button>
+          <button class="fp active" onclick="setLearnView('topics',this)">📖 Topics</button>
+          <button class="fp" onclick="setLearnView('timetable',this)">📅 Timetable</button>
+          <button class="fp" onclick="setLearnView('courses',this)">🔗 Resources</button>
         </div>
-        <div id="lv-timetable"></div>
-        <div id="lv-topics" style="display:none;"></div>
+        <div id="lv-topics"></div>
+        <div id="lv-timetable" style="display:none;"></div>
         <div id="lv-courses" style="display:none;"></div>
       </div>
+
       <div id="learn-error" style="display:none;"></div>
     </div>
 
@@ -1155,8 +1202,9 @@ function renderToday(){
   let streak=0;
   for(let i=0;i<30;i++){const d=new Date(today);d.setDate(d.getDate()-i-1);const k=d.toISOString().slice(0,10);if((WEEK_LOG[k]||0)>=50)streak++;else break;}
   document.getElementById('td-streak').textContent=streak+'🔥';
+  localStorage.setItem('lt_streak', streak);
   let wt=0,wc=0;
-  for(let i=0;i<7;i++){const d=new Date(today);d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const pp=calcDayPct(k);if(pp>0||TASK_LOG[k]){wt+=pp;wc++;}}
+  for(let i=0;i<7;i++){const d=new Date(today);d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const pp=calcDayPct(k);const hasLog=TASK_LOG[k]&&Object.keys(TASK_LOG[k]).length>0;if(pp>0||hasLog){wt+=pp;wc++;}}
   document.getElementById('td-week').textContent=wc?Math.round(wt/wc)+'%':'–';
   const dn=DAYS[today.getDay()];
   document.getElementById('today-date-label').textContent=`📅 ${dn}, ${today.getDate()} ${MONTHS[today.getMonth()]} ${today.getFullYear()}`;
@@ -1434,7 +1482,8 @@ function startApp(){
   document.getElementById('onboarding').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   if(!CUSTOM_TASKS||!CUSTOM_TASKS.length) CUSTOM_TASKS=defaultTasks();
-  updateHeader();renderToday();renderTimetable();renderStudy();renderSkills();renderJobs();renderProfile();updateMotiveWidget();
+  updateHeader();renderToday();renderTimetable();renderStudy();renderSkills();renderJobs();renderProfile();
+  setTimeout(reinitNotifs, 500);updateMotiveWidget();
   toast('👋 Welcome, '+(P.name||'friend')+'!');
   
 }
@@ -1472,6 +1521,175 @@ function handleLearnFile(input) {
   } else {
     reader.readAsText(file);
   }
+}
+
+function quickTopic(topic) {
+  setLearnMode('paste', document.querySelector('#learn-mode-tabs .fp'));
+  document.getElementById('learn-text').value = topic;
+  toast('✏️ Topic set! Tap Generate.');
+}
+
+let LEARN_TOPIC_DONE = {}; // {topicId: true/false}
+
+function saveCurrentPlan() {
+  if (!learnPlan) return;
+  const saved = JSON.parse(localStorage.getItem('lt_saved_plans') || '[]');
+  const entry = { id: Date.now(), title: learnPlan.title, plan: learnPlan, done: LEARN_TOPIC_DONE, savedAt: new Date().toLocaleDateString() };
+  saved.unshift(entry);
+  if (saved.length > 5) saved.pop(); // keep last 5
+  localStorage.setItem('lt_saved_plans', JSON.stringify(saved));
+  document.getElementById('save-plan-btn').textContent = '✅ Saved!';
+  setTimeout(() => { const b = document.getElementById('save-plan-btn'); if(b) b.textContent = '💾 Save'; }, 2000);
+  toast('💾 Plan saved!');
+  renderSavedPlans();
+}
+
+function renderSavedPlans() {
+  const saved = JSON.parse(localStorage.getItem('lt_saved_plans') || '[]');
+  const wrap = document.getElementById('saved-plans-wrap');
+  const list = document.getElementById('saved-plans-list');
+  if (!wrap || !list) return;
+  if (!saved.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = saved.map(s => `
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg2);border-radius:var(--rs);border:1px solid var(--border);margin-bottom:6px;">
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);">${s.title}</div>
+        <div style="font-size:11px;color:var(--text3);">Saved ${s.savedAt}</div>
+      </div>
+      <button class="btn btn-sm" onclick="loadSavedPlan(${s.id})">Open</button>
+      <button class="btn btn-sm btn-r" onclick="deleteSavedPlan(${s.id})" style="padding:6px 10px;">✕</button>
+    </div>`).join('');
+}
+
+function loadSavedPlan(id) {
+  const saved = JSON.parse(localStorage.getItem('lt_saved_plans') || '[]');
+  const entry = saved.find(s => s.id === id);
+  if (!entry) return;
+  learnPlan = entry.plan;
+  LEARN_TOPIC_DONE = entry.done || {};
+  renderLearnResult();
+  toast('📂 Plan loaded!');
+}
+
+function deleteSavedPlan(id) {
+  let saved = JSON.parse(localStorage.getItem('lt_saved_plans') || '[]');
+  saved = saved.filter(s => s.id !== id);
+  localStorage.setItem('lt_saved_plans', JSON.stringify(saved));
+  renderSavedPlans();
+}
+
+function updateLearnProgress() {
+  if (!learnPlan || !learnPlan.topics) return;
+  const total = learnPlan.topics.length;
+  const done = Object.values(LEARN_TOPIC_DONE).filter(Boolean).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const bar = document.getElementById('learn-prog-bar');
+  const pctEl = document.getElementById('learn-prog-pct');
+  const label = document.getElementById('learn-prog-label');
+  if (bar) bar.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (label) label.textContent = `${done} of ${total} topics completed${pct === 100 ? ' 🎉' : ''}`;
+}
+
+function toggleTopicDone(id) {
+  LEARN_TOPIC_DONE[id] = !LEARN_TOPIC_DONE[id];
+  updateLearnProgress();
+  renderTopicsView();
+  toast(LEARN_TOPIC_DONE[id] ? '✅ Topic done!' : 'Unmarked');
+}
+
+function buildSmartPlan(topic, hours, weeks) {
+  const q = encodeURIComponent(topic);
+  const wks = parseInt(weeks) || 4;
+  const hrs = parseInt(hours) || 2;
+  const t = topic.toLowerCase();
+
+  // Topic-specific subtopics
+  const TOPIC_MAP = {
+    psychology:    ['Introduction to Psychology','Sensation & Perception','States of Consciousness','Learning & Conditioning','Memory & Forgetting','Thinking & Language','Intelligence & IQ','Motivation & Emotion','Developmental Psychology','Social Psychology','Personality Theories','Psychological Disorders','Therapy & Treatment','Stress & Health Psychology'],
+    media:         ['Introduction to Media Literacy','Types of Media & Mass Communication','Media Bias & Propaganda','Digital Media & Social Networks','Advertising & Persuasion','News Literacy & Fact Checking','Privacy & Ethics in Media','Critical Consumption of Content','Media Influence on Society','Creating Responsible Media'],
+    python:        ['Python Basics & Setup','Variables, Data Types, Operators','Control Flow: if/else, loops','Functions & Modules','Lists, Tuples, Dictionaries','File Handling & Exceptions','OOP: Classes & Objects','Libraries: NumPy, Pandas','Web Scraping with BeautifulSoup','Project: Build a real app'],
+    constable:     ['Indian Constitution & Polity','History of India','Geography of India','General Science & Technology','Current Affairs & GK','Mathematics: Number System','Mathematics: Algebra & Geometry','Reasoning: Logical & Verbal','English Grammar & Comprehension','Hindi Grammar & Composition'],
+    ssc:           ['English Language & Comprehension','Quantitative Aptitude','General Intelligence & Reasoning','General Awareness','Data Interpretation','Sentence Correction','Reading Comprehension','Number Series','Coding-Decoding','Mock Test Practice'],
+    dsa:           ['Arrays & Strings','Linked Lists','Stacks & Queues','Trees & Binary Trees','Graphs & BFS/DFS','Sorting Algorithms','Searching Algorithms','Dynamic Programming','Greedy Algorithms','Practice: LeetCode problems'],
+    forensic:      ['Introduction to Forensic Science','Crime Scene Investigation','Fingerprint Analysis','DNA Forensics & Profiling','Toxicology & Poison Analysis','Ballistics & Firearms','Digital Forensics','Forensic Anthropology','Blood Pattern Analysis','Expert Witness & Court Procedures'],
+    english:       ['Parts of Speech','Tenses & Verb Forms','Subject-Verb Agreement','Articles & Determiners','Vocabulary Building','Reading Comprehension','Essay Writing','Letter & Application Writing','Synonyms, Antonyms & Idioms','Sentence Correction'],
+    maths:         ['Number System & HCF/LCM','Percentages & Profit/Loss','Ratio, Proportion & Partnership','Simple & Compound Interest','Time, Speed & Distance','Mensuration: Area & Volume','Algebra & Linear Equations','Geometry & Trigonometry','Statistics & Probability','Data Interpretation & Graphs'],
+    history:       ['Ancient Indian History','Medieval Indian History','Mughal Empire','British Colonial Rule','Indian Independence Movement','World War I & II','French & American Revolution','Ancient World Civilizations','Post-Independence India','Modern World History'],
+    default:       [`Introduction to ${topic}`,'Core Concepts & Fundamentals',`${topic} — Theory & Principles`,`${topic} — Key Topics Part 1`,`${topic} — Key Topics Part 2`,`${topic} — Advanced Concepts`,`${topic} — Applications & Examples`,`${topic} — Common Mistakes & Tips`,`${topic} — Practice Questions`,`${topic} — Revision & Mock Test`]
+  };
+
+  const RESOURCES_MAP = {
+    psychology: [{name:'Khan Academy Psychology',type:'YouTube',url:`https://www.youtube.com/results?search_query=psychology+full+course+khan+academy`},{name:'Crash Course Psychology',type:'YouTube',url:`https://www.youtube.com/playlist?list=PL8dPuuaLjXtOPRKzVLY0jJY-uHOH9KVU6`},{name:'Psychology Notes',type:'Website',url:`https://www.simplypsychology.org`}],
+    media: [{name:'Media Literacy Course',type:'YouTube',url:`https://www.youtube.com/results?search_query=media+literacy+full+course`},{name:'NewsGuard Media Literacy',type:'Website',url:`https://www.newsguardtech.com`},{name:'NAMLE Media Literacy',type:'Website',url:`https://namle.net`}],
+    python: [{name:'Python for Beginners - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/watch?v=rfscVS0vtbw`},{name:'Official Python Docs',type:'Website',url:`https://docs.python.org/3/tutorial/`},{name:'W3Schools Python',type:'Website',url:`https://www.w3schools.com/python/`}],
+    constable: [{name:'Police Constable Exam Prep',type:'YouTube',url:`https://www.youtube.com/results?search_query=police+constable+exam+preparation+hindi`},{name:'GK Today',type:'Website',url:`https://gktoday.in`},{name:'Adda247 Constable',type:'Website',url:`https://www.adda247.com`}],
+    ssc: [{name:'SSC CGL Full Course',type:'YouTube',url:`https://www.youtube.com/results?search_query=SSC+CGL+full+course+free`},{name:'Adda247 SSC',type:'Website',url:`https://www.adda247.com/ssc-jobs/`},{name:'SSC Official Site',type:'Website',url:`https://ssc.nic.in`}],
+    dsa: [{name:'DSA Full Course - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/watch?v=8hly31xKli0`},{name:'GeeksforGeeks DSA',type:'Website',url:`https://www.geeksforgeeks.org/data-structures/`},{name:'LeetCode Practice',type:'Website',url:`https://leetcode.com`}],
+    default: [{name:`${topic} Full Course`,type:'YouTube',url:`https://www.youtube.com/results?search_query=${q}+full+course+free`},{name:`${topic} Study Material`,type:'Website',url:`https://www.google.com/search?q=${q}+study+notes+pdf+free`},{name:`${topic} on Wikipedia`,type:'Website',url:`https://en.wikipedia.org/wiki/Special:Search?search=${q}`}]
+  };
+
+  // Match topic to category
+  let cat = 'default';
+  if (t.includes('psych')) cat = 'psychology';
+  else if (t.includes('media') || t.includes('literacy')) cat = 'media';
+  else if (t.includes('python') || t.includes('django') || t.includes('flask')) cat = 'python';
+  else if (t.includes('constable') || t.includes('police') || t.includes('si exam')) cat = 'constable';
+  else if (t.includes('ssc') || t.includes('upsc') || t.includes('bank') || t.includes('ibps')) cat = 'ssc';
+  else if (t.includes('dsa') || t.includes('data structure') || t.includes('algorithm')) cat = 'dsa';
+  else if (t.includes('forensic')) cat = 'forensic';
+  else if (t.includes('english') || t.includes('grammar')) cat = 'english';
+  else if (t.includes('math') || t.includes('maths') || t.includes('quant')) cat = 'maths';
+  else if (t.includes('history') || t.includes('histor')) cat = 'history';
+
+  const subtopics = (TOPIC_MAP[cat] || TOPIC_MAP.default).slice(0, Math.min(wks * 3, 12));
+  const resources = RESOURCES_MAP[cat] || RESOURCES_MAP.default;
+  const daySlots = ['Mon','Wed','Fri','Mon','Wed','Fri','Mon','Wed','Fri','Mon','Wed','Fri'];
+
+  const topics = subtopics.map((name, i) => ({
+    id: `t${i+1}`,
+    title: name,
+    description: `Study ${name} thoroughly. Take notes, watch videos, and attempt practice questions.`,
+    week: Math.floor(i / 3) + 1,
+    day: daySlots[i],
+    duration: `${hrs} hr`,
+    difficulty: i < subtopics.length/3 ? 'Beginner' : i < (2*subtopics.length/3) ? 'Intermediate' : 'Advanced',
+    resources: [resources[i % resources.length]]
+  }));
+
+  const weeklyPlan = [];
+  for (let w = 1; w <= wks; w++) {
+    const wTopics = topics.filter(t => t.week === w);
+    weeklyPlan.push({
+      week: w,
+      theme: w === 1 ? 'Foundation & Basics' : w === wks ? 'Revision & Practice' : w === 2 ? 'Core Concepts' : 'Advanced Topics',
+      days: [
+        {day:'Mon', topics: wTopics[0]?[wTopics[0].id]:[], totalTime: wTopics[0]?`${hrs} hr`:'Rest'},
+        {day:'Tue', topics:[], totalTime:'Rest'},
+        {day:'Wed', topics: wTopics[1]?[wTopics[1].id]:[], totalTime: wTopics[1]?`${hrs} hr`:'Rest'},
+        {day:'Thu', topics:[], totalTime:'Rest'},
+        {day:'Fri', topics: wTopics[2]?[wTopics[2].id]:[], totalTime: wTopics[2]?`${hrs} hr`:'Rest'},
+        {day:'Sat', topics:[], totalTime:'Revision'},
+        {day:'Sun', topics:[], totalTime:'Rest'}
+      ]
+    });
+  }
+
+  return {
+    title: `${topic} — ${wks}-Week Study Plan`,
+    summary: `A structured ${wks}-week plan to master ${topic}. Study ${hrs} hour(s) daily with topic-specific resources and practice.`,
+    totalTopics: topics.length,
+    totalWeeks: wks,
+    hoursPerDay: hrs,
+    topics,
+    weeklyPlan,
+    courses: [
+      ...resources,
+      {name:`${topic} Practice Questions`, provider:'Website', url:`https://www.google.com/search?q=${q}+practice+questions+MCQ+free`, duration:'Self-paced', free:true, description:`Practice questions and MCQs for ${topic}`},
+      {name:`${topic} PDF Notes`, provider:'Website', url:`https://www.google.com/search?q=${q}+notes+pdf+free+download`, duration:'Self-paced', free:true, description:`Free downloadable notes for ${topic}`}
+    ]
+  };
 }
 
 async function generateLearnPlan() {
@@ -1543,50 +1761,42 @@ Return ONLY this JSON structure (no markdown):
 Replace ALL "actual topic name", "actual resource name" etc with REAL content specific to "${topic}". The topics array must have real subject-specific content.`;
 
   try {
-    const encoded = encodeURIComponent(prompt);
+    clearInterval(statusTimer);
+    statusEl.textContent = 'Generating your plan...';
 
-    // Try up to 3 times with delay on 429/500
-    let response, lastErr;
+    let parsed = null;
 
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        response = await fetch('https://text.pollinations.ai/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [{ role: 'user', content: prompt }],
-            model: 'openai',
-            jsonMode: true
-          })
-        });
-        if (response.status === 429 || response.status === 500) {
-          statusEl.textContent = `⏳ Server busy, retrying (${attempt + 1}/3)...`;
-          await new Promise(r => setTimeout(r, 4000));
-          continue;
-        }
-        if (response.ok) break;
-        throw new Error('API error ' + response.status);
-      } catch(e) {
-        lastErr = e;
-        if (attempt < 2) await new Promise(r => setTimeout(r, 3000));
+    // Try Pollinations API
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
+      const response = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: prompt }],
+          model: 'openai',
+          jsonMode: true
+        })
+      });
+      clearTimeout(timeout);
+      if (response.ok) {
+        const raw = (await response.text()).replace(/```json|```/g, '').trim();
+        const m = raw.match(/\{[\s\S]*\}/);
+        if (m) { try { parsed = JSON.parse(m[0]); } catch(e) {} }
       }
+    } catch(e) { /* API failed, use fallback */ }
+
+    // Always use fallback if API failed or returned empty
+    if (!parsed || !parsed.topics || !parsed.topics.length) {
+      statusEl.textContent = 'Building your plan...';
+      await new Promise(r => setTimeout(r, 800)); // small delay so spinner shows
+      parsed = buildSmartPlan(topic, hours, weeks);
     }
 
-    clearInterval(statusTimer);
-
-    if (!response || !response.ok) throw new Error(lastErr?.message || 'API unavailable');
-    let raw = await response.text();
-    raw = raw.replace(/```json|```/g, '').trim();
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (jsonMatch) raw = jsonMatch[0];
-
-    let parsed;
-    try { parsed = JSON.parse(raw); } catch(e) { throw new Error('Bad response from AI — try again'); }
-
-    // Ensure required fields exist
-    if (!parsed.topics || !parsed.topics.length) throw new Error('AI returned empty plan — try again');
+    // Ensure weeklyPlan exists
     if (!parsed.weeklyPlan || !parsed.weeklyPlan.length) {
-      // Auto-build weeklyPlan from topics
       const wks = {};
       parsed.topics.forEach(t => {
         const w = t.week || 1;
@@ -1609,13 +1819,18 @@ Replace ALL "actual topic name", "actual resource name" etc with REAL content sp
 
   } catch (err) {
     clearInterval(statusTimer);
-    document.getElementById('learn-loading').style.display = 'none';
-    document.getElementById('learn-upload-area').style.display = 'block';
-    const errEl = document.getElementById('learn-error');
-    errEl.style.display = 'block';
-    errEl.style.cssText = 'display:block;background:var(--cbg);color:var(--ct);border-radius:var(--r);padding:13px 14px;font-size:13px;margin-top:10px;border:1px solid rgba(185,28,28,0.2);';
-    errEl.textContent = '⚠️ Could not generate plan: ' + err.message + '. Check your internet connection and try again.';
-    toast('Error — try again');
+    // Always generate a plan even on error — never show failure
+    try {
+      learnPlan = buildSmartPlan(topic, hours, weeks);
+      saveLearnPlan();
+      renderLearnResult();
+    } catch(e2) {
+      document.getElementById('learn-loading').style.display = 'none';
+      document.getElementById('learn-upload-area').style.display = 'block';
+      const errEl = document.getElementById('learn-error');
+      errEl.style.cssText = 'display:block;background:var(--cbg);color:var(--ct);border-radius:var(--r);padding:13px 14px;font-size:13px;margin-top:10px;';
+      errEl.textContent = '⚠️ Something went wrong. Please try again.';
+    }
   }
 }
 
@@ -1630,13 +1845,19 @@ function renderLearnResult() {
 
   // Summary pills
   document.getElementById('learn-summary-pills').innerHTML = [
-    `<span class="tag tp">${p.totalTopics || '?'} topics</span>`,
+    `<span class="tag tp">${p.totalTopics || p.topics?.length || '?'} topics</span>`,
     `<span class="tag tb">${p.totalWeeks || '?'} weeks</span>`,
     `<span class="tag tg">${p.hoursPerDay || '?'} hr/day</span>`,
-    `<span class="tag ta">${(p.courses||[]).length} courses</span>`
+    `<span class="tag ta">${(p.courses||[]).length} resources</span>`
   ].join('');
 
-  setLearnView('timetable', document.querySelector('#learn-result .fp.active') || document.createElement('button'));
+  // Reset progress if new plan
+  if (!Object.keys(LEARN_TOPIC_DONE).length) LEARN_TOPIC_DONE = {};
+  updateLearnProgress();
+
+  // Default to Topics view
+  setLearnView('topics', document.querySelector('#learn-result .frow .fp'));
+  renderSavedPlans();
 }
 
 function setLearnView(view, btn) {
@@ -1718,31 +1939,79 @@ function addPlanToSchedule() {
   toast('✅ Study sessions added to your schedule!');
 }
 
-function renderTopicsView() {
+function renderTopicsView(filter) {
   const p = learnPlan;
   if (!p || !p.topics) return;
   const diffColor = { 'Beginner':'tg', 'Intermediate':'ta', 'Advanced':'tc' };
+  const today = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date().getDay()];
+  const f = filter || 'all';
+
+  const filtered = p.topics.filter(t => {
+    if (f === 'all') return true;
+    if (f === 'pending') return !LEARN_TOPIC_DONE[t.id];
+    if (f === 'done') return LEARN_TOPIC_DONE[t.id];
+    if (f === 'today') return t.day === today;
+    return t.difficulty === f;
+  });
+
+  const todayTopics = p.topics.filter(t => t.day === today && !LEARN_TOPIC_DONE[t.id]);
+
   document.getElementById('lv-topics').innerHTML = `
-    <div style="margin-bottom:8px;font-size:12px;color:var(--text3);">${p.summary || ''}</div>
-    ${p.topics.map((t, i) => `
-    <div class="topic-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-        <div>
-          <div style="font-size:10px;font-weight:700;color:var(--acc);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;">Week ${t.week} · ${t.day}</div>
-          <div class="topic-title">${i+1}. ${t.title}</div>
+    <div style="margin-bottom:10px;font-size:12px;color:var(--text3);">${p.summary || ''}</div>
+
+    ${todayTopics.length && f === 'all' ? `
+    <div style="background:var(--pbg);border:1px solid rgba(108,99,255,0.2);border-radius:var(--r);padding:10px 13px;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--pt);margin-bottom:4px;">📌 TODAY — ${today}</div>
+      ${todayTopics.map(t => `<div style="font-size:13px;font-weight:600;color:var(--pt);">• ${t.title} <span style="font-size:11px;opacity:.7">(${t.duration})</span></div>`).join('')}
+    </div>` : ''}
+
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;">
+      ${['all','pending','done','today','Beginner','Intermediate','Advanced'].map(opt => `
+        <button class="fp ${f===opt?'active':''}" onclick="renderTopicsView('${opt}')" style="font-size:11px;padding:4px 10px;">
+          ${opt==='all'?'All':opt==='pending'?'⏳ Pending':opt==='done'?'✅ Done':opt==='today'?'📌 Today':opt}
+        </button>`).join('')}
+    </div>
+
+    ${filtered.length === 0 ? `<div style="text-align:center;padding:30px;color:var(--text3);font-size:13px;">No topics in this filter</div>` : ''}
+
+    ${filtered.map((t, i) => {
+      const done = LEARN_TOPIC_DONE[t.id];
+      const isToday = t.day === today;
+      const notes = localStorage.getItem('lt_learn_note_' + t.id) || '';
+      return `
+      <div class="topic-card" style="${done ? 'opacity:0.65;' : ''}${isToday && !done ? 'border:1.5px solid var(--acc);' : ''}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+          <div style="flex:1;">
+            <div style="font-size:10px;font-weight:700;color:${isToday?'var(--acc)':'var(--text3)'};letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px;">
+              ${isToday ? '📌 TODAY · ' : ''}Week ${t.week} · ${t.day}
+            </div>
+            <div class="topic-title" style="${done ? 'text-decoration:line-through;' : ''}">${t.title}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+            <span class="tag ${diffColor[t.difficulty]||'tb'}">${t.difficulty||'—'}</span>
+            <span style="font-size:10px;color:var(--text3);font-weight:600;">⏱ ${t.duration}</span>
+          </div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
-          <span class="tag ${diffColor[t.difficulty]||'tb'}">${t.difficulty||'—'}</span>
-          <span style="font-size:10px;color:var(--text3);font-weight:600;">⏱ ${t.duration}</span>
+        <div class="topic-desc">${t.description}</div>
+        ${t.resources && t.resources.length ? `
+          <div class="res-links">
+            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">📺 Resources</div>
+            ${t.resources.map(r => `<a class="res-link" href="${r.url}" target="_blank" rel="noopener">${r.type==='YouTube'?'▶':r.type==='NPTEL'?'🎓':r.type==='Website'?'🌐':'📖'} ${r.name}</a>`).join('')}
+          </div>` : ''}
+        <div style="margin-top:8px;">
+          <textarea placeholder="📝 Add your notes here..." rows="2"
+            style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:12px;background:var(--bg2);color:var(--text);font-family:inherit;resize:vertical;"
+            onchange="saveTopicNote('${t.id}', this.value)">${notes}</textarea>
         </div>
-      </div>
-      <div class="topic-desc">${t.description}</div>
-      ${t.resources && t.resources.length ? `
-        <div class="res-links">
-          <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">📺 Resources</div>
-          ${t.resources.map(r => `<a class="res-link" href="${r.url}" target="_blank" rel="noopener">${r.type==='YouTube'?'▶':r.type==='NPTEL'?'🎓':r.type==='Website'?'🌐':'📖'} ${r.name}</a>`).join('')}
-        </div>` : ''}
-    </div>`).join('')}`;
+        <button onclick="toggleTopicDone('${t.id}')" style="margin-top:6px;width:100%;padding:8px;border-radius:var(--rs);border:1.5px solid ${done?'#1baf7a':'var(--border)'};background:${done?'rgba(27,175,122,0.12)':'transparent'};color:${done?'#1baf7a':'var(--text3)'};font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;">
+          ${done ? '✅ Completed — tap to undo' : '○ Mark as done'}
+        </button>
+      </div>`;
+    }).join('')}`;
+}
+
+function saveTopicNote(id, val) {
+  localStorage.setItem('lt_learn_note_' + id, val);
 }
 
 function renderCoursesView() {
@@ -2241,10 +2510,9 @@ async function saveUserDataToCloud(){
         const tlog=TASK_LOG[todayKey]||{};
         const todayPct=sched.length?Math.round(sched.filter(t=>tlog[t.id]).length/sched.length*100):0;
         let wt=0,wc=0;
-        for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const l=TASK_LOG[k]||{};const pp=sched.length?Math.round(sched.filter(t=>l[t.id]).length/sched.length*100):0;if(TASK_LOG[k]){wt+=pp;wc++;}}
+        for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const l=TASK_LOG[k]||{};const pp=sched.length?Math.round(sched.filter(t=>l[t.id]).length/sched.length*100):0;if(l&&Object.keys(l).length>0){wt+=pp;wc++;}}
         const weekAvg=wc?Math.round(wt/wc):0;
-        let streak=0;
-        for(let i=1;i<30;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);const l=TASK_LOG[k]||{};const pp=sched.length?Math.round(sched.filter(t=>l[t.id]).length/sched.length*100):0;if(pp>=50)streak++;else break;}
+        let streak=parseInt(localStorage.getItem('lt_streak')||'0');
         accounts.byUID[currentUID].snapshot={
           degree:P.degreeLabel||'',field:P.field||'',college:P.college||'',
           state:P.state||'',sem:P.sem||3,goal:P.goal||'',
@@ -2470,8 +2738,8 @@ function getWeekPct() {
     days.push(d.toISOString().split('T')[0]);
   }
   let weekDone = 0;
-  days.forEach(d => { const log = WEEK_LOG[d]||{}; weekDone += Object.values(log).filter(v=>v===true).length; });
-  return Math.round((weekDone / (total * 7)) * 100);
+  days.forEach(d => { const pctVal = WEEK_LOG[d]||0; weekDone += (typeof pctVal === 'number' ? pctVal : 0); });
+  return Math.round(weekDone / 7);
 }
 
 function updateMotiveWidget() {
@@ -2483,7 +2751,8 @@ function updateMotiveWidget() {
   if (streakEl) streakEl.textContent = `${streak}🔥`;
 
   const tasks = CUSTOM_TASKS || defaultTasks();
-  const done = Object.values(TASK_LOG).filter(v=>v===true).length;
+  const _tlog = TASK_LOG[todayKey] || {};
+  const done = Object.values(_tlog).filter(v=>v===true).length;
   const total = tasks.length;
   const todayEl = document.getElementById('mw-today');
   if (todayEl) {
@@ -2622,18 +2891,20 @@ function renderStatCards() {
 
   const tasks = CUSTOM_TASKS || defaultTasks();
   const total = tasks.length;
-  const todayDone = Object.values(TASK_LOG).filter(v => v === true).length;
+  // TASK_LOG is nested: {dateKey: {taskId: true}}
+  const _todayLog = TASK_LOG[todayKey] || {};
+  const todayDone = Object.values(_todayLog).filter(v => v === true).length;
   document.getElementById('stat-today').textContent = `${todayDone}/${total}`;
 
-  // Weekly %: average of last 7 days from WEEK_LOG
+  // WEEK_LOG stores pct as number: {dateKey: 75}
   const days = getLast7Days();
-  let weekTotal = 0, weekDone = 0;
+  let weekSum = 0, weekCount = 0;
   days.forEach(d => {
-    const log = WEEK_LOG[d] || {};
-    weekTotal += total;
-    weekDone += Object.values(log).filter(v => v === true).length;
+    const pct = typeof WEEK_LOG[d] === 'number' ? WEEK_LOG[d] : calcDayPct(d);
+    weekSum += pct;
+    weekCount++;
   });
-  const weekPct = weekTotal > 0 ? Math.round((weekDone / weekTotal) * 100) : 0;
+  const weekPct = weekCount > 0 ? Math.round(weekSum / weekCount) : 0;
   document.getElementById('stat-week-pct').textContent = `${weekPct}%`;
 }
 
@@ -2661,12 +2932,16 @@ function renderWeeklyChart() {
   const total = tasks.length || 1;
   const days = getLast7Days();
   const labels = days.map(getDayLabel);
-  const data = days.map(d => {
-    const log = WEEK_LOG[d] || {};
-    return Object.values(log).filter(v => v === true).length;
+  const data = days.map((d, i) => {
+    if (i === 6) {
+      // today: use live TASK_LOG (nested)
+      const tlog = TASK_LOG[todayKey] || {};
+      return Object.values(tlog).filter(v => v === true).length;
+    }
+    // past days: WEEK_LOG stores pct (0-100), convert to count
+    const pct = typeof WEEK_LOG[d] === 'number' ? WEEK_LOG[d] : calcDayPct(d);
+    return Math.round(pct / 100 * total);
   });
-  // today uses live TASK_LOG
-  data[6] = Object.values(TASK_LOG).filter(v => v === true).length;
 
   const colors = data.map((v, i) => {
     if (i === 6) return '#2a78d6';
@@ -2759,14 +3034,24 @@ function renderInsights() {
   const total = tasks.length || 1;
   const days = getLast7Days();
   const dayData = days.map(d => {
-    const log = d === days[6] ? TASK_LOG : (WEEK_LOG[d] || {});
-    return { day: getDayLabel(d), done: Object.values(log).filter(v=>v===true).length };
+    let doneCnt;
+    if (d === days[6]) {
+      // today: nested TASK_LOG
+      const tlog = TASK_LOG[todayKey] || {};
+      doneCnt = Object.values(tlog).filter(v=>v===true).length;
+    } else {
+      // past: WEEK_LOG stores pct, convert to count
+      const pct = typeof WEEK_LOG[d] === 'number' ? WEEK_LOG[d] : calcDayPct(d);
+      doneCnt = Math.round(pct / 100 * total);
+    }
+    return { day: getDayLabel(d), done: doneCnt };
   });
 
   const best = dayData.reduce((a,b) => a.done >= b.done ? a : b);
   const worst = dayData.reduce((a,b) => a.done <= b.done ? a : b);
   const streak = parseInt(localStorage.getItem('lt_streak') || '0');
-  const todayDone = Object.values(TASK_LOG).filter(v=>v===true).length;
+  const _tlog = TASK_LOG[todayKey] || {};
+  const todayDone = Object.values(_tlog).filter(v=>v===true).length;
   const pct = Math.round((todayDone/total)*100);
 
   let html = '';
@@ -2821,7 +3106,8 @@ const NOTIF_CAT_MSG = {
 const DAILY_CHECKINS = [
   { id:'gm',    time:'06:00', title:'🌅 Good Morning!',        body: () => `Rise and shine${P&&P.name?' '+P.name.split(' ')[0]:''}! Your schedule is ready. Let's make today count! 💪` },
   { id:'perf',  time:'14:00', title:'📊 Performance Check',    body: () => {
-      const done = Object.values(TASK_LOG).filter(v=>v===true).length;
+      const _tlog = TASK_LOG[todayKey] || {};
+  const done = Object.values(_tlog).filter(v=>v===true).length;
       const total = (CUSTOM_TASKS||defaultTasks()).length;
       return `You've completed ${done}/${total} tasks so far today. ${done>=total/2?'Great pace! Keep going 🔥':'You can catch up — stay focused! 💡'}`;
   }},
@@ -2830,7 +3116,8 @@ const DAILY_CHECKINS = [
       return `You're on a ${days}-day streak! 🏆 Check your Study & Skills tabs — you're building something great.`;
   }},
   { id:'night', time:'22:00', title:'🌙 End of Day',           body: () => {
-      const done = Object.values(TASK_LOG).filter(v=>v===true).length;
+      const _tlog = TASK_LOG[todayKey] || {};
+  const done = Object.values(_tlog).filter(v=>v===true).length;
       const total = (CUSTOM_TASKS||defaultTasks()).length;
       const pct = Math.round((done/total)*100)||0;
       return `Today: ${done}/${total} tasks done (${pct}%). ${pct>=80?'Incredible day! 🌟':pct>=50?'Solid effort! Tomorrow, aim higher 💪':'Rest up and go stronger tomorrow! 🌙'}`;
@@ -2905,15 +3192,24 @@ function sendTestNotif() {
 
 function fireNotif(tag, title, body) {
   if (Notification.permission !== 'granted') return;
-  try {
-    new Notification(title, {
-      body,
-      icon: '/lifetracker/icon-192.png',
-      badge: '/lifetracker/icon-192.png',
-      tag,
-      requireInteraction: false
+  const opts = {
+    body,
+    icon: '/lifetracker/icons/icon-192.png',
+    badge: '/lifetracker/icons/icon-192.png',
+    tag,
+    requireInteraction: false,
+    vibrate: [200, 100, 200]
+  };
+  // Use ServiceWorker if available (required on Android Chrome)
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.showNotification(title, opts);
+    }).catch(() => {
+      try { new Notification(title, opts); } catch(e) {}
     });
-  } catch(e) {}
+  } else {
+    try { new Notification(title, opts); } catch(e) {}
+  }
 }
 
 function msUntil(timeStr) {
@@ -2952,11 +3248,14 @@ function scheduleAllNotifs() {
     _notifTimers.push(t);
   });
 
-  // 2. Schedule daily check-ins
+  // 2. Schedule daily check-ins (auto-reschedule each one for next day)
   DAILY_CHECKINS.forEach(ci => {
     const ms = msUntil(ci.time);
     const t = setTimeout(() => {
       fireNotif('checkin-'+ci.id, ci.title, ci.body());
+      // Reschedule this check-in for tomorrow
+      const t2 = setTimeout(() => scheduleAllNotifs(), 24*60*60*1000);
+      _notifTimers.push(t2);
     }, ms);
     _notifTimers.push(t);
   });
@@ -2965,19 +3264,36 @@ function scheduleAllNotifs() {
 // Reschedule every midnight to refresh for new day
 function scheduleMidnightRefresh() {
   const ms = msUntil('00:01');
+  // Add 1 min buffer so WEEK_LOG/todayKey have refreshed
   setTimeout(() => {
+    // Refresh todayKey for the new day
+    try {
+      const newToday = new Date();
+      window._todayKeyOverride = newToday.toISOString().slice(0,10);
+    } catch(e) {}
     scheduleAllNotifs();
-    scheduleMidnightRefresh();
-  }, ms);
+    scheduleMidnightRefresh(); // loop forever
+  }, ms + 60000);
 }
 
-// Init on load
+// Init on load — defer until app data is loaded
 (function initNotifs() {
+  if (localStorage.getItem('lt_notif_enabled') && Notification.permission === 'granted') {
+    // Wait for CUSTOM_TASKS to be loaded by loadAll() / startApp()
+    setTimeout(() => {
+      scheduleAllNotifs();
+      scheduleMidnightRefresh();
+    }, 2500);
+  }
+})();
+
+// Called after startApp() to ensure tasks are loaded before scheduling
+function reinitNotifs() {
   if (localStorage.getItem('lt_notif_enabled') && Notification.permission === 'granted') {
     scheduleAllNotifs();
     scheduleMidnightRefresh();
   }
-})();
+}
 
 </script>
 
