@@ -595,10 +595,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
     <div id="s-learn" class="sec">
 
       <!-- Input area -->
-      <div id="learn-upload-area">
+      <div id="learn-upload-area" style="max-width:760px;margin:0 auto;">
         <div class="ibox" style="background:var(--pbg);color:var(--pt);border:1px solid rgba(108,99,255,0.2);">
           <b>✨ AI Study Planner</b><br>
-          Type any topic, exam, or paste your syllabus — AI builds a full weekly plan with free resources instantly.
+          Type any topic, exam, or paste your syllabus — AI builds a full plan with free resources instantly.
         </div>
 
         <!-- Quick topic chips -->
@@ -619,42 +619,53 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
           <button class="fp" onclick="setLearnMode('file',this)">📄 Upload file</button>
         </div>
 
-        <div id="lm-paste">
-          <div class="field" style="margin-top:4px;">
-            <label>Syllabus / Topics to learn</label>
-            <textarea id="learn-text" rows="6" placeholder="e.g.&#10;Human Psychology — Perception, Memory, Emotion&#10;&#10;or:&#10;PP Constable exam on 16 June&#10;&#10;or:&#10;Python, Django, REST APIs" style="width:100%;padding:12px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;resize:vertical;line-height:1.6;box-shadow:var(--sh);"></textarea>
-          </div>
-        </div>
-        <div id="lm-file" style="display:none;">
-          <label for="learn-file-input" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed var(--border2);border-radius:var(--r);padding:30px 16px;cursor:pointer;background:var(--bg2);gap:8px;margin-top:6px;">
-            <div style="font-size:36px;">📄</div>
-            <div style="font-size:14px;font-weight:700;color:var(--text);">Tap to upload file</div>
-            <div style="font-size:12px;color:var(--text3);">PDF, TXT, DOCX, MD supported</div>
-          </label>
-          <input type="file" id="learn-file-input" accept=".txt,.pdf,.docx,.doc,.md" style="display:none;" onchange="handleLearnFile(this)">
-          <div id="learn-file-name" style="font-size:12px;color:var(--acc);margin-top:8px;text-align:center;display:none;font-weight:600;"></div>
-        </div>
+        <!-- Desktop: two-column layout (textarea left, settings right) -->
+        <div style="display:grid;grid-template-columns:1fr auto;gap:14px;margin-top:4px;align-items:start;">
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+          <!-- Left: textarea / file upload -->
           <div>
-            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Study hours/day</div>
-            <select id="learn-hours" style="width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
-              <option value="1">1 hour</option><option value="2" selected>2 hours</option>
-              <option value="3">3 hours</option><option value="4">4 hours</option><option value="5">5+ hours</option>
-            </select>
+            <div id="lm-paste">
+              <div class="field" style="margin-top:0;">
+                <label>Syllabus / Topics to learn</label>
+                <textarea id="learn-text" rows="8" placeholder="e.g.&#10;Human Psychology — Perception, Memory, Emotion&#10;&#10;or:&#10;PP Constable exam on 16 June&#10;&#10;or:&#10;Python, Django, REST APIs" style="width:100%;padding:12px 13px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;resize:vertical;line-height:1.6;box-shadow:var(--sh);min-height:160px;"></textarea>
+              </div>
+            </div>
+            <div id="lm-file" style="display:none;">
+              <label for="learn-file-input" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed var(--border2);border-radius:var(--r);padding:30px 16px;cursor:pointer;background:var(--bg2);gap:8px;margin-top:6px;min-height:160px;">
+                <div style="font-size:36px;">📄</div>
+                <div style="font-size:14px;font-weight:700;color:var(--text);">Tap to upload file</div>
+                <div style="font-size:12px;color:var(--text3);">PDF, TXT, DOCX, MD supported</div>
+              </label>
+              <input type="file" id="learn-file-input" accept=".txt,.pdf,.docx,.doc,.md" style="display:none;" onchange="handleLearnFile(this)">
+              <div id="learn-file-name" style="font-size:12px;color:var(--acc);margin-top:8px;text-align:center;display:none;font-weight:600;"></div>
+            </div>
           </div>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Complete in</div>
-            <select id="learn-weeks" style="width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
-              <option value="2">2 weeks</option><option value="4" selected>4 weeks</option>
-              <option value="6">6 weeks</option><option value="8">8 weeks</option><option value="12">12 weeks</option>
-            </select>
-          </div>
-        </div>
 
-        <button class="btn btn-p" id="learn-gen-btn" style="width:100%;justify-content:center;margin-top:16px;font-size:14px;padding:15px;" onclick="generateLearnPlan()">
-          ✨ Generate my study plan
-        </button>
+          <!-- Right: settings panel + button -->
+          <div style="min-width:180px;display:flex;flex-direction:column;gap:10px;">
+            <div>
+              <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Study hours/day</div>
+              <select id="learn-hours" style="width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
+                <option value="1">1 hour</option><option value="2" selected>2 hours</option>
+                <option value="3">3 hours</option><option value="4">4 hours</option><option value="5">5+ hours</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Complete in</div>
+              <select id="learn-duration-unit" onchange="updateDurationOptions()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;margin-bottom:6px;">
+                <option value="days">Days</option>
+                <option value="weeks" selected>Weeks</option>
+              </select>
+              <select id="learn-weeks" style="width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
+                <option value="2">2 weeks</option><option value="4" selected>4 weeks</option>
+                <option value="6">6 weeks</option><option value="8">8 weeks</option><option value="12">12 weeks</option>
+              </select>
+            </div>
+            <button class="btn btn-p" id="learn-gen-btn" style="width:100%;justify-content:center;font-size:14px;padding:15px;margin-top:4px;" onclick="generateLearnPlan()">
+              ✨ Generate
+            </button>
+          </div>
+        </div><!-- end desktop grid -->
 
         <!-- Saved plans -->
         <div id="saved-plans-wrap" style="display:none;margin-top:16px;">
@@ -696,10 +707,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 
         <div class="frow" style="margin-bottom:12px;">
           <button class="fp active" onclick="setLearnView('topics',this)">📖 Topics</button>
-          <button class="fp" onclick="setLearnView('timetable',this)">📅 Timetable</button>
+          <button class="fp" onclick="setLearnView('day',this)">📌 Day View</button>
+          <button class="fp" onclick="setLearnView('timetable',this)">📅 Weekly</button>
           <button class="fp" onclick="setLearnView('courses',this)">🔗 Resources</button>
         </div>
         <div id="lv-topics"></div>
+        <div id="lv-day" style="display:none;"></div>
         <div id="lv-timetable" style="display:none;"></div>
         <div id="lv-courses" style="display:none;"></div>
       </div>
@@ -1670,227 +1683,501 @@ function toggleTopicDone(id) {
   toast(LEARN_TOPIC_DONE[id] ? '✅ Topic done!' : 'Unmarked');
 }
 
-function buildSmartPlan(topic, hours, weeks) {
+function buildSmartPlan(topic, hours, weeks, totalDaysOverride) {
   const q = encodeURIComponent(topic);
-  const wks = parseInt(weeks) || 4;
-  const hrs = parseInt(hours) || 2;
-  const t = topic.toLowerCase();
+  const totalDays   = totalDaysOverride || (parseInt(weeks) || 4) * 7;
+  const wks         = Math.max(1, Math.ceil(totalDays / 7));
+  const isShortPlan = totalDays <= 7;
+  const hrs         = parseInt(hours) || 2;
+  const t           = topic.toLowerCase();
 
-  // Topic-specific subtopics
   const TOPIC_MAP = {
-    psychology:    ['Introduction to Psychology','Sensation & Perception','States of Consciousness','Learning & Conditioning','Memory & Forgetting','Thinking & Language','Intelligence & IQ','Motivation & Emotion','Developmental Psychology','Social Psychology','Personality Theories','Psychological Disorders','Therapy & Treatment','Stress & Health Psychology'],
-    media:         ['Introduction to Media Literacy','Types of Media & Mass Communication','Media Bias & Propaganda','Digital Media & Social Networks','Advertising & Persuasion','News Literacy & Fact Checking','Privacy & Ethics in Media','Critical Consumption of Content','Media Influence on Society','Creating Responsible Media'],
-    python:        ['Python Basics & Setup','Variables, Data Types, Operators','Control Flow: if/else, loops','Functions & Modules','Lists, Tuples, Dictionaries','File Handling & Exceptions','OOP: Classes & Objects','Libraries: NumPy, Pandas','Web Scraping with BeautifulSoup','Project: Build a real app'],
-    constable:     ['Indian Constitution & Polity','History of India','Geography of India','General Science & Technology','Current Affairs & GK','Mathematics: Number System','Mathematics: Algebra & Geometry','Reasoning: Logical & Verbal','English Grammar & Comprehension','Hindi Grammar & Composition'],
-    ssc:           ['English Language & Comprehension','Quantitative Aptitude','General Intelligence & Reasoning','General Awareness','Data Interpretation','Sentence Correction','Reading Comprehension','Number Series','Coding-Decoding','Mock Test Practice'],
-    dsa:           ['Arrays & Strings','Linked Lists','Stacks & Queues','Trees & Binary Trees','Graphs & BFS/DFS','Sorting Algorithms','Searching Algorithms','Dynamic Programming','Greedy Algorithms','Practice: LeetCode problems'],
-    forensic:      ['Introduction to Forensic Science','Crime Scene Investigation','Fingerprint Analysis','DNA Forensics & Profiling','Toxicology & Poison Analysis','Ballistics & Firearms','Digital Forensics','Forensic Anthropology','Blood Pattern Analysis','Expert Witness & Court Procedures'],
-    english:       ['Parts of Speech','Tenses & Verb Forms','Subject-Verb Agreement','Articles & Determiners','Vocabulary Building','Reading Comprehension','Essay Writing','Letter & Application Writing','Synonyms, Antonyms & Idioms','Sentence Correction'],
-    maths:         ['Number System & HCF/LCM','Percentages & Profit/Loss','Ratio, Proportion & Partnership','Simple & Compound Interest','Time, Speed & Distance','Mensuration: Area & Volume','Algebra & Linear Equations','Geometry & Trigonometry','Statistics & Probability','Data Interpretation & Graphs'],
-    history:       ['Ancient Indian History','Medieval Indian History','Mughal Empire','British Colonial Rule','Indian Independence Movement','World War I & II','French & American Revolution','Ancient World Civilizations','Post-Independence India','Modern World History'],
-    default:       [`Introduction to ${topic}`,'Core Concepts & Fundamentals',`${topic} — Theory & Principles`,`${topic} — Key Topics Part 1`,`${topic} — Key Topics Part 2`,`${topic} — Advanced Concepts`,`${topic} — Applications & Examples`,`${topic} — Common Mistakes & Tips`,`${topic} — Practice Questions`,`${topic} — Revision & Mock Test`]
+    psychology:    [
+      {title:'Introduction to Psychology',desc:'History, schools of thought (Freud, Watson, Maslow). What psychology is and why it matters.'},
+      {title:'Sensation & Perception',desc:'How our senses work, perceptual illusions, Gestalt principles, top-down vs bottom-up processing.'},
+      {title:'States of Consciousness',desc:'Sleep stages, dreams, meditation, hypnosis, and effects of psychoactive drugs.'},
+      {title:'Learning & Conditioning',desc:'Classical conditioning (Pavlov), operant conditioning (Skinner), observational learning (Bandura).'},
+      {title:'Memory & Forgetting',desc:'Encoding, storage, retrieval. Short-term vs long-term memory. Causes of forgetting and memory improvement.'},
+      {title:'Thinking, Language & Intelligence',desc:'Problem solving, heuristics, cognitive biases. Language acquisition. IQ and theories of intelligence.'},
+      {title:'Motivation & Emotion',desc:"Maslow's hierarchy, intrinsic/extrinsic motivation. Theories of emotion: James-Lange, Cannon-Bard."},
+      {title:'Developmental Psychology',desc:'Piaget stages, Erikson stages, attachment theory (Bowlby). Development across the lifespan.'},
+      {title:'Social Psychology',desc:'Conformity, obedience (Milgram), groupthink, prejudice, attribution theory, social influence.'},
+      {title:'Personality Theories',desc:'Freudian psychoanalysis, trait theories (Big Five), humanistic psychology, MBTI.'},
+      {title:'Psychological Disorders',desc:'DSM-5 categories: anxiety, depression, schizophrenia, personality disorders. Diagnosis criteria.'},
+      {title:'Therapy & Treatment',desc:'CBT, psychoanalysis, humanistic therapy, drug therapy. Comparing effectiveness.'},
+      {title:'Stress & Health Psychology',desc:'Causes of stress, coping strategies, relationship between mental and physical health.'},
+      {title:'Revision & Practice Test',desc:'Revise all major theories, attempt MCQs, identify weak areas for final preparation.'}
+    ],
+    python: [
+      {title:'Python Setup & Basics',desc:'Install Python, run first program, understand variables, data types (int, str, float, bool), and print statements.'},
+      {title:'Operators & Control Flow',desc:'Arithmetic, comparison, logical operators. if/elif/else statements. Nested conditions.'},
+      {title:'Loops: for & while',desc:'Iterate over lists and ranges. while loops, break/continue/pass. Loop-based patterns.'},
+      {title:'Functions & Scope',desc:'def keyword, parameters, return values, default args, *args/**kwargs. Local vs global scope.'},
+      {title:'Lists, Tuples & Sets',desc:'Creating, indexing, slicing, modifying. List comprehensions. Differences between mutable/immutable.'},
+      {title:'Dictionaries & Strings',desc:'Key-value pairs, dict methods. String methods: split, join, strip, format. f-strings.'},
+      {title:'File Handling & Exceptions',desc:'open(), read/write files. try/except/finally. Custom exceptions. Context managers (with).'},
+      {title:'OOP: Classes & Objects',desc:'Class definition, __init__, self, instance vs class variables. Inheritance, polymorphism, encapsulation.'},
+      {title:'Modules & Libraries',desc:'import, pip install. NumPy basics, Pandas DataFrames, Matplotlib plotting.'},
+      {title:'Project: Build a Real App',desc:'Apply everything: build a student grade tracker, to-do app, or simple quiz game with file saving.'}
+    ],
+    dsa: [
+      {title:'Arrays & Strings',desc:'Array traversal, two-pointer technique, sliding window. String manipulation, palindrome, anagram problems.'},
+      {title:'Linked Lists',desc:'Singly & doubly linked lists. Insert/delete/traverse. Reverse a linked list. Detect cycle (Floyd algorithm).'},
+      {title:'Stacks & Queues',desc:'LIFO/FIFO. Implement using arrays/lists. Balanced parentheses, next greater element, queue using stacks.'},
+      {title:'Binary Trees',desc:'Tree traversals (inorder, preorder, postorder). Height, diameter, level order. BST insert/search/delete.'},
+      {title:'Graphs & BFS/DFS',desc:'Adjacency list/matrix. BFS (shortest path), DFS (connected components). Cycle detection.'},
+      {title:'Sorting Algorithms',desc:'Bubble, selection, insertion sort. Merge sort & Quick sort. Time/space complexity comparison.'},
+      {title:'Binary Search',desc:'Searching sorted arrays. Binary search on answer. Upper/lower bound. Rotated sorted array.'},
+      {title:'Hashing & HashMaps',desc:'Hash functions, collision handling. Two sum, group anagrams, frequency counting using HashMap.'},
+      {title:'Dynamic Programming',desc:'Memoization vs tabulation. Fibonacci, knapsack, longest common subsequence, coin change.'},
+      {title:'Practice & Mock Contest',desc:'Solve 10 mixed problems on LeetCode/GFG. Time yourself. Review optimal solutions.'}
+    ],
+    forensic: [
+      {title:'Introduction to Forensic Science',desc:'History, branches (physical, chemical, digital, biological). Role in criminal justice. Locard exchange principle.'},
+      {title:'Crime Scene Investigation',desc:'First responder duties, scene documentation, chain of custody, evidence collection and packaging.'},
+      {title:'Fingerprint Analysis',desc:'Ridge patterns (loop, whorl, arch). AFIS system. Latent, patent, plastic prints. Lifting techniques.'},
+      {title:'DNA Forensics',desc:'DNA extraction from evidence, PCR amplification, STR profiling, CODIS database, mitochondrial DNA.'},
+      {title:'Toxicology',desc:'Drug and poison detection. Blood alcohol content. Gas chromatography-mass spectrometry (GC-MS).'},
+      {title:'Ballistics & Firearms',desc:'Gunshot residue, bullet trajectory, rifling marks, tool marks analysis.'},
+      {title:'Digital Forensics',desc:'Computer/mobile evidence recovery, metadata analysis, email forensics, chain of custody for digital evidence.'},
+      {title:'Forensic Anthropology',desc:'Skeletal analysis, age/sex/stature estimation, trauma identification, time of death.'},
+      {title:'Blood Pattern Analysis',desc:'Bloodstain shapes, directionality, origin point, cast-off, impact spatter interpretation.'},
+      {title:'Expert Witness & Courtroom',desc:'How forensic evidence is presented in court, Daubert standard, cross-examination, report writing.'}
+    ],
+    ssc: [
+      {title:'English: Grammar Fundamentals',desc:'Parts of speech, tenses, subject-verb agreement, articles, prepositions. Common error spotting.'},
+      {title:'English: Comprehension & Vocabulary',desc:'Reading passages, synonyms, antonyms, idioms, one-word substitution, sentence completion.'},
+      {title:'Quantitative: Number System',desc:'HCF, LCM, divisibility rules, simplification, number series, BODMAS.'},
+      {title:'Quantitative: Arithmetic',desc:'Percentage, profit/loss, ratio/proportion, simple/compound interest, time/work, time/distance.'},
+      {title:'Quantitative: Geometry & Algebra',desc:'Mensuration (area, volume), triangles, circles, linear equations, quadratic equations.'},
+      {title:'Reasoning: Logical',desc:'Syllogisms, blood relations, direction sense, coding-decoding, series completion.'},
+      {title:'Reasoning: Verbal & Non-verbal',desc:'Analogy, odd one out, figure matrix, cube/dice problems, Venn diagrams.'},
+      {title:'General Awareness: India',desc:'History, geography, polity (Constitution), economy basics, current affairs last 6 months.'},
+      {title:'General Awareness: Science',desc:'Physics, chemistry, biology basics. Scientific discoveries. Technology and sports current affairs.'},
+      {title:'Mock Test & Analysis',desc:'Full 2-hour timed mock test. Analyze errors. Focus on speed + accuracy for weak sections.'}
+    ],
+    maths: [
+      {title:'Number System & HCF/LCM',desc:'Types of numbers, prime factorization, divisibility rules, HCF and LCM shortcuts.'},
+      {title:'Percentages & Profit/Loss',desc:'Percentage formulas, profit/loss calculations, marked price, discount, successive discounts.'},
+      {title:'Ratio, Proportion & Partnership',desc:'Ratio simplification, proportional division, partnership profit sharing, mixture/alligation.'},
+      {title:'Simple & Compound Interest',desc:'SI and CI formulas, difference between SI and CI, population growth problems.'},
+      {title:'Time, Speed & Distance',desc:'Speed formulas, relative speed, trains, boats and streams, circular tracks.'},
+      {title:'Time & Work',desc:'Work efficiency, pipes and cisterns, combined work, worker wages.'},
+      {title:'Algebra',desc:'Linear equations, quadratic equations, polynomials, factorization, algebraic identities.'},
+      {title:'Geometry & Mensuration',desc:'Lines, angles, triangles, circles. Area, perimeter, surface area, volume of 3D shapes.'},
+      {title:'Trigonometry & Statistics',desc:'Sin, cos, tan values, height and distance. Mean, median, mode, range, data interpretation.'},
+      {title:'DI & Practice',desc:'Bar graphs, pie charts, tables, line graphs. Speed-based data interpretation with mock test.'}
+    ],
+    history: [
+      {title:'Ancient Indian History',desc:'Indus Valley Civilization, Vedic period, Maurya Empire (Ashoka), Gupta Empire, culture and economy.'},
+      {title:'Medieval Indian History',desc:'Delhi Sultanate, Mughal Empire (Akbar, Aurangzeb), Vijayanagara Empire, Bhakti & Sufi movements.'},
+      {title:'Colonial India',desc:'British East India Company, major revolts (1857 Revolt), social reforms, economic exploitation policies.'},
+      {title:'Indian Independence Movement',desc:'Congress, Gandhi (Non-Cooperation, Civil Disobedience, Quit India), Subhas Bose, Partition 1947.'},
+      {title:'Modern India Post-Independence',desc:'Constitution framing, Five Year Plans, major wars (1962, 1965, 1971), Emergency, liberalization 1991.'},
+      {title:'Ancient World History',desc:'Mesopotamia, Egypt, Greece (Athens/Sparta), Roman Empire, Chinese dynasties, Alexander the Great.'},
+      {title:'World Wars',desc:'Causes of WW1, Treaty of Versailles. Rise of fascism, WW2 events, Holocaust, atomic bombs, UN formation.'},
+      {title:'Revolutions',desc:'French Revolution (1789), American Revolution (1776), Russian Revolution (1917) — causes and outcomes.'},
+      {title:'Post-War World',desc:'Cold War, Korean War, Vietnam War, decolonization of Africa/Asia, Cuban Missile Crisis, fall of USSR.'},
+      {title:'Revision & Map Work',desc:'Revise timelines, important dates, map-based questions, and attempt history MCQs.'}
+    ],
+    english: [
+      {title:'Parts of Speech',desc:'Nouns, pronouns, verbs, adjectives, adverbs, prepositions, conjunctions, interjections with examples.'},
+      {title:'Tenses & Verb Forms',desc:'12 tenses with formulas and usage. Active/passive voice conversion. Direct/indirect speech.'},
+      {title:'Subject-Verb Agreement',desc:'Singular/plural rules, collective nouns, indefinite pronouns, neither/nor, either/or patterns.'},
+      {title:'Articles & Determiners',desc:'a, an, the — rules and exceptions. Quantifiers: some, any, many, few, much, little.'},
+      {title:'Vocabulary Building',desc:'Root words, prefixes, suffixes. Word families. 200 most common synonyms/antonyms for exams.'},
+      {title:'Reading Comprehension',desc:'Skimming and scanning techniques. Inferring meaning. Main idea, tone, author intent questions.'},
+      {title:'Sentence Correction',desc:'Common errors: dangling modifier, parallel structure, pronoun reference, misplaced modifier.'},
+      {title:'Essay & Paragraph Writing',desc:'Introduction-body-conclusion structure. Linking words. Opinion, descriptive, narrative essay types.'},
+      {title:'Letter & Application Writing',desc:'Formal letter format, complaint letters, leave applications, email writing for exams.'},
+      {title:'Revision & Mock Test',desc:'20-question grammar test + comprehension passage + essay writing under timed conditions.'}
+    ],
+    constable: [
+      {title:'Indian Constitution & Polity',desc:'Fundamental Rights, DPSP, Preamble, President/PM roles, Parliament structure, state governments.'},
+      {title:'Indian History for Police Exams',desc:'Freedom struggle key dates, major events, important personalities, post-independence events.'},
+      {title:'Indian Geography',desc:'Rivers, mountains, states/capitals, national parks, soils, climate zones — for MCQs.'},
+      {title:'General Science',desc:'Physics: laws of motion, electricity. Chemistry: acids/bases, periodic table. Biology: human body, diseases.'},
+      {title:'Current Affairs & GK',desc:'Last 6 months news: national, international, awards, sports, summits, appointments.'},
+      {title:'Mathematics: Basics',desc:'Number system, HCF/LCM, percentages, profit/loss, simple interest — constable exam level.'},
+      {title:'Mathematics: Reasoning',desc:'Time/work, time/distance, ratio, mixture — with shortcut methods for fast solving.'},
+      {title:'Logical Reasoning',desc:'Blood relations, directions, seating arrangement, coding-decoding, analogy, series.'},
+      {title:'Hindi Language',desc:'Grammar, comprehension, synonyms, antonyms, fill in the blanks — for Hindi medium exams.'},
+      {title:'Mock Test & Revision',desc:'Full mock test (2 hours, 100 questions). Analyze score. Revise weak topics.'}
+    ],
+    media: [
+      {title:'Introduction to Media & Mass Communication',desc:'Types: print, broadcast, digital, social. Role of media in democracy. Media ownership patterns.'},
+      {title:'Media Literacy Fundamentals',desc:'How to read news critically, identify reliable sources, understand media framing and agenda-setting.'},
+      {title:'Media Bias & Propaganda',desc:'Types of bias (selection, framing, spin). Propaganda techniques. How to spot fake news.'},
+      {title:'Digital Media & Social Networks',desc:'How algorithms work, echo chambers, filter bubbles, viral content, influencer culture.'},
+      {title:'Advertising & Persuasion Techniques',desc:'AIDA model, emotional vs rational appeals, subliminal advertising, propaganda vs advertising.'},
+      {title:'News Literacy & Fact Checking',desc:'Evaluating sources, reverse image search, fact-checking websites (AltNews, Snopes, FactCheck.org).'},
+      {title:'Privacy & Ethics in Media',desc:'Sting operations, right to privacy, media trials, paid news, press freedom laws in India.'},
+      {title:'Media Laws & Regulations',desc:'Press Council of India, TRAI, IT Act 2000, cable TV regulation, defamation laws.'},
+      {title:'Creating Responsible Content',desc:'Copyright, fair use, ethical reporting, source protection, photojournalism ethics.'},
+      {title:'Revision & Case Studies',desc:'Analyze real media examples. Discuss case studies of biased/ethical reporting. Mock test.'}
+    ]
   };
 
   const RESOURCES_MAP = {
-    psychology: [{name:'Khan Academy Psychology',type:'YouTube',url:`https://www.youtube.com/results?search_query=psychology+full+course+khan+academy`},{name:'Crash Course Psychology',type:'YouTube',url:`https://www.youtube.com/playlist?list=PL8dPuuaLjXtOPRKzVLY0jJY-uHOH9KVU6`},{name:'Psychology Notes',type:'Website',url:`https://www.simplypsychology.org`}],
-    media: [{name:'Media Literacy Course',type:'YouTube',url:`https://www.youtube.com/results?search_query=media+literacy+full+course`},{name:'NewsGuard Media Literacy',type:'Website',url:`https://www.newsguardtech.com`},{name:'NAMLE Media Literacy',type:'Website',url:`https://namle.net`}],
-    python: [{name:'Python for Beginners - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/watch?v=rfscVS0vtbw`},{name:'Official Python Docs',type:'Website',url:`https://docs.python.org/3/tutorial/`},{name:'W3Schools Python',type:'Website',url:`https://www.w3schools.com/python/`}],
-    constable: [{name:'Police Constable Exam Prep',type:'YouTube',url:`https://www.youtube.com/results?search_query=police+constable+exam+preparation+hindi`},{name:'GK Today',type:'Website',url:`https://gktoday.in`},{name:'Adda247 Constable',type:'Website',url:`https://www.adda247.com`}],
-    ssc: [{name:'SSC CGL Full Course',type:'YouTube',url:`https://www.youtube.com/results?search_query=SSC+CGL+full+course+free`},{name:'Adda247 SSC',type:'Website',url:`https://www.adda247.com/ssc-jobs/`},{name:'SSC Official Site',type:'Website',url:`https://ssc.nic.in`}],
-    dsa: [{name:'DSA Full Course - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/watch?v=8hly31xKli0`},{name:'GeeksforGeeks DSA',type:'Website',url:`https://www.geeksforgeeks.org/data-structures/`},{name:'LeetCode Practice',type:'Website',url:`https://leetcode.com`}],
-    default: [{name:`${topic} Full Course`,type:'YouTube',url:`https://www.youtube.com/results?search_query=${q}+full+course+free`},{name:`${topic} Study Material`,type:'Website',url:`https://www.google.com/search?q=${q}+study+notes+pdf+free`},{name:`${topic} on Wikipedia`,type:'Website',url:`https://en.wikipedia.org/wiki/Special:Search?search=${q}`}]
+    psychology: [{name:'Crash Course Psychology (Free)',type:'YouTube',url:`https://www.youtube.com/playlist?list=PL8dPuuaLjXtOPRKzVLY0jJY-uHOH9KVU6`},{name:'Simply Psychology Notes',type:'Website',url:`https://www.simplypsychology.org`},{name:'Khan Academy Psychology',type:'YouTube',url:`https://www.youtube.com/results?search_query=khan+academy+psychology`}],
+    python: [{name:'Python Tutorial - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/watch?v=rfscVS0vtbw`},{name:'W3Schools Python',type:'Website',url:`https://www.w3schools.com/python/`},{name:'Python Official Docs',type:'Website',url:`https://docs.python.org/3/tutorial/`}],
+    dsa: [{name:'DSA Full Course - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/watch?v=8hly31xKli0`},{name:'GeeksforGeeks DSA',type:'Website',url:`https://www.geeksforgeeks.org/data-structures/`},{name:'LeetCode Practice',type:'Website',url:`https://leetcode.com/problemset/`}],
+    forensic: [{name:'Forensic Science - YouTube',type:'YouTube',url:`https://www.youtube.com/results?search_query=forensic+science+lecture+free`},{name:'NIST Forensic Resources',type:'Website',url:`https://www.nist.gov/forensics`},{name:'Forensic Science Notes PDF',type:'Website',url:`https://www.google.com/search?q=forensic+science+notes+pdf+free+download`}],
+    ssc: [{name:'SSC CGL Full Course - Adda247',type:'YouTube',url:`https://www.youtube.com/results?search_query=SSC+CGL+full+course+free+2024`},{name:'Adda247 SSC',type:'Website',url:`https://www.adda247.com/ssc-jobs/`},{name:'SSC Official Site',type:'Website',url:`https://ssc.nic.in`}],
+    maths: [{name:'Maths Tricks - Vedic Maths',type:'YouTube',url:`https://www.youtube.com/results?search_query=competitive+exam+maths+shortcuts+tricks`},{name:'Khan Academy Maths',type:'Website',url:`https://www.khanacademy.org/math`},{name:'GFG Quant Practice',type:'Website',url:`https://www.geeksforgeeks.org/quantitative-aptitude/`}],
+    history: [{name:'History of India - YouTube',type:'YouTube',url:`https://www.youtube.com/results?search_query=Indian+history+full+course+UPSC+free`},{name:'NCERT History Books',type:'Website',url:`https://ncert.nic.in/textbook.php`},{name:'Clear IAS History Notes',type:'Website',url:`https://www.clearias.com/history/`}],
+    english: [{name:'English Grammar Full Course',type:'YouTube',url:`https://www.youtube.com/results?search_query=English+grammar+full+course+free`},{name:'Grammarly Blog Grammar Tips',type:'Website',url:`https://www.grammarly.com/blog/category/handbook/`},{name:'British Council Learn English',type:'Website',url:`https://learnenglish.britishcouncil.org`}],
+    constable: [{name:'Police Constable Exam Prep',type:'YouTube',url:`https://www.youtube.com/results?search_query=police+constable+exam+preparation+2024`},{name:'GK Today Current Affairs',type:'Website',url:`https://www.gktoday.in`},{name:'Adda247 Police Exams',type:'Website',url:`https://www.adda247.com/jobs-by-category/police-jobs/`}],
+    media: [{name:'Media Literacy - YouTube',type:'YouTube',url:`https://www.youtube.com/results?search_query=media+literacy+course+free`},{name:'News Literacy Project',type:'Website',url:`https://newslit.org`},{name:'AltNews Fact Check',type:'Website',url:`https://www.altnews.in`}],
+    default: [{name:`${topic} Full Course`,type:'YouTube',url:`https://www.youtube.com/results?search_query=${q}+full+course+free`},{name:`${topic} Study Notes`,type:'Website',url:`https://www.google.com/search?q=${q}+notes+pdf+free+download`},{name:`${topic} on Wikipedia`,type:'Website',url:`https://en.wikipedia.org/wiki/Special:Search?search=${q}`}]
   };
 
-  // Match topic to category
+  // ── Match topic to category (expanded) ──
   let cat = 'default';
-  if (t.includes('psych')) cat = 'psychology';
-  else if (t.includes('media') || t.includes('literacy')) cat = 'media';
-  else if (t.includes('python') || t.includes('django') || t.includes('flask')) cat = 'python';
-  else if (t.includes('constable') || t.includes('police') || t.includes('si exam')) cat = 'constable';
-  else if (t.includes('ssc') || t.includes('upsc') || t.includes('bank') || t.includes('ibps')) cat = 'ssc';
-  else if (t.includes('dsa') || t.includes('data structure') || t.includes('algorithm')) cat = 'dsa';
-  else if (t.includes('forensic')) cat = 'forensic';
-  else if (t.includes('english') || t.includes('grammar')) cat = 'english';
-  else if (t.includes('math') || t.includes('maths') || t.includes('quant')) cat = 'maths';
-  else if (t.includes('history') || t.includes('histor')) cat = 'history';
+  if (t.includes('psych') || t.includes('perception') || t.includes('memory') || t.includes('emotion') || t.includes('freud') || t.includes('behavior')) cat = 'psychology';
+  else if (t.includes('python') || t.includes('django') || t.includes('flask') || t.includes('pandas') || t.includes('numpy')) cat = 'python';
+  else if (t.includes('dsa') || t.includes('data struct') || t.includes('algorithm') || t.includes('leetcode') || t.includes('linked list') || t.includes('tree') || t.includes('graph')) cat = 'dsa';
+  else if (t.includes('forensic') || t.includes('fingerprint') || t.includes('crime scene') || t.includes('dna analysis')) cat = 'forensic';
+  else if (t.includes('ssc') || t.includes('upsc') || t.includes('ias') || t.includes('bank') || t.includes('ibps') || t.includes('clerk') || t.includes('po exam')) cat = 'ssc';
+  else if (t.includes('constable') || t.includes('police') || t.includes('si exam') || t.includes('sub inspector')) cat = 'constable';
+  else if (t.includes('math') || t.includes('maths') || t.includes('quant') || t.includes('arithmetic') || t.includes('algebra') || t.includes('geometry')) cat = 'maths';
+  else if (t.includes('history') || t.includes('ancient') || t.includes('medieval') || t.includes('mughal') || t.includes('world war') || t.includes('revolution')) cat = 'history';
+  else if (t.includes('english') || t.includes('grammar') || t.includes('comprehension') || t.includes('vocabulary') || t.includes('writing skills')) cat = 'english';
+  else if (t.includes('media') || t.includes('journalism') || t.includes('mass comm') || t.includes('digital media') || t.includes('fake news')) cat = 'media';
 
-  const subtopics = (TOPIC_MAP[cat] || TOPIC_MAP.default).slice(0, Math.min(wks * 3, 12));
+  // For short plans: 1 topic/day; for long: 3/week on Mon/Wed/Fri
+  const maxTopics = isShortPlan ? totalDays : Math.min(wks * 3, 14);
+  const topicObjs = (TOPIC_MAP[cat] || []).slice(0, maxTopics);
   const resources = RESOURCES_MAP[cat] || RESOURCES_MAP.default;
-  const daySlots = ['Mon','Wed','Fri','Mon','Wed','Fri','Mon','Wed','Fri','Mon','Wed','Fri'];
+  // Day slots: short plan = consecutive days; long plan = Mon/Wed/Fri
+  const ALL_DAYS  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const daySlots  = isShortPlan
+    ? ALL_DAYS.slice(0, totalDays)
+    : ['Mon','Wed','Fri','Mon','Wed','Fri','Mon','Wed','Fri','Mon','Wed','Fri','Mon','Wed'];
 
-  const topics = subtopics.map((name, i) => ({
+  // For any unknown topic — build a smart progression from the input keywords
+  function buildDefaultTopics(topicStr, count) {
+    // Extract keywords from topic string for more relevant titles
+    const words = topicStr.replace(/[^a-zA-Z0-9 ]/g,' ').split(/\s+/).filter(w=>w.length>3).slice(0,4);
+    const kw    = words.length ? words[0] : topicStr.split(' ')[0];
+    const full  = topicStr.substring(0, 50);
+    const phases = [
+      {title:`Introduction to ${full}`,                        desc:`Start with the fundamentals: what ${full} is, its history, importance, and how it is used in the real world. Build your foundation before moving to advanced content.`},
+      {title:`Key Terminology & Core Concepts`,                desc:`Master the essential vocabulary and core ideas of ${full}. Understanding these terms is critical before studying detailed theory.`},
+      {title:`${kw} — Theory & Principles (Part 1)`,           desc:`Study the main theories, models, and principles in ${full}. Take detailed notes and create summary charts for each concept.`},
+      {title:`${kw} — Theory & Principles (Part 2)`,           desc:`Continue with deeper theory. Explore contrasting viewpoints, debates, and the evolution of ideas in ${full}.`},
+      {title:`${kw} — Methods, Techniques & Tools`,            desc:`Learn the practical methods and techniques used in ${full}. Focus on how concepts are applied to solve real problems.`},
+      {title:`Case Studies & Real-World Examples`,             desc:`Analyze real examples and case studies in ${full}. Understand how theory translates to practice in different contexts.`},
+      {title:`${kw} — Advanced & Specialized Topics`,          desc:`Go deeper into the more complex or specialized areas of ${full} that appear in higher-level exams and practical work.`},
+      {title:`Common Errors, Misconceptions & Tips`,           desc:`Review the most frequently misunderstood aspects of ${full}. Learn shortcuts, mnemonics, and tips for retaining content.`},
+      {title:`Practice Questions & Self-Assessment`,           desc:`Attempt 20-30 practice questions on ${full}. Identify weak spots, time yourself, and review each answer carefully.`},
+      {title:`Full Revision & Mock Test`,                      desc:`Comprehensive revision of all ${full} topics. Attempt a timed mock test and review your performance. Focus on areas below 70%.`},
+      {title:`${kw} — Comparison & Analysis`,                  desc:`Compare different approaches, theories, or methods in ${full}. Build analytical skills needed for long-answer and application questions.`},
+      {title:`Current Developments & Future Trends`,           desc:`Explore the latest developments, research, and future direction of ${full}. Useful for interviews, current affairs, and stay updated.`}
+    ];
+    return phases.slice(0, count);
+  }
+
+  const defaultTopics = cat === 'default' ? buildDefaultTopics(topic, maxTopics) : [];
+  const finalTopicObjs = cat === 'default' ? defaultTopics.slice(0, maxTopics) : topicObjs;
+
+  const topics = finalTopicObjs.map((obj, i) => ({
     id: `t${i+1}`,
-    title: name,
-    description: `Study ${name} thoroughly. Take notes, watch videos, and attempt practice questions.`,
-    week: Math.floor(i / 3) + 1,
-    day: daySlots[i],
+    title: obj.title,
+    description: obj.desc,
+    week: isShortPlan ? 1 : Math.floor(i / 3) + 1,
+    day: daySlots[i % daySlots.length],
     duration: `${hrs} hr`,
-    difficulty: i < subtopics.length/3 ? 'Beginner' : i < (2*subtopics.length/3) ? 'Intermediate' : 'Advanced',
+    difficulty: i < finalTopicObjs.length/3 ? 'Beginner' : i < (2*finalTopicObjs.length/3) ? 'Intermediate' : 'Advanced',
     resources: [resources[i % resources.length]]
   }));
 
   const weeklyPlan = [];
-  for (let w = 1; w <= wks; w++) {
-    const wTopics = topics.filter(t => t.week === w);
+  const themes = ['Foundation & Basics','Core Concepts','Advanced Topics','Revision & Practice'];
+  if (isShortPlan) {
+    // Short plan: 1 week, each day has 1 topic
+    const days7 = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].slice(0, Math.max(7, totalDays));
     weeklyPlan.push({
-      week: w,
-      theme: w === 1 ? 'Foundation & Basics' : w === wks ? 'Revision & Practice' : w === 2 ? 'Core Concepts' : 'Advanced Topics',
-      days: [
-        {day:'Mon', topics: wTopics[0]?[wTopics[0].id]:[], totalTime: wTopics[0]?`${hrs} hr`:'Rest'},
-        {day:'Tue', topics:[], totalTime:'Rest'},
-        {day:'Wed', topics: wTopics[1]?[wTopics[1].id]:[], totalTime: wTopics[1]?`${hrs} hr`:'Rest'},
-        {day:'Thu', topics:[], totalTime:'Rest'},
-        {day:'Fri', topics: wTopics[2]?[wTopics[2].id]:[], totalTime: wTopics[2]?`${hrs} hr`:'Rest'},
-        {day:'Sat', topics:[], totalTime:'Revision'},
-        {day:'Sun', topics:[], totalTime:'Rest'}
-      ]
+      week: 1,
+      theme: totalDays <= 1 ? 'Quick Intensive' : totalDays <= 3 ? 'Express Course' : '1-Week Sprint',
+      days: days7.map((d, di) => {
+        const tp = topics[di];
+        return { day: d, topics: tp ? [tp.id] : [], totalTime: tp ? `${hrs} hr` : 'Rest' };
+      })
     });
+  } else {
+    for (let w = 1; w <= wks; w++) {
+      const wTopics = topics.filter(t => t.week === w);
+      weeklyPlan.push({
+        week: w,
+        theme: themes[Math.min(w-1, themes.length-1)],
+        days: [
+          {day:'Mon', topics: wTopics[0]?[wTopics[0].id]:[], totalTime: wTopics[0]?`${hrs} hr`:'Rest'},
+          {day:'Tue', topics:[], totalTime:'Rest'},
+          {day:'Wed', topics: wTopics[1]?[wTopics[1].id]:[], totalTime: wTopics[1]?`${hrs} hr`:'Rest'},
+          {day:'Thu', topics:[], totalTime:'Rest'},
+          {day:'Fri', topics: wTopics[2]?[wTopics[2].id]:[], totalTime: wTopics[2]?`${hrs} hr`:'Rest'},
+          {day:'Sat', topics:[], totalTime:'Revision'},
+          {day:'Sun', topics:[], totalTime:'Rest'}
+        ]
+      });
+    }
   }
 
   return {
-    title: `${topic} — ${wks}-Week Study Plan`,
-    summary: `A structured ${wks}-week plan to master ${topic}. Study ${hrs} hour(s) daily with topic-specific resources and practice.`,
+    title: cat !== 'default' ? `${topic} — ${wks}-Week Complete Study Plan` : `${topic} — ${wks}-Week Study Plan`,
+    summary: `A structured ${wks}-week plan to master ${topic}. Study ${hrs} hour(s) daily with curated free resources, clear topic progression, and built-in revision days.`,
     totalTopics: topics.length,
     totalWeeks: wks,
     hoursPerDay: hrs,
     topics,
     weeklyPlan,
     courses: [
-      ...resources,
-      {name:`${topic} Practice Questions`, provider:'Website', url:`https://www.google.com/search?q=${q}+practice+questions+MCQ+free`, duration:'Self-paced', free:true, description:`Practice questions and MCQs for ${topic}`},
-      {name:`${topic} PDF Notes`, provider:'Website', url:`https://www.google.com/search?q=${q}+notes+pdf+free+download`, duration:'Self-paced', free:true, description:`Free downloadable notes for ${topic}`}
+      ...resources.map(r => ({name:r.name, provider:r.type, url:r.url, duration:`${wks} weeks`, free:true, description:`Recommended resource for ${topic}`})),
+      {name:`${topic} Practice Questions`, provider:'Website', url:`https://www.google.com/search?q=${q}+practice+questions+MCQ+free`, duration:'Self-paced', free:true, description:`MCQs and practice questions for ${topic}`},
+      {name:`${topic} PDF Notes`, provider:'Website', url:`https://www.google.com/search?q=${q}+notes+pdf+free+download`, duration:'Self-paced', free:true, description:`Free downloadable PDF notes for ${topic}`}
     ]
   };
 }
 
+
+function updateDurationOptions() {
+  const unit = document.getElementById('learn-duration-unit').value;
+  const sel  = document.getElementById('learn-weeks');
+  sel.innerHTML = unit === 'days'
+    ? `<option value="0.14">1 day</option>
+       <option value="0.43">3 days</option>
+       <option value="0.71" selected>5 days</option>
+       <option value="1">7 days (1 week)</option>
+       <option value="1.43">10 days</option>
+       <option value="2">14 days (2 weeks)</option>`
+    : `<option value="1">1 week</option>
+       <option value="2">2 weeks</option>
+       <option value="4" selected>4 weeks</option>
+       <option value="6">6 weeks</option>
+       <option value="8">8 weeks</option>
+       <option value="12">12 weeks</option>`;
+}
+
 async function generateLearnPlan() {
-  // Gather input
   const pasteMode = document.getElementById('lm-paste').style.display !== 'none';
   let inputText = pasteMode
     ? document.getElementById('learn-text').value.trim()
     : learnFileText.trim();
 
-  if (!inputText) {
-    toast('⚠️ Please enter your syllabus or topics first!');
-    return;
-  }
+  if (!inputText) { toast('⚠️ Please enter your syllabus or topics first!'); return; }
 
-  const hours = document.getElementById('learn-hours').value;
-  const weeks = document.getElementById('learn-weeks').value;
-  const userDegree = P ? P.degreeLabel : 'student';
+  const hours    = parseInt(document.getElementById('learn-hours').value) || 2;
+  const unit     = (document.getElementById('learn-duration-unit')?.value) || 'weeks';
+  const durVal   = parseFloat(document.getElementById('learn-weeks').value) || 4;
+  // Convert everything to days for internal use
+  const totalDays  = unit === 'days' ? Math.round(durVal * 7) : Math.round(durVal * 7);
+  const weeks      = Math.max(1, Math.ceil(totalDays / 7));
+  // Topics: for short plans (<=7 days) use 1 topic/day, longer plans use 3/week
+  const numTopics  = totalDays <= 7
+    ? Math.max(1, totalDays)           // 1 topic per day
+    : Math.min(weeks * 3, 18);         // 3 per week for longer
+  const userDegree = (P && P.degreeLabel) ? P.degreeLabel : 'student';
+  const topic      = inputText.substring(0, 600);
+  // Human-readable duration label for the prompt
+  const durLabel = unit === 'days'
+    ? (totalDays === 1 ? '1 day' : totalDays + ' days')
+    : (weeks === 1 ? '1 week' : weeks + ' weeks');
 
-  // Show loading
   document.getElementById('learn-upload-area').style.display = 'none';
-  document.getElementById('learn-result').style.display = 'none';
-  document.getElementById('learn-error').style.display = 'none';
-  document.getElementById('learn-loading').style.display = 'block';
+  document.getElementById('learn-result').style.display      = 'none';
+  document.getElementById('learn-error').style.display       = 'none';
+  document.getElementById('learn-loading').style.display     = 'block';
 
-  const statuses = [
-    'Analysing your syllabus...',
-    'Breaking into topics...',
-    'Finding free courses...',
-    'Building your timetable...',
-    'Almost ready...'
-  ];
-  let si = 0;
   const statusEl = document.getElementById('learn-status');
-  const statusTimer = setInterval(() => {
-    si = (si + 1) % statuses.length;
-    statusEl.textContent = statuses[si];
-  }, 2200);
+  const msgs = ['Analysing your syllabus...','Breaking into subtopics...','Finding free resources...','Building your timetable...','Almost ready...'];
+  let si = 0;
+  const statusTimer = setInterval(() => { statusEl.textContent = msgs[++si % msgs.length]; }, 2000);
 
-  const topic = inputText.substring(0, 300);
-  const prompt = `Create a ${weeks}-week study plan for an Indian ${userDegree} student to learn: "${topic}". ${hours} hours/day.
+  // ── Clean prompt — no hardcoded examples, just clear instructions ──
+  // Build prompt — different structure for short (days) vs long (weeks) plans
+  const isShortPlan = totalDays <= 7;
+  const dayNames    = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const studyDayNames = isShortPlan
+    ? dayNames.slice(0, totalDays)       // e.g. 3 days = Mon,Tue,Wed
+    : ['Mon','Wed','Fri'];               // regular 3x/week
 
-Rules: Write REAL content, not placeholders like "...". Give actual topic names, real descriptions, real YouTube URLs.
+  const exampleDays = isShortPlan
+    ? studyDayNames.map((d,i) => '        {"day": "' + d + '", "topics": ["t' + (i+1) + '"], "totalTime": "' + hours + ' hr"}').join(',')
+    : ['        {"day": "Mon", "topics": ["t1"], "totalTime": "' + hours + ' hr"}', '        {"day": "Tue", "topics": [], "totalTime": "Rest"}', '        {"day": "Wed", "topics": ["t2"], "totalTime": "' + hours + ' hr"}', '        {"day": "Thu", "topics": [], "totalTime": "Rest"}', '        {"day": "Fri", "topics": ["t3"], "totalTime": "' + hours + ' hr"}', '        {"day": "Sat", "topics": [], "totalTime": "Revision"}', '        {"day": "Sun", "topics": [], "totalTime": "Rest"}'].join(',');
 
-Return ONLY this JSON structure (no markdown):
+  const assignRule = isShortPlan
+    ? `Assign one topic per day: t1→${studyDayNames[0]}, t2→${studyDayNames[1]||'Tue'}, etc. All in week 1.`
+    : `Assign t1,t2,t3 to week 1 (Mon/Wed/Fri), t4,t5,t6 to week 2, and so on.`;
+
+  const prompt = `You are a study planner for Indian students. Create a ${durLabel} study plan for a ${userDegree} student on this topic/syllabus:
+
+"${topic}"
+
+Study time: ${hours} hour(s) per day.
+Total topics to cover: ${numTopics} topics spread across ${durLabel}.
+${isShortPlan ? 'This is an INTENSIVE short plan — cover the most important topics first.' : ''}
+
+Return ONLY valid JSON (no markdown, no explanation):
 {
-  "title": "actual plan title",
-  "summary": "2 sentence description of what they will learn",
-  "totalTopics": 6,
+  "title": "short plan title",
+  "summary": "2-3 sentences on what student will learn in ${durLabel}",
+  "totalTopics": ${numTopics},
   "totalWeeks": ${weeks},
   "hoursPerDay": ${hours},
   "topics": [
-    {"id":"t1","title":"actual topic name","description":"what this covers","week":1,"day":"Mon","duration":"${hours} hr","difficulty":"Beginner","resources":[{"name":"actual resource name","type":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+tutorial"}]},
-    {"id":"t2","title":"actual topic name 2","description":"what this covers","week":1,"day":"Wed","duration":"${hours} hr","difficulty":"Beginner","resources":[{"name":"actual resource","type":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+basics"}]},
-    {"id":"t3","title":"actual topic name 3","description":"what this covers","week":1,"day":"Fri","duration":"${hours} hr","difficulty":"Intermediate","resources":[{"name":"actual resource","type":"Website","url":"https://www.google.com/search?q=${encodeURIComponent(topic)}+study+material"}]},
-    {"id":"t4","title":"actual topic name 4","description":"what this covers","week":2,"day":"Mon","duration":"${hours} hr","difficulty":"Intermediate","resources":[{"name":"actual resource","type":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+advanced"}]},
-    {"id":"t5","title":"actual topic name 5","description":"what this covers","week":2,"day":"Wed","duration":"${hours} hr","difficulty":"Advanced","resources":[{"name":"actual resource","type":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+exam"}]},
-    {"id":"t6","title":"Revision and Mock Test","description":"Revise all topics and attempt practice questions","week":2,"day":"Fri","duration":"${hours} hr","difficulty":"Advanced","resources":[{"name":"Practice questions","type":"Website","url":"https://www.google.com/search?q=${encodeURIComponent(topic)}+practice+questions"}]}
+    {
+      "id": "t1",
+      "title": "specific subtopic name",
+      "description": "2-3 sentences: what this covers, why important, what to focus on",
+      "week": 1,
+      "day": "${studyDayNames[0]}",
+      "duration": "${hours} hr",
+      "difficulty": "Beginner",
+      "resources": [
+        {"name": "resource name", "type": "YouTube", "url": "https://www.youtube.com/results?search_query=TOPIC+KEYWORD+tutorial"}
+      ]
+    }
   ],
   "weeklyPlan": [
-    {"week":1,"theme":"Foundation","days":[{"day":"Mon","topics":["t1"],"totalTime":"${hours} hr"},{"day":"Tue","topics":[],"totalTime":"Rest"},{"day":"Wed","topics":["t2"],"totalTime":"${hours} hr"},{"day":"Thu","topics":[],"totalTime":"Rest"},{"day":"Fri","topics":["t3"],"totalTime":"${hours} hr"},{"day":"Sat","topics":[],"totalTime":"Revision"},{"day":"Sun","topics":[],"totalTime":"Rest"}]},
-    {"week":2,"theme":"Advanced","days":[{"day":"Mon","topics":["t4"],"totalTime":"${hours} hr"},{"day":"Tue","topics":[],"totalTime":"Rest"},{"day":"Wed","topics":["t5"],"totalTime":"${hours} hr"},{"day":"Thu","topics":[],"totalTime":"Rest"},{"day":"Fri","topics":["t6"],"totalTime":"${hours} hr"},{"day":"Sat","topics":[],"totalTime":"Revision"},{"day":"Sun","topics":[],"totalTime":"Rest"}]}
+    {
+      "week": 1,
+      "theme": "week theme",
+      "days": [
+${exampleDays}
+      ]
+    }
   ],
   "courses": [
-    {"name":"actual course name","provider":"YouTube","url":"https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}+full+course","duration":"${weeks} weeks","free":true,"description":"Complete course covering all topics"},
-    {"name":"actual resource name","provider":"Website","url":"https://www.google.com/search?q=${encodeURIComponent(topic)}+free+notes+pdf","duration":"Self-paced","free":true,"description":"Free notes and study material"}
+    {"name": "course name", "provider": "YouTube", "url": "https://www.youtube.com/results?search_query=TOPIC+full+course", "duration": "${durLabel}", "free": true, "description": "short description"},
+    {"name": "notes/PDF", "provider": "Website", "url": "https://www.google.com/search?q=TOPIC+notes+pdf+free", "duration": "Self-paced", "free": true, "description": "short description"}
   ]
 }
 
-Replace ALL "actual topic name", "actual resource name" etc with REAL content specific to "${topic}". The topics array must have real subject-specific content.`;
+Rules:
+- Replace TOPIC KEYWORD with actual relevant search terms
+- Each topic must have a SPECIFIC title (not "Topic 1")
+- topics array must have exactly ${numTopics} items
+- weeklyPlan must have exactly ${weeks} week object(s)
+- ${assignRule}
+- All resource URLs must be real YouTube search or Google search links`;
 
   try {
     clearInterval(statusTimer);
-    statusEl.textContent = 'Generating your plan...';
-
+    statusEl.textContent = 'Generating plan with AI...';
     let parsed = null;
 
-    // Try Pollinations API
+    // ── PRIMARY: Anthropic API ──
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 12000);
-      const response = await fetch('https://text.pollinations.ai/', {
+      const ctrl = new AbortController();
+      const tid  = setTimeout(() => ctrl.abort(), 30000);
+      const res  = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
+        },
+        signal: ctrl.signal,
         body: JSON.stringify({
-          messages: [{ role: 'user', content: prompt }],
-          model: 'openai',
-          jsonMode: true
+          model: 'claude-sonnet-4-6',
+          max_tokens: 3000,
+          messages: [{ role: 'user', content: prompt }]
         })
       });
-      clearTimeout(timeout);
-      if (response.ok) {
-        const raw = (await response.text()).replace(/```json|```/g, '').trim();
-        const m = raw.match(/\{[\s\S]*\}/);
-        if (m) { try { parsed = JSON.parse(m[0]); } catch(e) {} }
+      clearTimeout(tid);
+      if (res.ok) {
+        const d   = await res.json();
+        const raw = (d.content||[]).map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
+        const m   = raw.match(/\{[\s\S]*\}/);
+        if (m) { try { parsed = JSON.parse(m[0]); } catch(e) { console.warn('Anthropic JSON parse failed:', e); } }
+      } else {
+        console.warn('Anthropic API status:', res.status);
       }
-    } catch(e) { /* API failed, use fallback */ }
+    } catch(e) { console.warn('Anthropic API error:', e.message); }
 
-    // Always use fallback if API failed or returned empty
-    if (!parsed || !parsed.topics || !parsed.topics.length) {
+    // ── FALLBACK: Pollinations free AI ──
+    if (!parsed || !parsed.topics?.length) {
+      statusEl.textContent = 'Trying backup AI...';
+      try {
+        const ctrl2 = new AbortController();
+        const tid2  = setTimeout(() => ctrl2.abort(), 20000);
+        const res2  = await fetch('https://text.pollinations.ai/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: ctrl2.signal,
+          body: JSON.stringify({
+            messages: [{ role: 'user', content: prompt }],
+            model: 'openai',
+            jsonMode: true
+          })
+        });
+        clearTimeout(tid2);
+        if (res2.ok) {
+          const raw2 = (await res2.text()).replace(/```json|```/g,'').trim();
+          const m2   = raw2.match(/\{[\s\S]*\}/);
+          if (m2) { try { parsed = JSON.parse(m2[0]); } catch(e) {} }
+        }
+      } catch(e) { console.warn('Pollinations failed:', e.message); }
+    }
+
+    // ── OFFLINE FALLBACK: buildSmartPlan ──
+    if (!parsed || !parsed.topics?.length) {
       statusEl.textContent = 'Building your plan...';
-      await new Promise(r => setTimeout(r, 800)); // small delay so spinner shows
-      parsed = buildSmartPlan(topic, hours, weeks);
+      await new Promise(r => setTimeout(r, 500));
+      parsed = buildSmartPlan(topic, hours, weeks, totalDays);
     }
 
-    // Ensure weeklyPlan exists
-    if (!parsed.weeklyPlan || !parsed.weeklyPlan.length) {
-      const wks = {};
-      parsed.topics.forEach(t => {
-        const w = t.week || 1;
-        if (!wks[w]) wks[w] = { week: w, theme: `Week ${w}`, days: [
-          {day:'Mon',topics:[],totalTime:'Rest'},{day:'Tue',topics:[],totalTime:'Rest'},
-          {day:'Wed',topics:[],totalTime:'Rest'},{day:'Thu',topics:[],totalTime:'Rest'},
-          {day:'Fri',topics:[],totalTime:'Rest'},{day:'Sat',topics:[],totalTime:'Rest'},
-          {day:'Sun',topics:[],totalTime:'Revision'}
-        ]};
-        const dayIdx = ['Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(t.day);
-        if (dayIdx >= 0) { wks[w].days[dayIdx].topics.push(t.id); wks[w].days[dayIdx].totalTime = t.duration; }
-      });
-      parsed.weeklyPlan = Object.values(wks);
+    // ── Sanitize: ensure all required fields exist ──
+    parsed.topics   = (parsed.topics   || []).filter(t => t && t.title);
+    parsed.courses  = parsed.courses   || [];
+    parsed.totalTopics = parsed.topics.length;
+    parsed.totalWeeks  = weeks;
+    parsed.hoursPerDay = hours;
+
+    // ── Rebuild weeklyPlan if missing or wrong ──
+    if (!parsed.weeklyPlan?.length || parsed.weeklyPlan.length !== weeks) {
+      parsed.weeklyPlan = [];
+      const themes2 = ['Foundation & Basics','Core Concepts','Advanced Topics','Revision & Practice'];
+      const ALL7 = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      if (isShortPlan) {
+        // All topics in week 1, each assigned to consecutive days
+        const daysToUse = ALL7.slice(0, totalDays);
+        parsed.weeklyPlan.push({
+          week: 1,
+          theme: totalDays <= 1 ? 'Quick Intensive' : totalDays <= 3 ? 'Express Course' : '1-Week Sprint',
+          days: ALL7.map((d, di) => {
+            const tp = parsed.topics[di];
+            return { day: d, topics: tp ? [tp.id] : [], totalTime: tp ? `${hours} hr` : 'Rest' };
+          })
+        });
+      } else {
+        for (let w = 1; w <= weeks; w++) {
+          const wt = parsed.topics.filter(t => t.week === w);
+          parsed.weeklyPlan.push({
+            week: w,
+            theme: themes2[Math.min(w-1, themes2.length-1)],
+            days: [
+              {day:'Mon', topics: wt[0]?[wt[0].id]:[], totalTime: wt[0]?`${hours} hr`:'Rest'},
+              {day:'Tue', topics:[], totalTime:'Rest'},
+              {day:'Wed', topics: wt[1]?[wt[1].id]:[], totalTime: wt[1]?`${hours} hr`:'Rest'},
+              {day:'Thu', topics:[], totalTime:'Rest'},
+              {day:'Fri', topics: wt[2]?[wt[2].id]:[], totalTime: wt[2]?`${hours} hr`:'Rest'},
+              {day:'Sat', topics:[], totalTime:'Revision'},
+              {day:'Sun', topics:[], totalTime:'Rest'}
+            ]
+          });
+        }
+      }
     }
-    if (!parsed.courses) parsed.courses = [];
 
     learnPlan = parsed;
     saveLearnPlan();
     renderLearnResult();
 
-  } catch (err) {
+  } catch(err) {
     clearInterval(statusTimer);
-    // Always generate a plan even on error — never show failure
+    console.error('generateLearnPlan error:', err);
+    // Never show error — always build a local plan
     try {
       learnPlan = buildSmartPlan(topic, hours, weeks);
       saveLearnPlan();
@@ -1904,6 +2191,7 @@ Replace ALL "actual topic name", "actual resource name" etc with REAL content sp
     }
   }
 }
+
 
 function renderLearnResult() {
   document.getElementById('learn-loading').style.display = 'none';
@@ -1934,13 +2222,171 @@ function renderLearnResult() {
 function setLearnView(view, btn) {
   document.querySelectorAll('#learn-result .frow .fp').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
+  document.getElementById('lv-topics').style.display    = view === 'topics'    ? 'block' : 'none';
+  document.getElementById('lv-day').style.display       = view === 'day'       ? 'block' : 'none';
   document.getElementById('lv-timetable').style.display = view === 'timetable' ? 'block' : 'none';
-  document.getElementById('lv-topics').style.display = view === 'topics' ? 'block' : 'none';
-  document.getElementById('lv-courses').style.display = view === 'courses' ? 'block' : 'none';
-
+  document.getElementById('lv-courses').style.display   = view === 'courses'   ? 'block' : 'none';
+  if (view === 'topics')    renderTopicsView();
+  if (view === 'day')       renderDayView();
   if (view === 'timetable') renderTimetableView();
-  if (view === 'topics') renderTopicsView();
-  if (view === 'courses') renderCoursesView();
+  if (view === 'courses')   renderCoursesView();
+}
+
+// ── State for day view ──
+let _learnDayOffset = 0; // 0 = today, -1 = yesterday, +1 = tomorrow
+
+function renderDayView(offset) {
+  if (offset !== undefined) _learnDayOffset = offset;
+  const p = learnPlan;
+  if (!p || !p.topics) return;
+
+  const el = document.getElementById('lv-day');
+  const topicMap = {};
+  (p.topics || []).forEach(t => { topicMap[t.id] = t; });
+
+  // Build a flat day-indexed list across all weeks
+  const ALL_DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const todayDayName = ALL_DAYS[(new Date().getDay() + 6) % 7]; // Mon=0
+
+  // Build flat list: [{weekNum, dayName, topics[], totalTime}]
+  const flatDays = [];
+  (p.weeklyPlan || []).forEach(week => {
+    (week.days || []).forEach(day => {
+      flatDays.push({
+        weekNum: week.week,
+        weekTheme: week.theme || '',
+        dayName: day.day,
+        topics: (day.topics || []).map(id => topicMap[id]).filter(Boolean),
+        totalTime: day.totalTime || 'Rest',
+        isEmpty: !(day.topics || []).length || (day.topics || []).every(id => !topicMap[id])
+      });
+    });
+  });
+
+  // Find "today" index in flatDays (first week's matching day)
+  const todayIdx = flatDays.findIndex(d => d.dayName === todayDayName) || 0;
+  const baseIdx  = Math.max(0, todayIdx);
+  const curIdx   = Math.max(0, Math.min(flatDays.length - 1, baseIdx + _learnDayOffset));
+  const cur      = flatDays[curIdx] || flatDays[0];
+
+  // Day navigation strip — show 7 days centered on current
+  const stripStart = Math.max(0, curIdx - 3);
+  const stripEnd   = Math.min(flatDays.length - 1, stripStart + 6);
+  const strip      = flatDays.slice(stripStart, stripEnd + 1);
+
+  const DAYCOLORS = { Mon:'var(--pbg)', Tue:'var(--bbg)', Wed:'var(--gbg)', Thu:'var(--abg)', Fri:'var(--cbg)', Sat:'var(--tbg)', Sun:'var(--bg3)' };
+  const DAYTXT    = { Mon:'var(--pt)',  Tue:'var(--bt)',  Wed:'var(--gt)',  Thu:'var(--at)',  Fri:'var(--ct)',  Sat:'var(--tt)',  Sun:'var(--text3)' };
+  const diffColor = { 'Beginner':'tg', 'Intermediate':'ta', 'Advanced':'tc' };
+
+  const isAtToday  = curIdx === baseIdx;
+  const isFirst    = curIdx === 0;
+  const isLast     = curIdx === flatDays.length - 1;
+
+  el.innerHTML = `
+    <!-- Top nav -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;">
+      <button onclick="renderDayView(${_learnDayOffset - 1})" ${isFirst?'disabled':''} 
+        style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);font-size:18px;cursor:pointer;flex-shrink:0;${isFirst?'opacity:.35;cursor:not-allowed;':''}">‹</button>
+      <div style="flex:1;text-align:center;">
+        <div style="font-size:15px;font-weight:800;color:var(--text);">${cur.dayName}${isAtToday ? " <span style=\"font-size:10px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;\">TODAY</span>" : ""}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px;">Week ${cur.weekNum} · ${cur.weekTheme}</div>
+      </div>
+      <button onclick="renderDayView(${_learnDayOffset + 1})" ${isLast?'disabled':''}
+        style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);font-size:18px;cursor:pointer;flex-shrink:0;${isLast?'opacity:.35;cursor:not-allowed;':''}">›</button>
+    </div>
+
+    <!-- Day strip -->
+    <div style="display:flex;gap:4px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;">
+      ${!isAtToday ? `<button onclick="renderDayView(0)" style="flex-shrink:0;padding:5px 10px;border-radius:8px;border:1.5px solid var(--acc);background:var(--pbg);color:var(--pt);font-size:11px;font-weight:700;cursor:pointer;">Today</button>` : ''}
+      ${strip.map((d, si) => {
+        const absIdx = stripStart + si;
+        const isActive = absIdx === curIdx;
+        const isToday2 = absIdx === baseIdx;
+        const hasTopic = !d.isEmpty;
+        return `<button onclick="renderDayView(${absIdx - baseIdx})"
+          style="flex-shrink:0;min-width:42px;padding:6px 4px;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:2px;border:${isActive?'2px solid var(--acc)':'1.5px solid var(--border2)'};background:${isActive?'var(--pbg)':'var(--bg2)'};cursor:pointer;position:relative;">
+          <span style="font-size:10px;font-weight:700;color:${isActive?'var(--acc)':'var(--text3)'};">${d.dayName}</span>
+          <span style="font-size:9px;font-weight:600;color:${isActive?'var(--acc)':'var(--text3)'};">W${d.weekNum}</span>
+          ${hasTopic ? `<span style="width:5px;height:5px;border-radius:50%;background:${isActive?'var(--acc)':'var(--acc2)'};margin-top:1px;"></span>` : `<span style="width:5px;height:5px;"></span>`}
+          ${isToday2 ? `<span style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;border-radius:50%;background:var(--grad);"></span>` : ''}
+        </button>`;
+      }).join('')}
+    </div>
+
+    <!-- Main day content -->
+    ${cur.isEmpty ? `
+      <div style="background:var(--bg3);border-radius:16px;padding:28px 20px;text-align:center;">
+        <div style="font-size:30px;margin-bottom:8px;">${cur.dayName === 'Sun' ? '😴' : cur.dayName === 'Sat' ? '📝' : '🌿'}</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">${cur.totalTime === 'Revision' ? 'Revision Day' : 'Rest Day'}</div>
+        <div style="font-size:12px;color:var(--text3);line-height:1.6;">${cur.totalTime === 'Revision' ? 'Review your notes from this week. Re-read key topics and attempt 5-10 practice questions.' : 'Take a well-earned break. Rest is part of the learning process.'}</div>
+      </div>` : `
+
+      <!-- Study card for the day -->
+      <div style="background:${DAYCOLORS[cur.dayName]||'var(--pbg)'};border-radius:18px;padding:16px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:800;color:${DAYTXT[cur.dayName]||'var(--pt)'};letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;">
+          📚 ${cur.topics.length} topic${cur.topics.length>1?'s':''} · ${cur.totalTime}
+        </div>
+        ${cur.topics.map((t, ti) => {
+          const done = LEARN_TOPIC_DONE[t.id];
+          const notes = localStorage.getItem('lt_learn_note_' + t.id) || '';
+          return `
+          <div style="background:rgba(255,255,255,0.18);border-radius:12px;padding:12px;margin-bottom:${ti<cur.topics.length-1?'8px':'0'};">
+            <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;">
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:800;color:${DAYTXT[cur.dayName]||'var(--pt)'};${done?'text-decoration:line-through;opacity:.6;':''}">${t.title}</div>
+                <div style="display:flex;gap:6px;margin-top:3px;flex-wrap:wrap;">
+                  <span style="font-size:10px;font-weight:700;color:${DAYTXT[cur.dayName]||'var(--pt)'};opacity:.8;">⏱ ${t.duration}</span>
+                  <span style="font-size:10px;font-weight:700;color:${DAYTXT[cur.dayName]||'var(--pt)'};opacity:.8;">${t.difficulty||''}</span>
+                </div>
+              </div>
+              <button onclick="toggleTopicDone('${t.id}');renderDayView()" 
+                style="width:28px;height:28px;border-radius:50%;border:2px solid ${done?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.4)'};background:${done?'rgba(255,255,255,0.3)':'transparent'};color:${done?DAYTXT[cur.dayName]||'var(--pt)':'transparent'};font-size:14px;cursor:pointer;flex-shrink:0;transition:all .2s;font-weight:900;">
+                ${done ? '✓' : ''}
+              </button>
+            </div>
+            <div style="font-size:12px;color:${DAYTXT[cur.dayName]||'var(--pt)'};opacity:.85;line-height:1.6;margin-bottom:8px;">${t.description}</div>
+            ${t.resources?.length ? `
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              ${t.resources.map(r => `
+              <a href="${r.url}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(255,255,255,0.2);border-radius:8px;text-decoration:none;color:${DAYTXT[cur.dayName]||'var(--pt)'};font-size:11px;font-weight:700;">
+                ${r.type==='YouTube'?'▶ Watch':r.type==='Website'?'🌐 Open':'📖 Read'}: ${r.name}
+              </a>`).join('')}
+            </div>` : ''}
+            <textarea placeholder="📝 My notes for this topic..." rows="2"
+              style="width:100%;margin-top:8px;padding:7px 10px;border:1.5px solid rgba(255,255,255,0.3);border-radius:9px;font-size:12px;background:rgba(255,255,255,0.15);color:${DAYTXT[cur.dayName]||'var(--pt)'};font-family:inherit;resize:vertical;outline:none;placeholder-color:rgba(255,255,255,0.5);"
+              onchange="saveTopicNote('${t.id}', this.value)">${notes}</textarea>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Quick actions -->
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button onclick="renderDayView(${_learnDayOffset - 1})" ${isFirst?'disabled':''}
+          style="flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;">← Previous day</button>
+        <button onclick="renderDayView(${_learnDayOffset + 1})" ${isLast?'disabled':''}
+          style="flex:1;padding:11px;border-radius:12px;background:var(--grad);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;">Next day →</button>
+      </div>`
+    }
+
+    <!-- Mini weekly progress bar -->
+    <div style="margin-top:16px;background:var(--bg2);border-radius:14px;padding:12px 14px;border:1px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Week ${cur.weekNum} Progress</div>
+      <div style="display:flex;gap:3px;">
+        ${(p.weeklyPlan?.find(w => w.week === cur.weekNum)?.days || []).map(d => {
+          const dTopics = (d.topics||[]).map(id => topicMap[id]).filter(Boolean);
+          const dDone = dTopics.length && dTopics.every(t => LEARN_TOPIC_DONE[t.id]);
+          const dHas  = dTopics.length > 0;
+          const dCur  = d.day === cur.dayName;
+          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
+            <div style="width:100%;height:6px;border-radius:3px;background:${dDone?'var(--acc2)':dHas?'var(--bg3)':'var(--bg3)'};">
+              ${dDone?`<div style="height:100%;background:var(--acc2);border-radius:3px;"></div>`:''}
+            </div>
+            <span style="font-size:8px;font-weight:${dCur?'900':'600'};color:${dCur?'var(--acc)':'var(--text3)'};">${d.day}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
 }
 
 function renderTimetableView() {
@@ -2857,6 +3303,17 @@ if ('serviceWorker' in navigator) {
     try {
       _swRegistration = await navigator.serviceWorker.register('./sw.js', {scope: './'});
 
+      // Register periodic background sync for notifications (Android Chrome)
+      try {
+        const status = await navigator.permissions.query({ name: 'periodic-background-sync' });
+        if (status.state === 'granted') {
+          await _swRegistration.periodicSync.register('lt-notif-check', {
+            minInterval: 60 * 1000 // every minute
+          });
+          console.log('[App] Periodic background sync registered');
+        }
+      } catch(e) { /* periodic sync not supported — fall back to SW message */ }
+
       // Check for updates every time the page loads
       _swRegistration.addEventListener('updatefound', () => {
         const newWorker = _swRegistration.installing;
@@ -3306,103 +3763,128 @@ function msUntil(timeStr) {
   return next - now;
 }
 
+// ── Build the full list of notifications for today ──
+function buildTodayNotifs() {
+  const tasks    = (CUSTOM_TASKS && CUSTOM_TASKS.length) ? CUSTOM_TASKS : defaultTasks();
+  const dayOfWeek = new Date().getDay();
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  const notifs    = [];
+
+  // 1. Task reminders
+  tasks.forEach(task => {
+    if (!task.time) return;
+    if (isWeekend && task.cat === 'college') return;
+    const cat     = task.cat || 'default';
+    const catData = NOTIF_CAT_MSG[cat] || NOTIF_CAT_MSG.default;
+    const msg     = catData.msgs[Math.floor(Math.random() * catData.msgs.length)];
+    notifs.push({ tag:'task-'+task.id, title: catData.emoji+' '+task.label, body: msg, time: task.time });
+  });
+
+  // 2. Daily check-ins (static times, dynamic body built at fire time)
+  DAILY_CHECKINS.forEach(ci => {
+    notifs.push({ tag:'checkin-'+ci.id, title: ci.title, body: ci.body(), time: ci.time });
+  });
+
+  // 3. Weekend extras
+  if (dayOfWeek === 0) {
+    notifs.push({ tag:'sun-morning', title:'📖 Sunday Study Block', body:'Deep study time! No college = bonus hours 🎯', time:'09:30' });
+    notifs.push({ tag:'sun-arvo',   title:'💼 Skill & Career Time', body:'Explore jobs, build a skill, work on a project 🚀', time:'15:30' });
+    notifs.push({ tag:'sun-night',  title:'🧘 Weekly Reflection',   body:'Check your Stats tab — plan for a strong Monday! 📊', time:'20:30' });
+  }
+  if (dayOfWeek === 6) {
+    notifs.push({ tag:'sat-study', title:'📚 Saturday Study Time!', body:'No college — assignments, backlogs & exam prep! 💪', time:'10:00' });
+  }
+
+  return notifs;
+}
+
+// ── Save scheduled times to localStorage so SW can read them ──
+function saveNotifSchedule() {
+  const notifs = buildTodayNotifs();
+  const dateKey = new Date().toISOString().slice(0,10);
+  // Store as array of {tag, title, body, fireAt (timestamp)}
+  const schedule = notifs.map(n => {
+    const [h, m] = n.time.split(':').map(Number);
+    const fireAt = new Date();
+    fireAt.setHours(h, m, 0, 0);
+    if (fireAt <= new Date()) fireAt.setDate(fireAt.getDate() + 1); // next day if past
+    return { tag: n.tag, title: n.title, body: n.body, fireAt: fireAt.getTime() };
+  }).filter(n => n.fireAt > Date.now());
+  localStorage.setItem('lt_notif_schedule', JSON.stringify({ date: dateKey, items: schedule }));
+  return schedule;
+}
+
+// ── Schedule using setTimeout (works while app is open) ──
 function scheduleAllNotifs() {
   _notifTimers.forEach(t => clearTimeout(t));
   _notifTimers = [];
   if (Notification.permission !== 'granted') return;
   if (!localStorage.getItem('lt_notif_enabled')) return;
 
-  // Use smart day-aware schedule (replaces college on weekends)
-  const tasks = getSchedule();
-  const dayOfWeek = new Date().getDay();
-  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  const schedule = saveNotifSchedule(); // also saves to localStorage for SW
+  const now = Date.now();
 
-  // 1. Schedule task reminders — skip college on weekends
-  tasks.forEach(task => {
-    if (!task.time) return;
-    // Skip college reminders on weekends (replaced by study tasks)
-    if (isWeekend && task.cat === 'college' && !task._weekend) return;
-
-    const cat = task.cat || 'default';
-    const catData = NOTIF_CAT_MSG[cat] || NOTIF_CAT_MSG.default;
-    const msg = catData.msgs[Math.floor(Math.random() * catData.msgs.length)];
-    const title = `${catData.emoji} ${task.label}`;
-    const ms = msUntil(task.time);
+  schedule.forEach(n => {
+    const ms = n.fireAt - now;
+    if (ms <= 0) return;
     const t = setTimeout(() => {
-      fireNotif('task-'+task.id, title, msg);
-      const t2 = setTimeout(() => scheduleAllNotifs(), 24*60*60*1000);
-      _notifTimers.push(t2);
+      fireNotif(n.tag, n.title, n.body);
     }, ms);
     _notifTimers.push(t);
   });
 
-  // Weekend-specific extra notifications
-  if (dayOfWeek === 0) { // Sunday
-    const sundayMsgs = [
-      { time: '09:30', title: '📖 Sunday Study Block', body: 'Deep study time! Pick your hardest topic and go all in. No college today = bonus study hours 🎯' },
-      { time: '15:30', title: '💼 Skill & Career Time', body: 'Use your Sunday afternoon wisely — explore jobs, build a skill, or work on a project. Future you will thank you! 🚀' },
-      { time: '20:30', title: '🧘 Weekly Reflection', body: 'Take 10 mins to check your Stats tab. How was your week? Plan for tomorrow — a strong Monday starts on Sunday night! 📊' },
-    ];
-    sundayMsgs.forEach(m => {
-      const ms = msUntil(m.time);
-      if (ms > 0) {
-        const t = setTimeout(() => fireNotif('sun-'+m.time, m.title, m.body), ms);
-        _notifTimers.push(t);
-      }
+  // Send schedule to SW for background delivery
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'SCHEDULE_NOTIFS',
+      schedule: schedule
     });
   }
-
-  if (dayOfWeek === 6) { // Saturday
-    const ms = msUntil('10:00');
-    if (ms > 0) {
-      const t = setTimeout(() => fireNotif('sat-study', '📚 Saturday Study Time!', 'No college today! Use this time for assignments, backlogs and exam prep. Saturday effort = Sunday confidence 💪'), ms);
-      _notifTimers.push(t);
-    }
-  }
-
-  // 2. Schedule daily check-ins
-  DAILY_CHECKINS.forEach(ci => {
-    const ms = msUntil(ci.time);
-    const t = setTimeout(() => {
-      fireNotif('checkin-'+ci.id, ci.title, ci.body());
-      const t2 = setTimeout(() => scheduleAllNotifs(), 24*60*60*1000);
-      _notifTimers.push(t2);
-    }, ms);
-    _notifTimers.push(t);
-  });
 }
 
-// Reschedule every midnight to refresh for new day
+// ── Reschedule at midnight for the new day ──
 function scheduleMidnightRefresh() {
   const ms = msUntil('00:01');
-  // Add 1 min buffer so WEEK_LOG/todayKey have refreshed
   setTimeout(() => {
-    // Refresh todayKey for the new day
-    try {
-      const newToday = new Date();
-      window._todayKeyOverride = newToday.toISOString().slice(0,10);
-    } catch(e) {}
     scheduleAllNotifs();
-    scheduleMidnightRefresh(); // loop forever
-  }, ms + 60000);
+    scheduleMidnightRefresh();
+  }, ms);
+}
+
+// ── On load: run missed notifications + reschedule ──
+function checkMissedAndReschedule() {
+  if (!localStorage.getItem('lt_notif_enabled')) return;
+  if (Notification.permission !== 'granted') return;
+
+  // Check if any scheduled notifs were missed (app was closed)
+  try {
+    const saved = JSON.parse(localStorage.getItem('lt_notif_schedule') || '{}');
+    const now   = Date.now();
+    const GRACE = 10 * 60 * 1000; // 10 min grace — fire if missed within 10 mins
+    if (saved.items) {
+      saved.items.forEach(n => {
+        if (n.fireAt <= now && n.fireAt >= now - GRACE) {
+          fireNotif(n.tag, n.title, n.body + ' (late)');
+        }
+      });
+    }
+  } catch(e) {}
+
+  scheduleAllNotifs();
+  scheduleMidnightRefresh();
 }
 
 // Init on load — defer until app data is loaded
 (function initNotifs() {
   if (localStorage.getItem('lt_notif_enabled') && Notification.permission === 'granted') {
-    // Wait for CUSTOM_TASKS to be loaded by loadAll() / startApp()
-    setTimeout(() => {
-      scheduleAllNotifs();
-      scheduleMidnightRefresh();
-    }, 2500);
+    setTimeout(checkMissedAndReschedule, 2500);
   }
 })();
 
 // Called after startApp() to ensure tasks are loaded before scheduling
 function reinitNotifs() {
   if (localStorage.getItem('lt_notif_enabled') && Notification.permission === 'granted') {
-    scheduleAllNotifs();
-    scheduleMidnightRefresh();
+    checkMissedAndReschedule();
   }
 }
 
