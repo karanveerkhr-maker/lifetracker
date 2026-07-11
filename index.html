@@ -552,9 +552,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
     <!-- ═══ LEARN / COURSES ═══ -->
     <div id="s-learn" class="sec">
-      <div class="widget" style="background:linear-gradient(135deg,rgba(255,181,71,.08),rgba(255,107,107,.05));border-color:rgba(255,181,71,.25);margin-bottom:12px;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:3px;">💡 Skills & Courses</div>
-        <div style="font-size:12px;color:var(--text2);">Curated for your degree + goal · All have free options</div>
+      <div class="widget" style="background:linear-gradient(135deg,rgba(255,181,71,.12),rgba(124,111,255,.08));border-color:rgba(255,181,71,.3);margin-bottom:12px;">
+        <div style="font-size:15px;font-weight:800;margin-bottom:4px;">💡 Skills & Courses</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">Personalised for your degree · Free videos, websites & paid courses · Tap any link to start</div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(64,221,182,.12);color:#40DDB6;">🆓 Free first</span>
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(255,181,71,.12);color:#FFB547;">⭐ Paid upgrades</span>
+          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(124,111,255,.12);color:#A69FFF;">🎯 Career-focused</span>
+        </div>
       </div>
       <div class="filter-row" id="skill-filters">
         <button class="ftab active" onclick="kfilt('all',this)">All</button>
@@ -987,22 +992,247 @@ const ALL_TOPICS=[
 ];
 
 const ALL_SKILLS=[
-  {id:'sk1',fields:['all'],cat:'must',name:'MS Office + Computer Basics',why:'Every govt and bank exam requires computer proficiency. Mandatory for DEO, LDC roles.',time:'2 weeks',url:'https://swayam.gov.in/nd2_cec20_cs23/preview'},
-  {id:'sk2',fields:['all'],cat:'govt',name:'Reasoning & Aptitude Mastery',why:'SSC + IBPS + State PSC = heavy reasoning. 30 min daily = 15+ extra marks.',time:'Ongoing',url:'https://testbook.com'},
-  {id:'sk3',fields:['all'],cat:'govt',name:'Current Affairs & GK',why:'Every competitive exam. Daily 20 min habit is enough to score 80%+ in GK sections.',time:'Ongoing',url:'https://www.gktoday.in/current-affairs/'},
-  {id:'sk4',fields:['forensic'],cat:'core',name:'Fingerprint Analysis Certificate',why:'Directly tested in FSL/police technical jobs. Matches Sem 3 Dermatoglyphics.',time:'3 weeks',url:'https://alison.com/courses/fingerprint-analysis'},
-  {id:'sk5',fields:['forensic'],cat:'core',name:'Forensic Toxicology Certificate',why:'FSL serology+tox section. Also covers NDPS Act drug cases.',time:'3 weeks',url:'https://alison.com/courses/toxicology'},
-  {id:'sk6',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'core',name:'Full Stack Web Development',why:'Highest-paying entry-level skill. React+Node = ₹4–8 LPA freshers. Huge demand.',time:'3 months',url:'https://www.theodinproject.com/'},
-  {id:'sk7',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'tech',name:'Python + Data Science',why:'Data analyst, data engineer, AI/ML roles. 2x salary compared to general grad jobs.',time:'2 months',url:'https://www.kaggle.com/learn'},
-  {id:'sk8',fields:['cse','ai','bca','mca','cs'],cat:'tech',name:'AWS / Cloud Fundamentals',why:'Cloud computing = fastest growing job. AWS Free tier + cert = ₹6+ LPA freshers.',time:'4 weeks',url:'https://aws.amazon.com/training/'},
-  {id:'sk9',fields:['biotech','chemistry'],cat:'core',name:'PCR & Lab Techniques Certificate',why:'CSIR-JRF, DBT, research labs all ask for hands-on lab training proof.',time:'4 weeks',url:'https://www.coursera.org/learn/dna-decoded'},
-  {id:'sk10',fields:['economics','general','bba','accounting','ca'],cat:'core',name:'Financial Modeling (Excel)',why:'Banking, CA, finance analyst roles. Excel + financial statements = strong resume.',time:'3 weeks',url:'https://corporatefinanceinstitute.com/resources/excel/'},
-  {id:'sk11',fields:['llb','ballb'],cat:'core',name:'Legal Drafting & Research',why:'Lawyers need drafting skills from day 1. SCC Online, Manupatra for case research.',time:'Ongoing',url:'https://indiankanoon.org/'},
-  {id:'sk12',fields:['mech','civil','chemical','poly_mech','poly_civil'],cat:'core',name:'AutoCAD / SolidWorks Basics',why:'Every engineering company and PSU recruiter expects CAD proficiency.',time:'4 weeks',url:'https://www.autodesk.com/education/free-software/autocad'},
-  {id:'sk13',fields:['mbbs','bds','bpt','bpharm'],cat:'must',name:'Medical Coding (ICD-10)',why:'Health informatics + medical billing — growing career in hospitals and insurance.',time:'3 weeks',url:'https://www.aapc.com/medical-coding/medical-coding.aspx'},
-  {id:'sk14',fields:['history','polisci','sociology','english','hindi','journalism'],cat:'core',name:'Content Writing & Blogging',why:'Monetise your writing: ₹500–2000/article. Good for side income while studying.',time:'2 weeks',url:'https://www.coursera.org/learn/everyday-writing'},
-  {id:'sk15',fields:['all'],cat:'must',name:'English Communication',why:'Better English = better SSC/IBPS scores + confident job interviews.',time:'Ongoing',url:'https://swayam.gov.in/nd1_noc19_hs45/preview'},
-  {id:'sk16',fields:['all'],cat:'govt',name:'IBPS / SSC Exam Preparation',why:'IBPS + SSC = 1 lakh+ vacancies/year. Any graduate can apply. Start now.',time:'2–3 months',url:'https://testbook.com/ibps-po'},
+  // ── UNIVERSAL — shown to everyone ──
+  {id:'sk_ms',fields:['all'],cat:'must',name:'MS Office & Computer Basics',
+   why:'Required in every govt & bank exam (DEO, LDC, IBPS IT). Basic computer skills = extra marks in every test.',
+   time:'2 weeks',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — MS Office Full Course Hindi',url:'https://www.youtube.com/watch?v=wmFO80Xn8EM',free:true},
+     {type:'video',label:'Free — Computer Basics by NIELIT',url:'https://www.youtube.com/watch?v=gPGudpbq8xQ',free:true},
+     {type:'web',label:'Free — Swayam NIELIT Course',url:'https://swayam.gov.in/nd2_cec20_cs23/preview',free:true},
+     {type:'paid',label:'Paid — Coursera Google IT Support (₹1,800/mo)',url:'https://www.coursera.org/professional-certificates/google-it-support',free:false},
+   ]},
+  {id:'sk_eng',fields:['all'],cat:'must',name:'English Communication Skills',
+   why:'Better English = better SSC/IBPS scores + confident interviews. Helps in every career path.',
+   time:'Ongoing',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — Spoken English Full Course (Hindi)',url:'https://www.youtube.com/watch?v=dHiJaEMMWSQ',free:true},
+     {type:'web',label:'Free — Duolingo English (App)',url:'https://www.duolingo.com',free:true},
+     {type:'web',label:'Free — BBC Learning English',url:'https://www.bbc.co.uk/learningenglish',free:true},
+     {type:'paid',label:'Paid — Coursera English Communication (₹1,800/mo)',url:'https://www.coursera.org/learn/everyday-writing',free:false},
+   ]},
+  {id:'sk_reason',fields:['all'],cat:'govt',name:'Reasoning & Aptitude for Competitive Exams',
+   why:'30 min daily = 15+ extra marks in SSC, IBPS, State PSC. Most scoring section if practised.',
+   time:'Ongoing',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — Reasoning Full Course Hindi',url:'https://www.youtube.com/watch?v=KkMMgvMJiuM',free:true},
+     {type:'web',label:'Free — IndiaBix Practice (unlimited)',url:'https://www.indiabix.com/logical-reasoning/questions-and-answers/',free:true},
+     {type:'web',label:'Free — Testbook Reasoning Quiz',url:'https://testbook.com/reasoning-questions',free:true},
+     {type:'paid',label:'Paid — Testbook Pass (₹299/mo, full course)',url:'https://testbook.com/testbook-pass',free:false},
+   ]},
+  {id:'sk_gk',fields:['all'],cat:'govt',name:'Current Affairs & GK Daily',
+   why:'10–15 marks in every exam — free daily habit. GKToday + StudyIQ 20 min/day is enough.',
+   time:'Ongoing',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — StudyIQ Daily Current Affairs',url:'https://www.youtube.com/@StudyIQ',free:true},
+     {type:'web',label:'Free — GKToday Daily CA',url:'https://www.gktoday.in/current-affairs/',free:true},
+     {type:'web',label:'Free — Jagran Josh CA',url:'https://www.jagranjosh.com/current-affairs',free:true},
+     {type:'paid',label:'Paid — Testbook GK Pass (₹299/mo)',url:'https://testbook.com/testbook-pass',free:false},
+   ]},
+  {id:'sk_ibps',fields:['all'],cat:'govt',name:'IBPS / SBI Bank Exam Prep',
+   why:'IBPS PO/Clerk + SBI = 50,000+ vacancies/year. Any graduate can apply. 2 hrs/day = clear in 3 months.',
+   time:'3 months',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — IBPS PO Full Prep Series',url:'https://www.youtube.com/watch?v=pCmfVqSuKsE',free:true},
+     {type:'web',label:'Free — Testbook Free Mock Tests',url:'https://testbook.com/ibps-po',free:true},
+     {type:'web',label:'Free — Oliveboard Free Mocks',url:'https://www.oliveboard.in/ibps-po/',free:true},
+     {type:'paid',label:'Paid — Testbook Pass All-in-One (₹299/mo)',url:'https://testbook.com/testbook-pass',free:false},
+     {type:'paid',label:'Paid — Adda247 IBPS Course (₹1,499)',url:'https://store.adda247.com/',free:false},
+   ]},
+
+  // ── FORENSIC SCIENCE ──
+  {id:'sk_fp',fields:['forensic'],cat:'core',name:'Fingerprint Analysis Certificate',
+   why:'Directly tested in FSL & Punjab Police Technical exams. Alison gives a free verifiable certificate.',
+   time:'3 weeks',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — Fingerprint Classification YouTube',url:'https://www.youtube.com/watch?v=RDMMnF9pXdA',free:true},
+     {type:'web',label:'Free — Alison Fingerprint Analysis (Free cert)',url:'https://alison.com/courses/fingerprint-analysis',free:true},
+     {type:'web',label:'Free — NPTEL Forensic Science',url:'https://nptel.ac.in/courses/113/107/113107094/',free:true},
+     {type:'paid',label:'Paid — Coursera Crime Scene & Forensics (₹1,800/mo)',url:'https://www.coursera.org/learn/crime-scene-investigation',free:false},
+   ]},
+  {id:'sk_tox',fields:['forensic'],cat:'core',name:'Forensic Toxicology',
+   why:'FSL serology + NDPS Act drug case knowledge. Alison free cert adds weight to your resume.',
+   time:'3 weeks',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — Forensic Toxicology YouTube',url:'https://www.youtube.com/watch?v=mMh0lxJQJbM',free:true},
+     {type:'web',label:'Free — Alison Toxicology (Free cert)',url:'https://alison.com/courses/toxicology',free:true},
+     {type:'paid',label:'Paid — Coursera Forensic Science (₹1,800/mo)',url:'https://www.coursera.org/learn/forensic-science',free:false},
+   ]},
+  {id:'sk_dna',fields:['forensic','biotech'],cat:'core',name:'DNA Profiling & PCR',
+   why:'CFSL Junior Scientific Assistant + FSL both ask DNA typing. Get ahead before Sem 5.',
+   time:'4 weeks',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — PCR Technique Explained',url:'https://www.youtube.com/watch?v=iQsu3Kz9NYo',free:true},
+     {type:'web',label:'Free — Coursera DNA Decoded (audit free)',url:'https://www.coursera.org/learn/dna-decoded',free:true},
+     {type:'web',label:'Free — Khan Academy Molecular Bio',url:'https://www.khanacademy.org/science/ap-biology/gene-expression-and-regulation',free:true},
+     {type:'paid',label:'Paid — Coursera Genomic Data Science (₹1,800/mo)',url:'https://www.coursera.org/specializations/genomic-data-science',free:false},
+   ]},
+  {id:'sk_digfor',fields:['forensic','cs','cse'],cat:'tech',name:'Digital Forensics Fundamentals',
+   why:'Cyber forensics = fastest-growing forensic job. NIA, CBI, state cyber cells hire actively.',
+   time:'6 weeks',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — Digital Forensics Full Course',url:'https://www.youtube.com/watch?v=V9HKXL4XWYQ',free:true},
+     {type:'web',label:'Free — NPTEL Cyber Security',url:'https://nptel.ac.in/courses/106/105/106105031/',free:true},
+     {type:'paid',label:'Paid — Coursera Digital Forensics (₹1,800/mo)',url:'https://www.coursera.org/learn/digital-forensics',free:false},
+     {type:'paid',label:'Paid — Udemy Digital Forensics Bootcamp (₹599)',url:'https://www.udemy.com/course/digital-forensics/',free:false},
+   ]},
+
+  // ── CS / BCA / BTech CSE ──
+  {id:'sk_web',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'core',name:'Full Stack Web Development',
+   why:'React + Node.js = ₹4–8 LPA fresher salary. The Odin Project is 100% free and industry-standard.',
+   time:'3 months',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — Full Stack Web Dev Roadmap (Fireship)',url:'https://www.youtube.com/watch?v=ysEN5RaKOlA',free:true},
+     {type:'web',label:'Free — The Odin Project (full curriculum)',url:'https://www.theodinproject.com/',free:true},
+     {type:'web',label:'Free — freeCodeCamp.org (certifications)',url:'https://www.freecodecamp.org/',free:true},
+     {type:'paid',label:'Paid — Udemy Full Stack Bootcamp by Colt Steele (₹599)',url:'https://www.udemy.com/course/the-web-developer-bootcamp/',free:false},
+     {type:'paid',label:'Paid — Coursera Meta Front-End Dev (₹1,800/mo)',url:'https://www.coursera.org/professional-certificates/meta-front-end-developer',free:false},
+   ]},
+  {id:'sk_py',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'tech',name:'Python & Data Science',
+   why:'Data analyst, ML engineer, automation — 2× salary vs general grad. Kaggle is free & job-ready.',
+   time:'2 months',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — Python Full Course (freeCodeCamp)',url:'https://www.youtube.com/watch?v=_uQrJ0TkZlc',free:true},
+     {type:'web',label:'Free — Kaggle Python + Data Science Courses',url:'https://www.kaggle.com/learn',free:true},
+     {type:'web',label:'Free — Python.org Official Tutorial',url:'https://docs.python.org/3/tutorial/',free:true},
+     {type:'paid',label:'Paid — Coursera IBM Data Science Certificate (₹1,800/mo)',url:'https://www.coursera.org/professional-certificates/ibm-data-science',free:false},
+     {type:'paid',label:'Paid — Udemy 100 Days of Code Python (₹599)',url:'https://www.udemy.com/course/100-days-of-code/',free:false},
+   ]},
+  {id:'sk_dsa',fields:['cs','bca','mca','cse','ai'],cat:'core',name:'Data Structures & Algorithms',
+   why:'Asked in every tech interview — Google, Microsoft, Amazon + GATE. GeeksforGeeks is free.',
+   time:'2 months',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — DSA Full Course — Abdul Bari',url:'https://www.youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O',free:true},
+     {type:'web',label:'Free — GeeksforGeeks DSA Self-Paced',url:'https://www.geeksforgeeks.org/data-structures/',free:true},
+     {type:'web',label:'Free — LeetCode Practice Problems',url:'https://leetcode.com/problemset/',free:true},
+     {type:'paid',label:'Paid — Udemy DSA Masterclass (₹599)',url:'https://www.udemy.com/course/datastructurescncpp/',free:false},
+   ]},
+  {id:'sk_aws',fields:['cse','ai','bca','mca','cs'],cat:'tech',name:'AWS Cloud Fundamentals',
+   why:'Cloud skills = ₹6+ LPA fresher. AWS Free Tier + free cert prep = zero cost to start.',
+   time:'4 weeks',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — AWS Full Course (freeCodeCamp)',url:'https://www.youtube.com/watch?v=ulprqHHWlng',free:true},
+     {type:'web',label:'Free — AWS Skill Builder (official free courses)',url:'https://explore.skillbuilder.aws/learn',free:true},
+     {type:'paid',label:'Paid — Udemy AWS Certified Cloud Practitioner (₹599)',url:'https://www.udemy.com/course/aws-certified-cloud-practitioner-new/',free:false},
+     {type:'paid',label:'Paid — Coursera AWS Fundamentals (₹1,800/mo)',url:'https://www.coursera.org/specializations/aws-fundamentals',free:false},
+   ]},
+  {id:'sk_aiml',fields:['ai','cse','cs'],cat:'tech',name:'Machine Learning & AI',
+   why:'AI/ML = highest salary in tech sector. Andrew Ng\'s course is the gold standard worldwide.',
+   time:'3 months',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — Neural Networks by 3Blue1Brown',url:'https://www.youtube.com/watch?v=aircAruvnKk',free:true},
+     {type:'web',label:'Free — Google ML Crash Course',url:'https://developers.google.com/machine-learning/crash-course',free:true},
+     {type:'web',label:'Free — Fast.ai Practical Deep Learning',url:'https://www.fast.ai/',free:true},
+     {type:'paid',label:'Paid — Coursera ML Specialization — Andrew Ng (₹1,800/mo)',url:'https://www.coursera.org/specializations/machine-learning-introduction',free:false},
+   ]},
+
+  // ── COMMERCE / BCom ──
+  {id:'sk_fin',fields:['general','accounting','bba','ca','economics'],cat:'core',name:'Financial Modeling & Excel',
+   why:'Banking, CA, finance analyst + IBPS SO Finance — Excel + financial statements = top resume.',
+   time:'3 weeks',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — Financial Modeling Full Course',url:'https://www.youtube.com/watch?v=AjV2pA2LMJA',free:true},
+     {type:'web',label:'Free — CFI Excel & Financial Modeling',url:'https://corporatefinanceinstitute.com/resources/excel/',free:true},
+     {type:'web',label:'Free — Investopedia Financial Concepts',url:'https://www.investopedia.com/financial-modeling-4689763',free:true},
+     {type:'paid',label:'Paid — Udemy Financial Modeling in Excel (₹599)',url:'https://www.udemy.com/course/financial-modeling/',free:false},
+     {type:'paid',label:'Paid — Coursera Financial Analysis (₹1,800/mo)',url:'https://www.coursera.org/learn/financial-analysis',free:false},
+   ]},
+  {id:'sk_tally',fields:['general','accounting','ca'],cat:'core',name:'Tally Prime & GST Accounting',
+   why:'Most in-demand skill for commerce jobs. Accountant, tax clerk, CA article roles all need Tally.',
+   time:'3 weeks',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — Tally Prime Full Course Hindi',url:'https://www.youtube.com/watch?v=Xt_nF9OEkjc',free:true},
+     {type:'web',label:'Free — Tally Official Learning Hub',url:'https://tallysolutions.com/learning/',free:true},
+     {type:'paid',label:'Paid — Udemy Tally Prime + GST Course (₹499)',url:'https://www.udemy.com/course/tally-erp/',free:false},
+   ]},
+
+  // ── LAW ──
+  {id:'sk_law1',fields:['llb','ballb'],cat:'core',name:'Legal Research & Case Drafting',
+   why:'Lawyers need drafting + research from day 1. Indian Kanoon is free for all case laws.',
+   time:'Ongoing',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — Legal Drafting Skills (LawSikho YouTube)',url:'https://www.youtube.com/watch?v=5bT2dW2TWXI',free:true},
+     {type:'web',label:'Free — Indian Kanoon (all case laws free)',url:'https://indiankanoon.org/',free:true},
+     {type:'web',label:'Free — SCC Online Free Access (limited)',url:'https://www.scconline.com/',free:true},
+     {type:'paid',label:'Paid — LawSikho Certificate Courses (₹15,000+)',url:'https://lawsikho.com/',free:false},
+   ]},
+  {id:'sk_law2',fields:['llb','ballb'],cat:'core',name:'Judiciary Exam Preparation',
+   why:'State Civil Judge PCS-J = ₹77,840/month. Requires LLB + clearing state judiciary exam.',
+   time:'6 months',level:'Advanced',
+   resources:[
+     {type:'video',label:'Free — Judiciary Exam Strategy',url:'https://www.youtube.com/watch?v=rMlDSzJJd6s',free:true},
+     {type:'web',label:'Free — Drishti Judiciary Notes',url:'https://www.drishtijudiciary.com/',free:true},
+     {type:'paid',label:'Paid — Drishti Judiciary Course (₹12,000)',url:'https://www.drishtijudiciary.com/online-course',free:false},
+   ]},
+
+  // ── ENGINEERING ──
+  {id:'sk_gate',fields:['cse','ece','mech','civil','chemical','ai'],cat:'core',name:'GATE Exam Preparation',
+   why:'GATE score = PSU jobs (BHEL, ONGC, IOCL) + IIT/IISc M.Tech. Highest ROI for engineers.',
+   time:'6 months',level:'Advanced',
+   resources:[
+     {type:'video',label:'Free — GATE CS Full Course (NPTEL)',url:'https://nptel.ac.in/',free:true},
+     {type:'video',label:'Free — GATE Maths by IIT Professors',url:'https://www.youtube.com/watch?v=OAy0TcHH90I',free:true},
+     {type:'web',label:'Free — GATE Overflow (community + PYQs)',url:'https://gateoverflow.in/',free:true},
+     {type:'paid',label:'Paid — Made Easy Classroom Course (₹40,000+)',url:'https://www.madeeasyindia.in/',free:false},
+     {type:'paid',label:'Paid — Unacademy GATE (₹8,000/mo)',url:'https://unacademy.com/goal/gate',free:false},
+   ]},
+  {id:'sk_cad',fields:['mech','civil','chemical','poly_mech','poly_civil'],cat:'core',name:'AutoCAD & SolidWorks',
+   why:'Every engineering company + PSU expects CAD skills. Autodesk gives free student license.',
+   time:'4 weeks',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — AutoCAD Full Tutorial',url:'https://www.youtube.com/watch?v=qGXCsZzCGE4',free:true},
+     {type:'web',label:'Free — Autodesk Student License (1 year free)',url:'https://www.autodesk.com/education/free-software/autocad',free:true},
+     {type:'paid',label:'Paid — Udemy AutoCAD Masterclass (₹599)',url:'https://www.udemy.com/course/autocad-2d-3d/',free:false},
+   ]},
+
+  // ── MEDICAL ──
+  {id:'sk_med1',fields:['mbbs','bds','bpt','bpharm'],cat:'core',name:'Medical Coding (ICD-10 & CPT)',
+   why:'Health informatics + medical billing — growing hospital admin & insurance career. AAPC cert globally recognized.',
+   time:'6 weeks',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — Medical Coding Introduction',url:'https://www.youtube.com/watch?v=VKkBuN_dZyE',free:true},
+     {type:'web',label:'Free — AAPC Free Medical Coding Resources',url:'https://www.aapc.com/medical-coding/medical-coding.aspx',free:true},
+     {type:'paid',label:'Paid — AAPC CPC Certification (₹25,000)',url:'https://www.aapc.com/certification/cpc/',free:false},
+   ]},
+  {id:'sk_pharma',fields:['bpharm'],cat:'core',name:'Pharmacovigilance & Drug Regulatory',
+   why:'Growing pharma industry need. Regulatory affairs = ₹4–8 LPA pharma jobs.',
+   time:'4 weeks',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — Pharmacovigilance Explained',url:'https://www.youtube.com/watch?v=VKkBuN_dZyE',free:true},
+     {type:'web',label:'Free — WHO Pharmacovigilance Training',url:'https://www.who.int/teams/regulation-prequalification/pharmacovigilance',free:true},
+     {type:'paid',label:'Paid — Coursera Drug Development (₹1,800/mo)',url:'https://www.coursera.org/learn/drug-development-product-management',free:false},
+   ]},
+
+  // ── BIOTECH ──
+  {id:'sk_bio1',fields:['biotech','chemistry'],cat:'core',name:'Bioinformatics Tools (BLAST, NCBI)',
+   why:'CSIR-JRF, DBT, research labs — bioinformatics = essential for molecular biology career.',
+   time:'4 weeks',level:'Intermediate',
+   resources:[
+     {type:'video',label:'Free — Bioinformatics for Beginners',url:'https://www.youtube.com/watch?v=ZyBGJaT4tRo',free:true},
+     {type:'web',label:'Free — EMBL-EBI Training (free online courses)',url:'https://www.ebi.ac.uk/training/',free:true},
+     {type:'web',label:'Free — Coursera Bioinformatics (audit free)',url:'https://www.coursera.org/specializations/bioinformatics',free:true},
+     {type:'paid',label:'Paid — Coursera Genomic Data Science (₹1,800/mo)',url:'https://www.coursera.org/specializations/genomic-data-science',free:false},
+   ]},
+
+  // ── SKILLS FOR ALL STUDENTS ──
+  {id:'sk_cert',fields:['all'],cat:'must',name:'LinkedIn Profile + Resume Building',
+   why:'A strong LinkedIn gets recruiter DMs. Resume = your first impression. 80% of jobs are through network.',
+   time:'1 week',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — LinkedIn Profile Masterclass',url:'https://www.youtube.com/watch?v=BcfGWi8Qywk',free:true},
+     {type:'web',label:'Free — Canva Resume Builder',url:'https://www.canva.com/resumes/',free:true},
+     {type:'web',label:'Free — LinkedIn Learning (1 month free trial)',url:'https://www.linkedin.com/learning/',free:true},
+     {type:'paid',label:'Paid — LinkedIn Premium Career (₹1,600/mo)',url:'https://www.linkedin.com/premium/products/',free:false},
+   ]},
+  {id:'sk_digit',fields:['all'],cat:'tech',name:'Digital Marketing Basics',
+   why:'Side income + job opportunity. Google certifies you free. Freelancing ₹500–3,000/project.',
+   time:'4 weeks',level:'Beginner',
+   resources:[
+     {type:'video',label:'Free — Digital Marketing Full Course Hindi',url:'https://www.youtube.com/watch?v=wF4lIHFBXN4',free:true},
+     {type:'web',label:'Free — Google Digital Garage (free cert)',url:'https://learndigital.withgoogle.com/digitalgarage',free:true},
+     {type:'web',label:'Free — HubSpot Academy (free marketing cert)',url:'https://academy.hubspot.com/',free:true},
+     {type:'paid',label:'Paid — Udemy Digital Marketing Masterclass (₹599)',url:'https://www.udemy.com/course/digital-marketing-masterclass/',free:false},
+   ]},
 ];
 
 const ALL_JOBS=[
@@ -1371,17 +1601,107 @@ function sfilt(f,btn){curSFilt=f;renderStudy();}
 let curKFilt='all';
 function renderSkills(){
   const skills=getSkills();
-  let filtered=skills;
-  if(curKFilt!=='all') filtered=filtered.filter(k=>k.cat===curKFilt);
+  const cats=['must','core','tech','govt'];
   const catBg={must:'rgba(255,107,107,.15)',core:'rgba(124,111,255,.15)',tech:'rgba(100,180,255,.15)',govt:'rgba(64,221,182,.15)'};
   const catCol={must:'#FF8F8F',core:'#A69FFF',tech:'#64B4FF',govt:'#40DDB6'};
-  const catLbl={must:'Must-do',core:'Core field',tech:'Tech/Digital',govt:'Govt exam'};
-  const domain=u=>{try{return new URL(u).hostname.replace('www.','');}catch(e){return'Open';}};
+  const catLbl={must:'Must-do ⚡',core:'Core Field 🎯',tech:'Tech/Digital 💻',govt:'Govt Exam 📝'};
+  const levelBg={Beginner:'rgba(64,221,182,.12)',Intermediate:'rgba(255,181,71,.12)',Advanced:'rgba(255,107,107,.12)'};
+  const levelCol={Beginner:'#40DDB6',Intermediate:'#FFB547',Advanced:'#FF8F8F'};
+
+  // Build filter tabs with counts
+  const sf=document.getElementById('skill-filters');
+  if(sf){
+    sf.innerHTML='';
+    const allBtn=document.createElement('button');
+    allBtn.className='ftab'+(curKFilt==='all'?' active':'');
+    allBtn.textContent='All ('+skills.length+')';
+    allBtn.onclick=function(){kfilt('all',this);};
+    sf.appendChild(allBtn);
+    ['must','core','tech','govt'].forEach(function(c){
+      const cnt=skills.filter(function(k){return k.cat===c;}).length;
+      if(!cnt) return;
+      const btn=document.createElement('button');
+      btn.className='ftab'+(curKFilt===c?' active':'');
+      btn.textContent=catLbl[c].replace(/[⚡🎯💻📝]/g,'').trim()+' ('+cnt+')';
+      btn.onclick=function(){kfilt(c,this);};
+      sf.appendChild(btn);
+    });
+  }
+
+  let filtered=skills;
+  if(curKFilt!=='all') filtered=filtered.filter(function(k){return k.cat===curKFilt;});
+
   const el=document.getElementById('skill-list');
   if(!el) return;
-  el.innerHTML=filtered.map(k=>`<div class="skill-card"><div class="skill-top"><div><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:${catBg[k.cat]||catBg.core};color:${catCol[k.cat]||catCol.core};display:inline-block;margin-bottom:6px;">${catLbl[k.cat]||k.cat}</span><div class="skill-name">${k.name}</div></div><span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(64,221,182,.15);color:#40DDB6;">FREE</span></div><div class="skill-why">${k.why}</div><div class="skill-meta"><span style="font-size:11px;color:var(--text2);">⏱ ${k.time}</span></div><a href="${k.url}" target="_blank" rel="noopener" style="text-decoration:none;"><button class="btn btn-primary btn-sm">🔗 Start on ${domain(k.url)}</button></a></div>`).join('');
+
+  if(!filtered.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">💡</div><div class="empty-h">No skills for this filter</div><div class="empty-s">Try "All" tab</div></div>';
+    return;
+  }
+
+  let html='';
+  filtered.forEach(function(k){
+    const freeRes=(k.resources||[]).filter(function(r){return r.free;});
+    const paidRes=(k.resources||[]).filter(function(r){return !r.free;});
+    const typeIcon=function(t){return t==='video'?'▶':t==='web'?'🌐':'⭐';};
+    const typeBg=function(t){return t==='video'?'rgba(255,0,0,.12)':t==='web'?'rgba(124,111,255,.12)':'rgba(255,181,71,.12)';};
+    const typeCol=function(t){return t==='video'?'#FF6B6B':t==='web'?'#A69FFF':'#FFB547';};
+    const domain=function(u){try{return new URL(u).hostname.replace('www.','');}catch(e){return'link';}};
+
+    let freeHtml='';
+    freeRes.forEach(function(r){
+      freeHtml+='<a href="'+r.url+'" target="_blank" rel="noopener" style="text-decoration:none;display:block;margin-bottom:6px;">'+
+        '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg3);border-radius:10px;border:1px solid var(--border);transition:opacity .2s;" onmouseover="this.style.opacity=\'.8\'" onmouseout="this.style.opacity=\'1\'">'+
+          '<div style="width:30px;height:30px;border-radius:8px;background:'+typeBg(r.type)+';display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">'+typeIcon(r.type)+'</div>'+
+          '<div style="flex:1;min-width:0;">'+
+            '<div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+r.label+'</div>'+
+            '<div style="font-size:10px;color:var(--text3);margin-top:1px;">'+domain(r.url)+'</div>'+
+          '</div>'+
+          '<div style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;background:rgba(64,221,182,.12);color:#40DDB6;flex-shrink:0;">FREE</div>'+
+        '</div></a>';
+    });
+
+    let paidHtml='';
+    if(paidRes.length){
+      paidHtml='<div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);">'+
+        '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">💎 Premium courses</div>';
+      paidRes.forEach(function(r){
+        paidHtml+='<a href="'+r.url+'" target="_blank" rel="noopener" style="text-decoration:none;display:block;margin-bottom:6px;">'+
+          '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,181,71,.06);border-radius:10px;border:1px solid rgba(255,181,71,.2);">'+
+            '<div style="width:30px;height:30px;border-radius:8px;background:rgba(255,181,71,.15);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">⭐</div>'+
+            '<div style="flex:1;min-width:0;">'+
+              '<div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+r.label+'</div>'+
+              '<div style="font-size:10px;color:var(--text3);margin-top:1px;">'+domain(r.url)+'</div>'+
+            '</div>'+
+            '<div style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;background:rgba(255,181,71,.15);color:#FFB547;flex-shrink:0;">PAID</div>'+
+          '</div></a>';
+      });
+      paidHtml+='</div>';
+    }
+
+    html+=
+      '<div class="skill-card" style="margin-bottom:12px;">'+
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;">'+
+          '<div style="flex:1;">'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">'+
+              '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:'+(catBg[k.cat]||catBg.core)+';color:'+(catCol[k.cat]||catCol.core)+';">'+(catLbl[k.cat]||k.cat)+'</span>'+
+              '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:'+(levelBg[k.level]||levelBg.Beginner)+';color:'+(levelCol[k.level]||levelCol.Beginner)+';">'+(k.level||'Beginner')+'</span>'+
+              '<span style="font-size:10px;color:var(--text3);padding:2px 6px;">⏱ '+k.time+'</span>'+
+            '</div>'+
+            '<div style="font-size:15px;font-weight:800;color:var(--text);line-height:1.3;">'+k.name+'</div>'+
+          '</div>'+
+          '<div style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(64,221,182,.12);color:#40DDB6;white-space:nowrap;flex-shrink:0;">'+freeRes.length+' FREE</div>'+
+        '</div>'+
+        '<div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px;">'+k.why+'</div>'+
+        '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;">🆓 Free resources</div>'+
+        freeHtml+
+        paidHtml+
+      '</div>';
+  });
+
+  el.innerHTML=html;
 }
-function kfilt(f,btn){curKFilt=f;document.querySelectorAll('#skill-filters .fp').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSkills();}
+function kfilt(f,btn){curKFilt=f;document.querySelectorAll('#skill-filters .ftab').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderSkills();}
 
 // JOBS
 let curJFilt='all';
@@ -1430,7 +1750,7 @@ function renderJobs(){
   if(ac) ac.textContent=cnt;
 }
 function goalLabel(g){return{govt:'Govt job',bank:'Bank job',core:'Core field',higher:'Higher studies',private:'Private sector',mixed:'All-round'}[g]||g;}
-function jfilt(f,btn){curJFilt=f;document.querySelectorAll('#job-filters .fp').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderJobs();}
+function jfilt(f,btn){curJFilt=f;document.querySelectorAll('#job-filters .ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderJobs();}
 function markApplied(id){
   if(APPLIED.includes(id)) return;
   APPLIED.push(id);
@@ -1582,16 +1902,16 @@ function closeModal(id){document.getElementById(id).classList.remove('open');}
 function sw(tab,btn){
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
-  btn.classList.add('active');
+  if(btn) btn.classList.add('active');
   const sec=document.getElementById('s-'+tab);
-  if(sec){sec.classList.add('active');}
-  const content=document.querySelector('.content');
-  if(content) content.scrollTo({top:0,behavior:'instant'});
-  // Trigger render if needed
-  if(tab==='study') renderStudy();
-  if(tab==='skills') renderSkills();
-  if(tab==='jobs') renderJobs();
-  if(tab==='schedule') renderTimetable();
+  if(sec) sec.classList.add('active');
+  // Re-render on tab switch to ensure fresh content
+  if(tab==='today') renderToday();
+  else if(tab==='schedule') renderTimetable();
+  else if(tab==='study') renderStudy();
+  else if(tab==='learn') renderSkills();
+  else if(tab==='jobs') renderJobs();
+  else if(tab==='profile') renderProfile();
 }
 function toast(msg){const t=document.getElementById('toast');t.innerHTML=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function resetApp(){
