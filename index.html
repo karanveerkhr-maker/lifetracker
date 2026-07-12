@@ -102,11 +102,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .hdr-notif-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--acc3);border-radius:50%;border:1.5px solid var(--bg2);}
 
 /* ── CONTENT ── */
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px calc(var(--safe-bot)+var(--nav-h)+10px);}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px calc(var(--safe-bot)+72px);}
 
 /* ── BOTTOM NAV ── */
-.nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:6px 0 calc(var(--safe-bot)+6px);z-index:100;backdrop-filter:blur(20px);}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;cursor:pointer;background:none;border:none;color:var(--text3);font-size:9px;font-weight:600;font-family:inherit;position:relative;transition:color .2s;}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:6px 0 calc(var(--safe-bot)+6px);z-index:100;backdrop-filter:blur(20px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.nb{flex:0 0 calc(100%/6);min-width:52px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;cursor:pointer;background:none;border:none;color:var(--text3);font-size:9px;font-weight:600;font-family:inherit;position:relative;transition:color .2s;}
 .nb.active{color:var(--acc);}
 .nb-icon{font-size:20px;line-height:1;}
 .nb-dot{width:4px;height:4px;border-radius:50%;background:var(--acc);display:none;margin:0 auto;}
@@ -628,7 +628,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <div class="nb-icon">🏠</div><div>Home</div><div class="nb-dot"></div>
     </button>
     <button class="nb" onclick="sw('schedule',this)">
-      <div class="nb-icon">📅</div><div>Schedule</div><div class="nb-dot"></div>
+      <div class="nb-icon">📅</div><div>Plan</div><div class="nb-dot"></div>
     </button>
     <button class="nb" onclick="sw('study',this)">
       <div class="nb-icon">📚</div><div>Study</div><div class="nb-dot"></div>
@@ -637,7 +637,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <div class="nb-icon">💼</div><div>Jobs</div><span class="nb-badge" id="nav-badge" style="display:none;">0</span><div class="nb-dot"></div>
     </button>
     <button class="nb" onclick="sw('learn',this)">
-      <div class="nb-icon">💡</div><div>Skills</div><div class="nb-dot"></div>
+      <div class="nb-icon">💡</div><div>Learn</div><div class="nb-dot"></div>
     </button>
     <button class="nb" onclick="sw('profile',this)">
       <div class="nb-icon">👤</div><div>Me</div><div class="nb-dot"></div>
@@ -708,7 +708,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 <div id="toast"></div>
 
 
-<script>
+<script>// Life Tracker OS — Built 2026-07-12 04:00 — v12-LEARN-FIX
+
 // STORAGE
 let P=null,CERTS=[],APPLIED=[],TASK_LOG={},WEEK_LOG={};
 
@@ -3559,6 +3560,21 @@ async function initAuth(){
 
 // ── AUTO CLOUD SAVE every 90 seconds ──
 setInterval(()=>{ if(currentUID&&!currentUID.startsWith('GUEST_')) saveUserDataToCloud(); }, 90000);
+
+
+// Force render Learn tab when it becomes visible (belt-and-suspenders approach)
+(function(){
+  const learnSec = document.getElementById('s-learn');
+  if(!learnSec) return;
+  const obs = new MutationObserver(function(mutations){
+    mutations.forEach(function(m){
+      if(m.target.classList.contains('active') && typeof renderSkills === 'function'){
+        renderSkills();
+      }
+    });
+  });
+  obs.observe(learnSec, {attributes:true, attributeFilter:['class']});
+})();
 
 initAuth();
 
