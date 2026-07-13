@@ -448,11 +448,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <div class="hdr">
     <div class="hdr-left">
       <h1 id="hdr-title">Life Tracker OS</h1>
-      <p id="hdr-sub">Loading...</p>
+      <p id="hdr-sub">Your personal tracker</p>
     </div>
     <div class="hdr-right">
       <div class="hdr-streak" id="hdr-streak">🔥 0</div>
-      <div class="hdr-notif"><span>🔔</span><div class="hdr-notif-dot" id="notif-dot" style="display:none;"></div></div>
+      <div class="hdr-notif" onclick="typeof openNotifModal==='function'?openNotifModal():toast('Notifications: enable in Settings')" style="cursor:pointer;"><span>🔔</span><div class="hdr-notif-dot" id="notif-dot" style="display:none;"></div></div>
       <div class="hdr-avatar" id="hdr-avatar" onclick="sw('profile',document.querySelectorAll('.nb')[5])">U</div>
     </div>
   </div>
@@ -701,6 +701,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <div class="modal-btns">
       <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveRoutine()">✓ Save</button>
       <button class="btn btn-ghost" onclick="closeModal('routine-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- NOTIFICATION MODAL -->
+<div class="modal-bg" id="notif-modal">
+  <div class="modal">
+    <h3>🔔 Notifications<button class="modal-close" onclick="closeModal('notif-modal')">✕</button></h3>
+    <div id="notif-status-box" style="padding:12px;border-radius:10px;font-size:13px;line-height:1.6;margin-bottom:14px;background:var(--bg3);">
+      Checking status...
+    </div>
+    <div id="notif-enable-btn-wrap">
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="enableNotifs()">🔔 Enable Smart Notifications</button>
+      <div style="font-size:11px;color:var(--text2);margin-top:8px;text-align:center;line-height:1.5;">Get reminders for your daily tasks, job deadlines & study sessions</div>
+    </div>
+    <div id="notif-controls" style="display:none;">
+      <button class="btn btn-green" style="width:100%;justify-content:center;margin-bottom:8px;" onclick="sendTestNotif()">🧪 Send test notification</button>
+      <button class="btn btn-ghost" style="width:100%;justify-content:center;" onclick="disableNotifs()">🔕 Disable notifications</button>
     </div>
   </div>
 </div>
@@ -1361,6 +1380,7 @@ function getSchedule(dateObj) {
   const isSaturday = dayOfWeek === 6;
   const isWeekend = isSunday || isSaturday;
 
+  if(!CUSTOM_TASKS||!CUSTOM_TASKS.length) CUSTOM_TASKS=defaultTasks();
   let tasks = [...CUSTOM_TASKS];
 
   if (isWeekend) {
@@ -1446,6 +1466,7 @@ function catColor(c){return{college:'#0C447C',gym:'#1D9E75',study:'#534AB7','job
 function catIcon(c){return{college:'🏫',gym:'💪',study:'📚','job-prep':'💼',sleep:'😴',free:'🌿',custom:'⭐'}[c]||'📌';}
 
 function renderToday(){
+  if(!CUSTOM_TASKS||!CUSTOM_TASKS.length) CUSTOM_TASKS=defaultTasks();
   const sched=getSchedule(),log=getTodayLog();
   const done=sched.filter(t=>log[t.id]).length,total=sched.length;
   const pct=total?Math.round((done/total)*100):0;
@@ -1880,22 +1901,20 @@ function saveRoutine(){
 
 function saveProfile(){if(!P)return;P.name=document.getElementById('f-name').value.trim();const rawPhone=document.getElementById('f-phone').value.trim();if(rawPhone)P.phone='+91'+rawPhone;P.college=document.getElementById('f-college').value.trim();P.degreeLabel=document.getElementById('f-degree').value.trim()||P.degreeLabel;P.sem=parseInt(document.getElementById('f-sem').value);P.m12=document.getElementById('f-12').value.trim();P.state=document.getElementById('f-state').value;P.lang=document.getElementById('f-lang').value||P.lang||'en';P.goal=document.getElementById('f-goal').value;saveAll();closeModal('edit-modal');renderProfile();renderJobs();renderStudy();renderSkills();renderToday();toast('✓ Profile saved!');applyLanguageSettings();}
 function updateHeader(){
-  if(!P)return;
-  const nm=P.name?P.name+"'s ":'';
-  document.getElementById('hdr-name').textContent='📚 '+nm+'Tracker';
-  if(P.isSchool){
-    document.getElementById('hdr-sub').textContent=`${P.degreeLabel} · ${P.school||P.college||''} · ${P.state||''}`;
-    const pct=Math.round(((P.schoolClass||10)-6)/6*100);
-    document.getElementById('bar-fill').style.width=pct+'%';
-    document.getElementById('bar-lbl').textContent=`Class ${P.schoolClass||10} of 12`;
-    document.getElementById('bar-label-left').textContent='School progress';
-  } else {
-    document.getElementById('hdr-sub').textContent=`${P.degreeLabel} · ${P.college||'College'} · Sem ${P.sem}`;
-    const pct=Math.round((P.sem/P.maxSem)*100);
-    document.getElementById('bar-fill').style.width=pct+'%';
-    document.getElementById('bar-lbl').textContent=`Sem ${P.sem} of ${P.maxSem}`;
-    document.getElementById('bar-label-left').textContent='Degree progress';
+  const subEl2 = document.getElementById('hdr-sub');
+  if(!P){
+    if(subEl2) subEl2.textContent = 'Your personal tracker';
+    return;
   }
+  const name = P.name ? P.name.split(' ')[0] : '';
+  const titleEl = document.getElementById('hdr-title');
+  if(titleEl) titleEl.textContent = name ? name+"'s Tracker" : 'Life Tracker OS';
+  const subEl = document.getElementById('hdr-sub');
+  if(subEl) subEl.textContent = (P.degreeLabel||'') + (P.college?' · '+P.college:'') + (P.sem?' · Sem '+P.sem:'');
+  const avatarEl = document.getElementById('hdr-avatar');
+  if(avatarEl) avatarEl.textContent = P.name ? P.name[0].toUpperCase() : 'U';
+  const proAv = document.getElementById('pro-avatar');
+  if(proAv) proAv.textContent = P.name ? P.name[0].toUpperCase() : 'U';
 }
 function openModal(id){if(id==='edit-modal'&&P){document.getElementById('f-name').value=P.name||'';
   if(document.getElementById('f-lang'))document.getElementById('f-lang').value=P.lang||'en';document.getElementById('f-phone').value=(P.phone||'').replace('+91','');document.getElementById('f-college').value=P.college||'';document.getElementById('f-degree').value=P.degreeLabel||'';document.getElementById('f-sem').value=P.sem;document.getElementById('f-12').value=P.m12||'';document.getElementById('f-state').value=P.state||'Punjab';document.getElementById('f-goal').value=P.goal||'govt';}document.getElementById(id).classList.add('open');}
@@ -1927,10 +1946,20 @@ function startApp(){
   document.getElementById('onboarding').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   if(!CUSTOM_TASKS||!CUSTOM_TASKS.length) CUSTOM_TASKS=defaultTasks();
-  updateHeader();renderToday();renderTimetable();renderStudy();renderSkills();renderJobs();renderProfile();applyLanguageSettings();checkJobFollowUps();
-  setTimeout(reinitNotifs, 500);updateMotiveWidget();
-  toast('👋 Welcome, '+(P.name||'friend')+'!');
-  
+  updateHeader();
+  renderToday();
+  renderTimetable();
+  setTimeout(function(){
+    renderStudy();
+    renderSkills();
+    renderJobs();
+    renderProfile();
+  }, 60);
+  setTimeout(function(){
+    if(typeof applyLanguageSettings==='function') applyLanguageSettings();
+    if(typeof checkJobFollowUps==='function') checkJobFollowUps();
+    reinitNotifs();
+  }, 600);
 }
 
 // ════════════════════════════════════════════
@@ -3334,7 +3363,7 @@ async function doLogin(){
   toast('Welcome back, '+account.name+'!');
 
   // Load user data from their private bin
-  await loadUserDataFromCloud();
+  loadUserDataFromCloud().then(function(){ renderToday(); renderProfile(); }); // non-blocking
 
   document.getElementById('login-screen').classList.add('hidden');
   if(P&&P.setupDone){
@@ -3511,6 +3540,7 @@ function showSMSStatus(elId, success, msg){
 
 // ── AUTO RESTORE from localStorage on startup (fast, before cloud loads) ──
 async function initAuth(){
+  updateHeader(); // clear Loading... immediately
   const savedUID=localStorage.getItem('auth_uid');
   const savedBinId=localStorage.getItem('auth_binId');
   const savedHash=localStorage.getItem('auth_hash');
@@ -3575,6 +3605,80 @@ setInterval(()=>{ if(currentUID&&!currentUID.startsWith('GUEST_')) saveUserDataT
   });
   obs.observe(learnSec, {attributes:true, attributeFilter:['class']});
 })();
+
+
+// ══════════════════════════════════
+// NOTIFICATIONS
+// ══════════════════════════════════
+function reinitNotifs(){
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'default'){
+    Notification.requestPermission();
+  }
+  scheduleNotifs();
+}
+
+function fireNotif(id, title, body){
+  if(!('Notification' in window)) return;
+  if(Notification.permission !== 'granted') return;
+  try{
+    new Notification(title, {
+      body: body,
+      icon: '🎓',
+      tag: id,
+      requireInteraction: false
+    });
+  }catch(e){ console.log('Notif error:', e); }
+}
+
+function scheduleNotifs(){
+  // Clear old timers
+  if(window._notifTimers) window._notifTimers.forEach(t=>clearTimeout(t));
+  window._notifTimers = [];
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  
+  const now = new Date();
+  const todayMs = now.setHours(0,0,0,0);
+  
+  const notifTimes = [
+    { h:8,  m:0,  title:'College time!',       body:'Classes starting - get moving!' },
+    { h:13, m:0,  title:'Afternoon check-in',  body:'Half the day done. Keep going!' },
+    { h:19, m:0,  title:'Gym time!',            body:'Do not skip today workout.' },
+    { h:21, m:0,  title:'Study session!',       body:'Time for your evening study block.' },
+    { h:23, m:0,  title:'Wind down',            body:'Great day! Plan for tomorrow.' },
+  ];
+
+  const nowFull = new Date();
+  notifTimes.forEach(function(n){
+    const fireAt = new Date();
+    fireAt.setHours(n.h, n.m, 0, 0);
+    const diff = fireAt - nowFull;
+    if(diff > 0 && diff < 24*60*60*1000){
+      const t = setTimeout(function(){
+        fireNotif('sched-'+n.h, n.title, n.body);
+      }, diff);
+      window._notifTimers.push(t);
+    }
+  });
+}
+
+function requestNotifPermission(){
+  if(!('Notification' in window)){
+    toast('Notifications not supported on this browser');
+    return;
+  }
+  Notification.requestPermission().then(function(p){
+    if(p === 'granted'){
+      toast('✓ Notifications enabled!');
+      scheduleNotifs();
+      // Show notif dot in header
+      const dot = document.getElementById('notif-dot');
+      if(dot) dot.style.display = 'block';
+    } else {
+      toast('Notifications blocked. Enable in browser settings.');
+    }
+  });
+}
 
 initAuth();
 
@@ -4119,28 +4223,6 @@ function sendTestNotif() {
   toast('🧪 Test sent!');
 }
 
-function fireNotif(tag, title, body) {
-  if (Notification.permission !== 'granted') return;
-  const opts = {
-    body,
-    icon: '/lifetracker/icons/icon-192.png',
-    badge: '/lifetracker/icons/icon-192.png',
-    tag,
-    requireInteraction: false,
-    vibrate: [200, 100, 200]
-  };
-  // Use ServiceWorker if available (required on Android Chrome)
-  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-    navigator.serviceWorker.ready.then(reg => {
-      reg.showNotification(title, opts);
-    }).catch(() => {
-      try { new Notification(title, opts); } catch(e) {}
-    });
-  } else {
-    try { new Notification(title, opts); } catch(e) {}
-  }
-}
-
 function msUntil(timeStr) {
   const [h, m] = timeStr.split(':').map(Number);
   const now = new Date();
@@ -4297,11 +4379,6 @@ function checkMissedAndReschedule() {
 })();
 
 // Called after startApp() to ensure tasks are loaded before scheduling
-function reinitNotifs() {
-  if (localStorage.getItem('lt_notif_enabled') && Notification.permission === 'granted') {
-    checkMissedAndReschedule();
-  }
-}
 
 </script>
 </body>
