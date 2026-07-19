@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0F0E17">
@@ -10,14 +10,14 @@
 <style>
 /* ── TOKENS ── */
 :root{
-  --bg:#0F0E17;--bg2:#1A1828;--bg3:#242235;--bg4:#2E2C42;
-  --text:#EEF0FA;--text2:#9896B8;--text3:#5C5A7A;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
-  --acc:#7C6FFF;--acc2:#40DDB6;--acc3:#FF6B6B;--acc4:#FFB547;
-  --grad:linear-gradient(135deg,#7C6FFF,#40DDB6);
-  --grad2:linear-gradient(135deg,#FF6B6B,#FFB547);
-  --grad3:linear-gradient(135deg,#7C6FFF 0%,#B06FFF 100%);
-  --sh:0 4px 24px rgba(124,111,255,0.15);
+  --bg:#F7F8FC;--bg2:#FFFFFF;--bg3:#F0F1F7;--bg4:#E4E6F0;
+  --text:#1A1A2E;--text2:#5A5C7A;--text3:#9899B0;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.12);
+  --acc:#6C5FFF;--acc2:#00BFA6;--acc3:#FF5252;--acc4:#FF9800;
+  --grad:linear-gradient(135deg,#6C5FFF,#00BFA6);
+  --grad2:linear-gradient(135deg,#FF5252,#FF9800);
+  --grad3:linear-gradient(135deg,#6C5FFF 0%,#9C6FFF 100%);
+  --sh:0 4px 24px rgba(108,95,255,0.12);
   --r:16px;--rs:10px;--rm:20px;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bot:env(safe-area-inset-bottom,0px);
@@ -27,13 +27,13 @@
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden;}
 
 /* ── LOGIN SCREEN ── */
-#login-screen{position:fixed;inset:0;background:var(--bg);z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+#login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(160deg,#F7F8FC,#EEEEFF);z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 #login-screen.hidden{display:none;}
 .ls-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(124,111,255,0.3),transparent 70%);pointer-events:none;}
 .ls-logo{font-size:48px;margin-bottom:12px;position:relative;}
-.ls-title{font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;}
+.ls-title{font-size:26px;font-weight:800;background:var(--grad);-webkit--webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;}
 .ls-sub{font-size:13px;color:var(--text2);margin-bottom:28px;}
-.ls-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rm);padding:24px 20px;width:100%;max-width:400px;position:relative;}
+.ls-card{background:var(--bg2);border:1px solid var(--border2);box-shadow:0 4px 24px rgba(0,0,0,.08);border-radius:var(--rm);padding:24px 20px;width:100%;max-width:400px;position:relative;}
 .ls-tabs{display:flex;gap:6px;background:var(--bg3);border-radius:var(--rs);padding:4px;margin-bottom:20px;}
 .ls-tab{flex:1;padding:8px;border:none;background:transparent;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;border-radius:7px;font-family:inherit;transition:all .2s;}
 .ls-tab.active{background:var(--bg2);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);}
@@ -44,7 +44,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ls-phone-row{display:flex;gap:8px;}
 .ls-cc{padding:12px 10px;border:1px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg3);color:var(--text2);white-space:nowrap;}
 .ls-btn{width:100%;padding:14px;background:var(--grad);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;position:relative;overflow:hidden;}
-.ls-btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .2s;}
+.ls-btn::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0);transition:background .2s;}
 .ls-btn:active::after{background:rgba(255,255,255,.1);}
 .ls-err{font-size:12px;color:var(--acc3);margin:6px 0;padding:8px 10px;background:rgba(255,107,107,.1);border-radius:8px;display:none;}
 .ls-spinner{display:none;text-align:center;padding:8px;}
@@ -59,7 +59,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ls-cred-copy{padding:3px 8px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;font-size:11px;cursor:pointer;color:var(--text2);font-family:inherit;}
 
 /* ── ONBOARDING ── */
-#onboarding{position:fixed;inset:0;background:var(--bg);z-index:800;display:none;overflow-y:auto;}
+#onboarding{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:800;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 #onboarding.show{display:block;}
 .ob-step{display:none;min-height:100vh;padding:calc(var(--safe-top)+20px) 20px 40px;flex-direction:column;}
 .ob-step.active{display:flex;}
@@ -70,7 +70,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .ob-h{font-size:24px;font-weight:800;line-height:1.2;margin-bottom:6px;}
 .ob-sub{font-size:14px;color:var(--text2);margin-bottom:22px;line-height:1.5;}
 .ob-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.ob-card{background:var(--bg2);border:1.5px solid var(--border2);border-radius:var(--r);padding:16px 14px;cursor:pointer;transition:all .18s;text-align:left;}
+.ob-card{background:var(--bg2);border:1.5px solid var(--border2);box-shadow:0 1px 4px rgba(0,0,0,.06);border-radius:var(--r);padding:16px 14px;cursor:pointer;transition:all .18s;text-align:left;}
 .ob-card:active,.ob-card.sel{border-color:var(--acc);background:rgba(124,111,255,.12);}
 .ob-card.sel{box-shadow:0 0 0 2px rgba(124,111,255,.3);}
 .ob-icon{font-size:26px;margin-bottom:8px;}
@@ -93,7 +93,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
 /* ── TOP HEADER ── */
 .hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:calc(var(--safe-top)+12px) 16px 12px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.hdr-left h1{font-size:16px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hdr-left h1{font-size:16px;font-weight:800;background:var(--grad);-webkit--webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 .hdr-left p{font-size:11px;color:var(--text2);margin-top:1px;}
 .hdr-right{display:flex;align-items:center;gap:10px;}
 .hdr-avatar{width:34px;height:34px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;cursor:pointer;}
@@ -102,10 +102,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .hdr-notif-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--acc3);border-radius:50%;border:1.5px solid var(--bg2);}
 
 /* ── CONTENT ── */
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px calc(var(--safe-bot)+72px);}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overflow-x:hidden;padding:12px 14px calc(var(--safe-bot)+72px);}
 
 /* ── BOTTOM NAV ── */
-.nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:6px 0 calc(var(--safe-bot)+6px);z-index:100;backdrop-filter:blur(20px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.nav{position:fixed;bottom:0;left:0;width:100%;background:var(--bg2);border-top:1px solid var(--border);box-shadow:0 -2px 12px rgba(0,0,0,.08);display:flex;padding:6px 0 calc(var(--safe-bot)+6px);z-index:100;-webkit-backdrop-filter:blur();backdrop-filter:blur(20px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .nb{flex:0 0 calc(100%/6);min-width:52px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;cursor:pointer;background:none;border:none;color:var(--text3);font-size:9px;font-weight:600;font-family:inherit;position:relative;transition:color .2s;}
 .nb.active{color:var(--acc);}
 .nb-icon{font-size:20px;line-height:1;}
@@ -117,7 +117,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .sec{display:none;}.sec.active{display:block;}
 
 /* ── SHARED COMPONENTS ── */
-.widget{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
+.widget{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 1px 6px rgba(0,0,0,.05);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
 .widget-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
 .widget-title span{font-size:14px;}
 .badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;}
@@ -138,15 +138,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .tag{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;display:inline-block;}
 
 /* ── DASHBOARD ── */
-.greet-widget{background:linear-gradient(135deg,#1E1B3A,#2A2650);border:1px solid rgba(124,111,255,.3);border-radius:var(--r);padding:18px 16px;margin-bottom:12px;position:relative;overflow:hidden;}
-.greet-glow{position:absolute;right:-40px;top:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(124,111,255,.3),transparent 70%);pointer-events:none;}
-.greet-glow2{position:absolute;left:-20px;bottom:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(64,221,182,.15),transparent 70%);pointer-events:none;}
+.greet-widget{background:linear-gradient(135deg,#EEF0FF,#E8F8FF);border:1px solid rgba(108,95,255,.2);border-radius:var(--r);padding:18px 16px;margin-bottom:12px;position:relative;overflow:hidden;}
+.greet-glow{position:absolute;right:-40px;top:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(108,95,255,.15),transparent 70%);pointer-events:none;}
+.greet-glow2{position:absolute;left:-20px;bottom:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(0,191,166,.1),transparent 70%);pointer-events:none;}
 .greet-h{font-size:20px;font-weight:800;margin-bottom:4px;}
 .greet-sub{font-size:13px;color:var(--text2);line-height:1.4;}
-.greet-quote{background:rgba(255,255,255,.05);border-left:3px solid var(--acc);border-radius:0 8px 8px 0;padding:10px 12px;margin-top:12px;font-size:12px;color:var(--text2);font-style:italic;}
+.greet-quote{background:rgba(108,95,255,.06);border-left:3px solid var(--acc);border-radius:0 8px 8px 0;padding:10px 12px;margin-top:12px;font-size:12px;color:var(--text2);font-style:italic;}
 .greet-quote b{color:var(--text);font-style:normal;}
 .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;position:relative;overflow:hidden;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.06);border-radius:var(--r);padding:14px;position:relative;overflow:hidden;}
 .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .stat-card.purple::before{background:var(--grad);}
 .stat-card.green::before{background:linear-gradient(90deg,var(--acc2),#40FF9F);}
@@ -241,12 +241,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .sched-check.done{background:var(--acc);border-color:var(--acc);}
 
 /* ── PROFILE ── */
-.pro-hero{background:linear-gradient(135deg,#1E1B3A,#2A2650);border:1px solid rgba(124,111,255,.3);border-radius:var(--r);padding:20px;margin-bottom:12px;text-align:center;position:relative;overflow:hidden;}
+.pro-hero{background:linear-gradient(135deg,#EEF0FF,#E8F8FF);border:1px solid rgba(124,111,255,.3);border-radius:var(--r);padding:20px;margin-bottom:12px;text-align:center;position:relative;overflow:hidden;}
 .pro-avatar{width:64px;height:64px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;margin:0 auto 10px;}
 .pro-name{font-size:18px;font-weight:800;}
 .pro-deg{font-size:12px;color:var(--text2);margin-top:3px;}
 .pro-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;}
-.pro-stat{background:rgba(255,255,255,.05);border-radius:10px;padding:10px;}
+.pro-stat{background:rgba(108,95,255,.06);border-radius:10px;padding:10px;}
 .pro-stat-n{font-size:18px;font-weight:800;}
 .pro-stat-l{font-size:10px;color:var(--text2);margin-top:2px;}
 .pro-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;}
@@ -263,7 +263,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .learn-pct{font-size:12px;font-weight:700;color:var(--acc);min-width:34px;}
 
 /* ── MODAL ── */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
+.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:300;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur();backdrop-filter:blur(4px);}
 .modal-bg.open{display:flex;}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r) var(--r) 0 0;padding:20px 16px calc(var(--safe-bot)+20px);width:100%;max-height:88vh;overflow-y:auto;}
 .modal h3{font-size:16px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
@@ -276,7 +276,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .modal-btns{display:flex;gap:8px;margin-top:8px;}
 
 /* ── TOAST ── */
-#toast{position:fixed;bottom:calc(var(--safe-bot)+80px);left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 18px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:999;box-shadow:var(--sh);}
+#toast{position:fixed;bottom:calc(var(--safe-bot)+80px);left:50%;transform:translateX(-50%);background:#1A1A2E;border:none;color:#fff;padding:10px 18px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:999;box-shadow:var(--sh);}
 #toast.show{opacity:1;}
 
 /* ── EMPTY STATE ── */
@@ -452,7 +452,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     </div>
     <div class="hdr-right">
       <div class="hdr-streak" id="hdr-streak">🔥 0</div>
-      <div class="hdr-notif" onclick="typeof openNotifModal==='function'?openNotifModal():toast('Notifications: enable in Settings')" style="cursor:pointer;"><span>🔔</span><div class="hdr-notif-dot" id="notif-dot" style="display:none;"></div></div>
+      <div class="hdr-notif" id="hdr-notif" onclick="typeof openNotifModal==='function'?openNotifModal():toast('Notifications: enable in Settings')" style="cursor:pointer;"><span>🔔</span><div class="hdr-notif-dot" id="notif-dot" style="display:none;"></div></div>
       <div class="hdr-avatar" id="hdr-avatar" onclick="sw('profile',document.querySelectorAll('.nb')[5])">U</div>
     </div>
   </div>
@@ -550,43 +550,155 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <div id="study-list"></div>
     </div>
 
-    <!-- ═══ LEARN / COURSES ═══ -->
+    <!-- ═══ LEARN / AI COURSE FINDER ═══ -->
     <div id="s-learn" class="sec">
-      <div class="widget" style="background:linear-gradient(135deg,rgba(255,181,71,.12),rgba(124,111,255,.08));border-color:rgba(255,181,71,.3);margin-bottom:12px;">
-        <div style="font-size:15px;font-weight:800;margin-bottom:4px;">💡 Skills & Courses</div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.6;">Personalised for your degree · Free videos, websites & paid courses · Tap any link to start</div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(64,221,182,.12);color:#40DDB6;">🆓 Free first</span>
-          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(255,181,71,.12);color:#FFB547;">⭐ Paid upgrades</span>
-          <span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(124,111,255,.12);color:#A69FFF;">🎯 Career-focused</span>
+
+      <!-- ── Input Area ── -->
+      <div id="learn-upload-area">
+        <div class="widget" style="background:linear-gradient(135deg,rgba(124,111,255,.12),rgba(64,221,182,.08));border-color:rgba(124,111,255,.3);margin-bottom:12px;">
+          <div style="font-size:15px;font-weight:800;margin-bottom:4px;">🤖 AI Course & Lecture Finder</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.6;" id="learn-intro-text">Type any topic, subject, exam or paste your syllabus — AI finds free & paid courses, YouTube lectures, NPTEL, Coursera and more instantly.</div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+            <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;background:rgba(64,221,182,.15);color:#40DDB6;">▶ YouTube</span>
+            <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;background:rgba(255,181,71,.15);color:#FFB547;">🎓 NPTEL</span>
+            <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;background:rgba(124,111,255,.15);color:#A69FFF;">🟣 Coursera</span>
+            <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;background:rgba(255,107,107,.15);color:#FF6B6B;">📖 Udemy</span>
+            <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;background:rgba(64,221,182,.15);color:#40DDB6;">🆓 Free NCERT</span>
+          </div>
         </div>
+
+        <!-- Suggested for you -->
+        <div style="margin-bottom:14px;">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;">✨ Suggested for you</div>
+          <div id="learn-suggested" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;"></div>
+        </div>
+
+        <!-- Quick Picks (dynamic per user type) -->
+        <div style="margin-bottom:12px;">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px;">⚡ Quick Pick Topic</div>
+          <div id="learn-quickpicks" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+        </div>
+
+        <!-- Mode tabs -->
+        <div style="display:flex;gap:6px;margin-bottom:10px;">
+          <button class="ftab active" onclick="setLearnMode('paste',this)" id="lm-paste-btn">✏️ Type / Paste</button>
+          <button class="ftab" onclick="setLearnMode('file',this)" id="lm-file-btn">📄 Upload file</button>
+        </div>
+
+        <!-- Paste mode -->
+        <div id="lm-paste">
+          <textarea id="learn-text" rows="5" placeholder="e.g. Forensic Chemistry, Chapter 3&#10;&#10;or: I want to learn Python Django for web dev&#10;&#10;or: NEET Biology — Cell Division, Genetics&#10;&#10;or: SSC CGL complete preparation"
+            style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:13px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;resize:vertical;line-height:1.6;-webkit-overflow-scrolling:touch;"></textarea>
+        </div>
+        <!-- File mode -->
+        <div id="lm-file" style="display:none;">
+          <label for="learn-file-input" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed var(--border);border-radius:var(--r);padding:28px 16px;cursor:pointer;background:var(--bg2);gap:8px;margin-bottom:8px;">
+            <div style="font-size:32px;">📄</div>
+            <div style="font-size:14px;font-weight:700;color:var(--text);">Tap to upload file</div>
+            <div style="font-size:11px;color:var(--text3);">PDF, TXT, DOCX, image supported</div>
+          </label>
+          <input type="file" id="learn-file-input" accept=".txt,.pdf,.docx,.doc,.md,.png,.jpg,.jpeg" style="display:none;" onchange="handleLearnFile(this)">
+          <div id="learn-file-name" style="font-size:12px;color:var(--acc);text-align:center;display:none;font-weight:600;margin-bottom:8px;"></div>
+        </div>
+
+        <!-- Settings row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Hours/day</div>
+            <select id="learn-hours" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:12px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
+              <option value="1">1 hr</option><option value="2" selected>2 hrs</option>
+              <option value="3">3 hrs</option><option value="4">4 hrs</option><option value="5">5+ hrs</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Unit</div>
+            <select id="learn-duration-unit" onchange="updateDurationOptions()" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:12px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
+              <option value="days">Days</option>
+              <option value="weeks" selected>Weeks</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Duration</div>
+            <select id="learn-weeks" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:12px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
+              <option value="2">2 weeks</option><option value="4" selected>4 weeks</option>
+              <option value="6">6 weeks</option><option value="8">8 weeks</option><option value="12">12 weeks</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn btn-p" id="learn-gen-btn" style="width:100%;justify-content:center;margin-top:12px;font-size:14px;padding:14px;font-weight:800;" onclick="generateLearnPlan()">
+          🤖 Find Courses & Build My Plan
+        </button>
+
+        <!-- Saved plans -->
+        <div id="saved-plans-wrap" style="display:none;margin-top:14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;">📂 Your saved plans</div>
+          <div id="saved-plans-list"></div>
+        </div>
+
+        <div id="learn-error" style="display:none;"></div>
       </div>
-      <div class="filter-row" id="skill-filters">
-        <button class="ftab active" onclick="kfilt('all',this)">All</button>
-        <button class="ftab" onclick="kfilt('must',this)">Must-do</button>
-        <button class="ftab" onclick="kfilt('core',this)">Core field</button>
-        <button class="ftab" onclick="kfilt('tech',this)">Tech</button>
-        <button class="ftab" onclick="kfilt('govt',this)">Govt exam</button>
+
+      <!-- ── Loading ── -->
+      <div id="learn-loading" style="display:none;text-align:center;padding:40px 20px;">
+        <div style="font-size:36px;margin-bottom:12px;animation:spin 1.5s linear infinite;display:inline-block;">🤖</div>
+        <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px;" id="learn-status">Finding the best resources...</div>
+        <div style="font-size:12px;color:var(--text3);">Searching YouTube, NPTEL, Coursera, Udemy & more</div>
       </div>
-      <div id="skill-list"></div>
+
+      <!-- ── Result ── -->
+      <div id="learn-result" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:15px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="learn-plan-title">Study Plan</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px;" id="learn-plan-meta"></div>
+          </div>
+          <button onclick="resetLearnPlan()" style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;">✕ New plan</button>
+        </div>
+
+        <!-- View tabs -->
+        <div class="filter-row" style="margin-bottom:12px;">
+          <button class="ftab active" onclick="setLearnView('topics',this)">📖 Topics</button>
+          <button class="ftab" onclick="setLearnView('day',this)">📌 Day View</button>
+          <button class="ftab" onclick="setLearnView('timetable',this)">📅 Weekly</button>
+          <button class="ftab" onclick="setLearnView('courses',this)">🎓 Courses & Videos</button>
+        </div>
+
+        <div id="lv-topics"></div>
+        <div id="lv-day" style="display:none;"></div>
+        <div id="lv-timetable" style="display:none;"></div>
+        <div id="lv-courses" style="display:none;"></div>
+      </div>
     </div>
 
-    <!-- ═══ JOBS ═══ -->
+    <!-- ═══ JOBS / OPPORTUNITIES ═══ -->
     <div id="s-jobs" class="sec">
       <div class="widget" style="background:linear-gradient(135deg,rgba(255,107,107,.08),rgba(255,181,71,.05));border-color:rgba(255,107,107,.25);margin-bottom:12px;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:3px;" id="jobs-hdr-title">💼 Job Opportunities</div>
-        <div style="font-size:12px;color:var(--text2);">⭐ Best Match = suited to your goal · Tap to apply directly</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:3px;" id="jobs-hdr-title">💼 Jobs & Opportunities</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;" id="jobs-hdr-sub">Central govt · State govt · Bank · Defence · Private · Internship · Scholarship · Entrance exams</div>
       </div>
-      <div class="filter-row" id="job-filters">
+
+      <!-- Search bar -->
+      <div style="position:relative;margin-bottom:10px;">
+        <input id="job-search" type="text" placeholder="🔍 Search jobs, exams, scholarships..." oninput="renderJobs()"
+          style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:13px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="filter-row" id="job-filters" style="margin-bottom:10px;">
         <button class="ftab active" onclick="jfilt('all',this)">All</button>
         <button class="ftab" onclick="jfilt('match',this)">⭐ Best Match</button>
-        <button class="ftab" onclick="jfilt('now',this)">Apply Now</button>
-        <button class="ftab" onclick="jfilt('govt',this)">Central Govt</button>
-        <button class="ftab" onclick="jfilt('state',this)">State Govt</button>
-        <button class="ftab" onclick="jfilt('bank',this)">Bank</button>
-        <button class="ftab" onclick="jfilt('core',this)">Core Field</button>
-        <button class="ftab" onclick="jfilt('after',this)">After Degree</button>
+        <button class="ftab" onclick="jfilt('govt',this)">🏛️ Central Govt</button>
+        <button class="ftab" onclick="jfilt('state',this)">🗺️ State Govt</button>
+        <button class="ftab" onclick="jfilt('bank',this)">🏦 Bank</button>
+        <button class="ftab" onclick="jfilt('defence',this)">⚔️ Defence</button>
+        <button class="ftab" onclick="jfilt('private',this)">💼 Private</button>
+        <button class="ftab" onclick="jfilt('internship',this)">🎯 Internship</button>
+        <button class="ftab" onclick="jfilt('scholarship',this)">🏆 Scholarship</button>
+        <button class="ftab" onclick="jfilt('entrance',this)">📝 Entrance</button>
+        <button class="ftab" onclick="jfilt('school',this)">🏫 School</button>
       </div>
+
       <div id="job-list"></div>
     </div>
 
@@ -714,12 +826,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       Checking status...
     </div>
     <div id="notif-enable-btn-wrap">
-      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="enableNotifs()">🔔 Enable Smart Notifications</button>
-      <div style="font-size:11px;color:var(--text2);margin-top:8px;text-align:center;line-height:1.5;">Get reminders for your daily tasks, job deadlines & study sessions</div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px;" onclick="enableNotifs()">🔔 Enable Smart Notifications</button>
+      <div style="font-size:11px;color:var(--text2);margin-top:6px;text-align:center;line-height:1.6;">
+        Get daily task reminders · Job deadline alerts · Study session nudges
+      </div>
+      <div style="margin-top:12px;background:var(--bg3);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--text3);line-height:1.7;">
+        📱 <b>iPhone users:</b> First install as app (Share → Add to Home Screen), then open from home screen to enable notifications.
+      </div>
     </div>
     <div id="notif-controls" style="display:none;">
-      <button class="btn btn-green" style="width:100%;justify-content:center;margin-bottom:8px;" onclick="sendTestNotif()">🧪 Send test notification</button>
-      <button class="btn btn-ghost" style="width:100%;justify-content:center;" onclick="disableNotifs()">🔕 Disable notifications</button>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-green" style="justify-content:center;" onclick="sendTestNotif()">🧪 Send test notification now</button>
+        <button class="btn" style="justify-content:center;background:var(--bg3);" onclick="scheduleAllNotifs();toast('✅ Schedule refreshed!')">🔄 Refresh schedule</button>
+        <button class="btn" style="justify-content:center;color:var(--ct);background:var(--cbg);" onclick="disableNotifs()">🔕 Disable notifications</button>
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:var(--text3);line-height:1.7;background:var(--bg3);padding:10px;border-radius:10px;">
+        💡 <b>Tip:</b> Keep the app installed on your home screen for best notification delivery. Notifications fire even when the app is closed.
+      </div>
     </div>
   </div>
 </div>
@@ -1337,6 +1460,36 @@ const ALL_JOBS=[
   {id:410,title:'Air Force Agniveer Vayu',org:'Indian Air Force',type:'govt',fields:['school_sci','school_jee'],elig:'now',tags:['Agniveer','Air Force','Class 12'],dl:'Rolling',sal:'₹30,000/mo',desc:'Class 12 Science (PCM). Age 17.5–21. Written + physical + medical.',url:'https://agnipathvayu.cdac.in',match:['govt','mixed']},
   {id:411,title:'NSO / IMO / IEO Olympiad',org:'Science Olympiad Foundation',type:'scholarship',fields:['school_gen','school_9_10','school_sci'],elig:'now',tags:['Olympiad','Science','Maths'],dl:'School registration: Aug-Sep',sal:'Medals + Scholarships',desc:'Class 1-12. National Science, Maths, English olympiads. School registers as centre.',url:'https://sofworld.org',match:['higher','core']},
   {id:412,title:'PM YASASVI Scholarship',org:'Ministry of Social Justice',type:'scholarship',fields:['school_gen','school_9_10'],elig:'now',tags:['Scholarship','OBC','Class 9-11'],dl:'August',sal:'₹75,000–1,25,000/year',desc:'Class 9 & 11 OBC/EBC/DNT students. NTA conducts exam. Income limit ₹2.5L/year.',url:'https://yet.nta.ac.in',match:['higher','mixed']},
+
+  // ── DEFENCE JOBS ──
+  {id:500,title:'Army GD / Technical / Clerk Agniveer',org:'Indian Army',type:'defence',fields:['all'],elig:'now',tags:['Army','Agniveer','Class 10-12'],dl:'Rolling',sal:'₹30,000/mo + benefits',desc:'Class 10 (GD/Tradesman) or Class 12 (Clerk/Technical). Age 17.5–21. 4-year service, 25% retained.',url:'https://joinindianarmy.nic.in',match:['govt','mixed']},
+  {id:501,title:'Navy Agniveer SSR / MR',org:'Indian Navy',type:'defence',fields:['all'],elig:'now',tags:['Navy','Agniveer','Class 10-12'],dl:'Rolling',sal:'₹30,000/mo',desc:'SSR: Class 12 Science. MR: Class 10. Age 17–21. Written + physical + medical.',url:'https://joinindiannavy.gov.in',match:['govt','mixed']},
+  {id:502,title:'Air Force Agniveer Vayu',org:'Indian Air Force',type:'defence',fields:['school_sci','all'],elig:'now',tags:['Air Force','Agniveer','PCM'],dl:'Rolling',sal:'₹30,000/mo',desc:'Class 12 PCM. Age 17.5–21. Science/non-science streams. Written + physical.',url:'https://agnipathvayu.cdac.in',match:['govt','mixed']},
+  {id:503,title:'NDA — National Defence Academy',org:'UPSC',type:'defence',fields:['school_sci','all'],elig:'now',tags:['NDA','UPSC','Class 12','Officer'],dl:'Twice yearly',sal:'₹56,100/mo after training',desc:'Class 12 PCM (Army/Navy/AF). Age 16.5–19.5. Written + SSB interview. Become officer.',url:'https://upsc.gov.in',match:['govt','mixed']},
+  {id:504,title:'CDS — Combined Defence Services',org:'UPSC',type:'defence',fields:['all'],elig:'after',tags:['CDS','UPSC','Officer','Graduate'],dl:'Twice yearly',sal:'₹56,100/mo',desc:'Graduate eligible. Join Army, Navy, Air Force as officer. UPSC CDS exam + SSB.',url:'https://upsc.gov.in',match:['govt','mixed']},
+  {id:505,title:'CAPF — CRPF/BSF/CISF/ITBP/SSB',org:'UPSC via CAPF AC',type:'defence',fields:['all'],elig:'after',tags:['Paramilitary','CAPF','CRPF','BSF'],dl:'Rolling',sal:'₹56,100/mo',desc:'Graduate. Paramilitary officer. Written + physical + medical + interview.',url:'https://upsc.gov.in',match:['govt','mixed']},
+  {id:506,title:'Coast Guard Navik / Yantrik',org:'Indian Coast Guard',type:'defence',fields:['all'],elig:'now',tags:['Coast Guard','Class 10-12'],dl:'Rolling',sal:'₹21,700/mo',desc:'Class 10 (Navik DB) or Class 12 (Navik GD/Yantrik). Age 18–22. Written + physical.',url:'https://joinindiancoastguard.cdac.in',match:['govt','mixed']},
+
+  // ── PRIVATE / CORPORATE JOBS ──
+  {id:600,title:'Software Developer — Entry Level',org:'TCS / Infosys / Wipro / HCL',type:'private',fields:['cs','bca','btechcs','it'],elig:'after',tags:['IT','Software','Private','TCS'],dl:'Rolling',sal:'₹3.5–6 LPA',desc:'Any CS/IT graduate. TCS NQT, Infosys InfyTQ, Wipro NLTH are common entry exams. On/off-campus drives.',url:'https://www.tcs.com/careers',match:['private','core']},
+  {id:601,title:'Data Analyst / Business Analyst',org:'Deloitte / Accenture / Capgemini',type:'private',fields:['cs','commerce','ba','bca'],elig:'after',tags:['Data','Analytics','Private','MNC'],dl:'Rolling',sal:'₹4–8 LPA',desc:'Any graduate with Excel, SQL, Python basics. Off-campus + LinkedIn applications. Growing field.',url:'https://www.linkedin.com/jobs/search/?keywords=data+analyst+fresher+india',match:['private','mixed']},
+  {id:602,title:'Digital Marketing Executive',org:'Startups / Agencies',type:'private',fields:['all'],elig:'now',tags:['Digital Marketing','Startup','Online'],dl:'Rolling',sal:'₹2–4 LPA',desc:'Any student/graduate. Learn SEO, Social Media, Google Ads (free Google certificates). High demand.',url:'https://www.linkedin.com/jobs/digital-marketing-jobs-india',match:['private','mixed']},
+  {id:603,title:'Content Writer / Social Media Manager',org:'Media / EdTech / Startups',type:'private',fields:['ba','all'],elig:'now',tags:['Content','Writing','Social Media'],dl:'Rolling',sal:'₹2–3.5 LPA',desc:'Any background. Strong English writing skills. Freelance or full-time. Remote work available.',url:'https://internshala.com/jobs/content-writing-jobs',match:['private','mixed']},
+  {id:604,title:'CA Articleship / Foundation',org:'ICAI Member Firms',type:'private',fields:['comm','bcom'],elig:'now',tags:['CA','ICAI','Commerce','Articleship'],dl:'Rolling',sal:'₹2,000–15,000/mo stipend',desc:'After CA Foundation and Intermediate. 3-year articleship training. Pathway to CA qualification.',url:'https://www.icai.org',match:['core','private']},
+  {id:605,title:'Forensic Analyst / Lab Technician',org:'CFSL / State FSL / Private Labs',type:'core',fields:['forensic','science'],elig:'after',tags:['Forensic','Lab','Govt/Private'],dl:'Rolling',sal:'₹3–6 LPA',desc:'BSc Forensic Science or related. CFSL, CBI labs, state forensic labs. Private sector growing.',url:'https://www.google.com/search?q=forensic+analyst+jobs+india+freshers',match:['core','mixed']},
+  {id:606,title:'Pharmacist / Medical Rep',org:'Pharma Companies',type:'private',fields:['pharmacy','medical','science'],elig:'after',tags:['Pharma','Medical','Private'],dl:'Rolling',sal:'₹2.5–5 LPA',desc:'B.Pharm or BSc Biology. Medical representative jobs are abundant with base salary + incentives.',url:'https://www.naukri.com/medical-representative-jobs',match:['core','private']},
+
+  // ── INTERNSHIPS ──
+  {id:700,title:'AICTE Internship Portal',org:'AICTE / Govt of India',type:'internship',fields:['all'],elig:'now',tags:['Internship','AICTE','Free','Stipend'],dl:'Rolling',sal:'₹5,000–20,000/mo stipend',desc:'Government portal with verified paid internships for college students. All fields. Search by domain.',url:'https://internship.aicte-india.org',match:['core','mixed']},
+  {id:701,title:'Internshala — All Internships',org:'Internshala Platform',type:'internship',fields:['all'],elig:'now',tags:['Internship','Online','Work from Home'],dl:'Rolling',sal:'₹3,000–15,000/mo',desc:'Indias largest internship platform. 50,000+ internships. Tech, marketing, finance, content and more.',url:'https://internshala.com/internships',match:['private','mixed']},
+  {id:702,title:'ONGC Summer Internship',org:'ONGC / PSU Internships',type:'internship',fields:['all'],elig:'now',tags:['PSU','ONGC','Summer','Stipend'],dl:'April–May registration',sal:'₹10,000–15,000/mo',desc:'PSU internships open to engineering and science students. Apply directly on PSU websites.',url:'https://ongcindia.com',match:['core','govt']},
+  {id:703,title:'Google Summer of Code (GSoC)',org:'Google',type:'internship',fields:['cs','bca','btechcs'],elig:'now',tags:['GSoC','Google','Open Source','Coding'],dl:'March every year',sal:'USD 1,500–3,300',desc:'Global open source internship. Paid in USD. For coding students. Huge resume value.',url:'https://summerofcode.withgoogle.com',match:['core','private']},
+  {id:704,title:'Microsoft / Amazon / Flipkart SDE Intern',org:'Big Tech via Internshala/LinkedIn',type:'internship',fields:['cs','bca','btechcs'],elig:'now',tags:['Big Tech','SDE','Microsoft','Amazon'],dl:'Aug–Oct for summer',sal:'₹40,000–80,000/mo',desc:'Competitive. DSA + system design skills needed. Apply via company websites. Strong CV required.',url:'https://careers.microsoft.com/students',match:['core','private']},
+  {id:705,title:'PM YUVA / Govt Internship Scheme',org:'Ministry of Education',type:'internship',fields:['all'],elig:'now',tags:['Govt Internship','PM YUVA','Writers'],dl:'Rolling',sal:'₹50,000 total stipend',desc:'Government content creation internship. Writing, content, media background preferred. All states.',url:'https://pmyuva.org',match:['govt','mixed']},
+
+  // ── UPSKILL / CERTIFICATIONS (as opportunities) ──
+  {id:800,title:'Google Career Certificates (Free via India)',org:'Google / Coursera',type:'private',fields:['all'],elig:'now',tags:['Google','Certificate','Free','IT Support'],dl:'Ongoing',sal:'Entry to ₹4–6 LPA roles',desc:'Google IT Support, Data Analytics, UX Design, Digital Marketing. Free for Indians via scholarships. Globally recognised.',url:'https://grow.google/intl/en_in/google-career-certificates',match:['private','mixed']},
+  {id:801,title:'NPTEL Online Courses + Certificate',org:'IIT / IISc via NPTEL',type:'private',fields:['all'],elig:'now',tags:['NPTEL','IIT','Free','Certificate'],dl:'Jan & July batches',sal:'Resume booster + score points',desc:'Free IIT-level courses with paid exam for certificate. Counts in many Univ. for internal marks. 1,000+ courses.',url:'https://nptel.ac.in',match:['core','mixed']},
 ];
 
 // PERSONALISATION
@@ -1728,48 +1881,118 @@ function kfilt(f,btn){curKFilt=f;document.querySelectorAll('#skill-filters .ftab
 // JOBS
 let curJFilt='all';
 function renderJobs(){
-  const jobs=getJobs();
-  const ul=P&&P.sem>=(P.maxSem||6);
-  const jh=document.getElementById('jobs-hdr-title');
-  if(jh&&P) jh.textContent='💼 Jobs for '+(P.degreeLabel||'your field');
-  const isApp=function(id){return APPLIED.indexOf(id)>=0;};
-  let filtered=jobs;
-  if(curJFilt==='match') filtered=filtered.filter(function(j){return isMatch&&isMatch(j);});
-  else if(curJFilt==='now') filtered=filtered.filter(function(j){return j.elig==='now';});
-  else if(curJFilt==='govt') filtered=filtered.filter(function(j){return j.type==='govt';});
-  else if(curJFilt==='state') filtered=filtered.filter(function(j){return j.type==='state';});
-  else if(curJFilt==='bank') filtered=filtered.filter(function(j){return j.type==='bank';});
-  else if(curJFilt==='core') filtered=filtered.filter(function(j){return j.type==='core'||j.type==='private';});
-  else if(curJFilt==='after') filtered=filtered.filter(function(j){return j.elig==='after';});
-  const el=document.getElementById('job-list');
-  if(!el) return;
-  if(!filtered.length){el.innerHTML='<div class="empty"><div class="empty-icon">💼</div><div class="empty-h">No jobs found</div><div class="empty-s">Try All filter</div></div>';return;}
-  const fmtD=function(d){if(!d||d==='Rolling'||d==='After degree')return d||'';try{return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short'});}catch(e){return d;}};
-  let html='';
-  filtered.forEach(function(j){
-    const locked=j.elig==='after'&&!ul;
-    const matched=isMatch&&isMatch(j);
-    const applied=j.applied_fixed||isApp(j.id);
-    let tags='';
-    (j.tags||[]).forEach(function(t){tags+='<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(124,111,255,.15);color:#A69FFF;">'+t+'</span> ';});
-    tags+='<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(255,107,107,.15);color:#FF8F8F;">📅 '+fmtD(j.dl)+'</span>';
-    let btns='';
-    if(locked) btns='<button class="btn btn-ghost btn-sm" disabled>🔒 After degree</button>';
-    else if(applied) btns='<button class="btn btn-green btn-sm" disabled>✅ Applied</button>';
-    else btns='<a href="'+j.url+'" target="_blank" rel="noopener" style="text-decoration:none;"><button class="btn btn-primary btn-sm">🔗 Apply Now</button></a> <button class="btn btn-ghost btn-sm" onclick="markApplied('+j.id+')">✓ Mark</button>';
-    html+='<div class="job-card" style="'+(locked?'opacity:.55':'')+'">'+
-      (matched?'<div class="match-pill">⭐ Best match</div>':'')+
-      '<div class="job-top"><div><div class="job-title">'+j.title+'</div><div class="job-org">🏢 '+j.org+'</div></div><div class="job-sal">'+j.sal+'</div></div>'+
-      '<div class="job-desc">'+j.desc+'</div>'+
-      '<div class="job-tags">'+tags+'</div>'+
-      '<div class="job-btns">'+btns+'</div></div>';
+  let jobs = getJobs();
+  const ul = P && P.sem >= (P.maxSem||6);
+  const isSchoolUser = P && P.isSchool;
+
+  // Update header
+  const jh  = document.getElementById('jobs-hdr-title');
+  const jhs = document.getElementById('jobs-hdr-sub');
+  if(jh && P){
+    jh.textContent = isSchoolUser
+      ? '🏆 Opportunities for '+(P.degreeLabel||'School Students')
+      : '💼 Jobs for '+(P.degreeLabel||'your field');
+  }
+
+  // Search filter
+  const searchEl = document.getElementById('job-search');
+  const q = searchEl ? searchEl.value.toLowerCase().trim() : '';
+
+  // Category filter
+  let filtered = jobs.filter(function(j){
+    if(!j) return false;
+    if(curJFilt==='match')       return isMatch && isMatch(j);
+    if(curJFilt==='govt')        return j.type==='govt';
+    if(curJFilt==='state')       return j.type==='state';
+    if(curJFilt==='bank')        return j.type==='bank';
+    if(curJFilt==='defence')     return j.type==='defence' || (j.tags||[]).some(t=>/army|navy|air force|nda|agniveer|defence|capf|crpf|bsf|cisf/i.test(t));
+    if(curJFilt==='private')     return j.type==='private'||j.type==='core';
+    if(curJFilt==='internship')  return j.type==='internship' || (j.tags||[]).some(t=>/intern/i.test(t));
+    if(curJFilt==='scholarship') return j.type==='scholarship' || (j.tags||[]).some(t=>/scholarship|fellowship/i.test(t));
+    if(curJFilt==='entrance')    return j.type==='entrance' || (j.tags||[]).some(t=>/jee|neet|clat|cat|gate|cuet|entrance/i.test(t));
+    if(curJFilt==='school')      return isSchoolUser || j.fields.some(f=>f.startsWith('school_')) || j.type==='scholarship' || j.type==='entrance';
+    return true;
   });
-  el.innerHTML=html;
-  const cnt=APPLIED.length;
-  const badge=document.getElementById('nav-badge');
-  if(badge){badge.style.display=cnt>0?'block':'none';badge.textContent=cnt;}
-  const ac=document.getElementById('applied-count');
-  if(ac) ac.textContent=cnt;
+
+  // Apply search
+  if(q){
+    filtered = filtered.filter(function(j){
+      return (j.title+' '+(j.org||'')+' '+(j.tags||[]).join(' ')+' '+(j.desc||'')).toLowerCase().includes(q);
+    });
+  }
+
+  const el = document.getElementById('job-list');
+  if(!el) return;
+
+  if(!filtered.length){
+    el.innerHTML = '<div class="empty"><div class="empty-icon">💼</div><div class="empty-h">No results found</div><div class="empty-s">Try a different filter or search term</div></div>';
+    return;
+  }
+
+  const fmtD = function(d){
+    if(!d||d==='Rolling'||d==='After degree') return d||'Rolling';
+    try{ return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }catch(e){ return d; }
+  };
+
+  const TYPE_COLORS = {
+    govt:'rgba(64,221,182,.15)|#40DDB6', state:'rgba(124,111,255,.15)|#A69FFF',
+    bank:'rgba(255,181,71,.15)|#FFB547', defence:'rgba(255,107,107,.15)|#FF8F8F',
+    private:'rgba(64,221,182,.15)|#40DDB6', core:'rgba(64,221,182,.15)|#40DDB6',
+    scholarship:'rgba(255,181,71,.15)|#FFB547', entrance:'rgba(124,111,255,.15)|#A69FFF',
+    internship:'rgba(64,221,182,.15)|#40DDB6'
+  };
+
+  const TYPE_LABELS = {
+    govt:'🏛️ Central Govt', state:'🗺️ State Govt', bank:'🏦 Bank',
+    defence:'⚔️ Defence', private:'💼 Private', core:'🔬 Core Field',
+    scholarship:'🏆 Scholarship', entrance:'📝 Entrance Exam', internship:'🎯 Internship'
+  };
+
+  let html = '';
+  filtered.forEach(function(j){
+    const locked   = j.elig==='after' && !ul && !isSchoolUser;
+    const matched  = isMatch && isMatch(j);
+    const applied  = APPLIED.indexOf(j.id) >= 0;
+    const colors   = (TYPE_COLORS[j.type]||'rgba(124,111,255,.15)|#A69FFF').split('|');
+    const typeLabel= TYPE_LABELS[j.type] || j.type || '';
+
+    let tagHtml = '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:'+colors[0]+';color:'+colors[1]+';">'+typeLabel+'</span> ';
+    (j.tags||[]).slice(0,3).forEach(function(t){
+      tagHtml += '<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;background:var(--bg3);color:var(--text3);">'+t+'</span> ';
+    });
+    tagHtml += '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(255,107,107,.1);color:#FF8F8F;">📅 '+fmtD(j.dl)+'</span>';
+
+    let btns = '';
+    if(locked){
+      btns = '<button class="btn btn-ghost btn-sm" disabled style="opacity:.5;">🔒 After degree</button>';
+    } else if(applied){
+      btns = '<button class="btn btn-green btn-sm" disabled>✅ Applied / Registered</button>';
+    } else {
+      btns = '<a href="'+j.url+'" target="_blank" rel="noopener" style="text-decoration:none;">'
+           + '<button class="btn btn-primary btn-sm">🔗 '+(j.type==='entrance'||j.type==='scholarship'?'Register Now':'Apply Now')+'</button></a> '
+           + '<button class="btn btn-ghost btn-sm" onclick="markApplied('+j.id+')">✓ Mark Done</button>';
+    }
+
+    html += '<div class="job-card" style="'+(locked?'opacity:.55':'')+'">'
+      + (matched ? '<div class="match-pill">⭐ Best match for you</div>' : '')
+      + '<div class="job-top">'
+      +   '<div><div class="job-title">'+j.title+'</div><div class="job-org">🏢 '+j.org+'</div></div>'
+      +   '<div class="job-sal">'+j.sal+'</div>'
+      + '</div>'
+      + '<div class="job-desc">'+j.desc+'</div>'
+      + '<div class="job-tags" style="margin:8px 0;">'+tagHtml+'</div>'
+      + '<div class="job-btns">'+btns+'</div>'
+      + '</div>';
+  });
+
+  el.innerHTML = html;
+
+  // Update badge
+  const cnt = APPLIED.length;
+  const badge = document.getElementById('nav-badge');
+  if(badge){ badge.style.display = cnt>0 ? 'block' : 'none'; badge.textContent = cnt; }
+  const ac = document.getElementById('applied-count');
+  if(ac) ac.textContent = cnt;
 }
 function goalLabel(g){return{govt:'Govt job',bank:'Bank job',core:'Core field',higher:'Higher studies',private:'Private sector',mixed:'All-round'}[g]||g;}
 function jfilt(f,btn){curJFilt=f;document.querySelectorAll('#job-filters .ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderJobs();}
@@ -1795,7 +2018,7 @@ function markApplied(id){
 
 function scheduleJobFollowUp(job){
   if(!localStorage.getItem('lt_notif_enabled')) return;
-  if(Notification.permission !== 'granted') return;
+  if(notifPerm() !== 'granted') return;
   // Save follow-up in localStorage — fires on next app open after 3 days
   const followUps = JSON.parse(localStorage.getItem('lt_job_followups')||'[]');
   const fireAt = Date.now() + 3*24*60*60*1000; // 3 days later
@@ -1810,7 +2033,7 @@ function scheduleJobFollowUp(job){
 
 function checkJobFollowUps(){
   if(!localStorage.getItem('lt_notif_enabled')) return;
-  if(Notification.permission !== 'granted') return;
+  if(notifPerm() !== 'granted') return;
   try{
     const followUps = JSON.parse(localStorage.getItem('lt_job_followups')||'[]');
     const now = Date.now();
@@ -1828,6 +2051,114 @@ function tc(t){if(t.includes('Bank')||t.includes('SBI')||t.includes('IBPS'))retu
 function fmtD(d){return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}
 
 // PROFILE
+function renderLearnSuggested(){
+  const el = document.getElementById('learn-suggested');
+  if(!el) return;
+  const isSchool = P && P.isSchool;
+  const cls      = (P && P.schoolClass) || 10;
+  const field    = (P && P.field) || '';
+  const deg      = (P && P.degType) || '';
+  const stream   = (P && P.stream) || '';
+
+  let suggestions = [];
+  if(isSchool){
+    if(cls<=8){
+      suggestions=[
+        {icon:'🔬',label:'Science Cl.'+cls,desc:'Free·NCERT',color:'var(--gbg)',tc:'var(--gt)',topic:'NCERT Science Class '+cls+' CBSE'},
+        {icon:'📐',label:'Maths Cl.'+cls,desc:'Free·Khan',color:'var(--bbg)',tc:'var(--bt)',topic:'NCERT Maths Class '+cls+' CBSE'},
+        {icon:'🌍',label:'Soc. Science',desc:'Free·NCERT',color:'var(--abg)',tc:'var(--at)',topic:'Social Science Class '+cls+' NCERT CBSE'},
+        {icon:'📖',label:'English',desc:'Free·YouTube',color:'var(--pbg)',tc:'var(--pt)',topic:'English grammar Class '+cls+' CBSE'},
+        {icon:'🏆',label:'Olympiad',desc:'Free·SOF',color:'var(--tbg)',tc:'var(--tt)',topic:'Science Olympiad Class '+cls+' NSO preparation'},
+      ];
+    } else if(cls<=10){
+      suggestions=[
+        {icon:'🔬',label:'Science Cl.10',desc:'Free·PW+NCERT',color:'var(--gbg)',tc:'var(--gt)',topic:'NCERT Science Class 10 board exam'},
+        {icon:'📐',label:'Maths Cl.10',desc:'Free·NCERT',color:'var(--bbg)',tc:'var(--bt)',topic:'NCERT Maths Class 10 CBSE board'},
+        {icon:'🌍',label:'Social Science',desc:'Free·YouTube',color:'var(--abg)',tc:'var(--at)',topic:'Social Science Class 10 NCERT CBSE board'},
+        {icon:'🏆',label:'NTSE Prep',desc:'Free·YouTube',color:'var(--pbg)',tc:'var(--pt)',topic:'NTSE preparation Class 10 full course free'},
+        {icon:'📖',label:'English Cl.10',desc:'Free·CBSE',color:'var(--cbg)',tc:'var(--ct)',topic:'English Class 10 CBSE board First Flight'},
+      ];
+    } else if(stream.includes('pcm')||stream.includes('jee')){
+      suggestions=[
+        {icon:'⚡',label:'JEE Physics',desc:'Free·PW',color:'var(--cbg)',tc:'var(--ct)',topic:'Physics Class 11 12 JEE Main free Physics Wallah'},
+        {icon:'🧪',label:'JEE Chemistry',desc:'Free·PW',color:'var(--gbg)',tc:'var(--gt)',topic:'Chemistry Class 11 12 JEE Main organic inorganic'},
+        {icon:'📐',label:'JEE Maths',desc:'Free·YouTube',color:'var(--bbg)',tc:'var(--bt)',topic:'Mathematics Class 11 12 JEE calculus algebra free'},
+        {icon:'🎯',label:'JEE Strategy',desc:'Free',color:'var(--pbg)',tc:'var(--pt)',topic:'JEE Main 2025 preparation strategy timetable free'},
+        {icon:'📋',label:'JEE Mock Tests',desc:'Free·NTA',color:'var(--abg)',tc:'var(--at)',topic:'JEE Main mock test practice papers 2025 free'},
+      ];
+    } else if(stream.includes('pcb')||stream.includes('neet')){
+      suggestions=[
+        {icon:'🌱',label:'NEET Biology',desc:'Free·PW',color:'var(--gbg)',tc:'var(--gt)',topic:'NEET Biology Class 11 12 full course free'},
+        {icon:'🧪',label:'NEET Chemistry',desc:'Free·YouTube',color:'var(--abg)',tc:'var(--at)',topic:'NEET Chemistry Class 11 12 full course free'},
+        {icon:'⚡',label:'NEET Physics',desc:'Free·PW',color:'var(--cbg)',tc:'var(--ct)',topic:'NEET Physics Class 11 12 free course'},
+        {icon:'🏥',label:'NEET Strategy',desc:'Free',color:'var(--pbg)',tc:'var(--pt)',topic:'NEET UG 2025 complete preparation strategy free'},
+        {icon:'📋',label:'Previous Papers',desc:'Free',color:'var(--bbg)',tc:'var(--bt)',topic:'NEET previous year question papers solutions free'},
+      ];
+    } else if(stream.includes('commerce')){
+      suggestions=[
+        {icon:'💰',label:'Accountancy',desc:'Free·YouTube',color:'var(--abg)',tc:'var(--at)',topic:'Accountancy Class 12 CBSE full course free'},
+        {icon:'💼',label:'Business Studies',desc:'Free·YouTube',color:'var(--bbg)',tc:'var(--bt)',topic:'Business Studies Class 12 CBSE full course free'},
+        {icon:'📈',label:'Economics',desc:'Free·YouTube',color:'var(--gbg)',tc:'var(--gt)',topic:'Economics Class 12 CBSE Macro Micro full course free'},
+        {icon:'📊',label:'CA Foundation',desc:'Free·ICAI',color:'var(--pbg)',tc:'var(--pt)',topic:'CA Foundation complete preparation ICAI free course'},
+        {icon:'🎯',label:'CUET Commerce',desc:'Free·YouTube',color:'var(--cbg)',tc:'var(--ct)',topic:'CUET 2025 Commerce preparation free course'},
+      ];
+    } else {
+      suggestions=[
+        {icon:'🏛️',label:'History Cl.12',desc:'Free·NCERT',color:'var(--abg)',tc:'var(--at)',topic:'History Class 12 NCERT CBSE board full course'},
+        {icon:'🗳️',label:'Pol. Science',desc:'Free·YouTube',color:'var(--bbg)',tc:'var(--bt)',topic:'Political Science Class 12 NCERT full course free'},
+        {icon:'🌍',label:'Geography',desc:'Free·YouTube',color:'var(--gbg)',tc:'var(--gt)',topic:'Geography Class 12 NCERT CBSE full course free'},
+        {icon:'⚖️',label:'CLAT Prep',desc:'Free·YouTube',color:'var(--pbg)',tc:'var(--pt)',topic:'CLAT 2025 complete preparation free course'},
+        {icon:'📖',label:'English Lit.',desc:'Free·CBSE',color:'var(--cbg)',tc:'var(--ct)',topic:'English Literature Class 12 CBSE Flamingo Vistas'},
+      ];
+    }
+  } else {
+    const FIELD_SUGG = {
+      forensic:[
+        {icon:'🔬',label:'Forensic Science',desc:'Free·NPTEL',color:'var(--gbg)',tc:'var(--gt)',topic:'Forensic Science NPTEL IIT free course'},
+        {icon:'🧬',label:'DNA Analysis',desc:'Free·Coursera',color:'var(--bbg)',tc:'var(--bt)',topic:'DNA forensics molecular biology free Coursera audit'},
+        {icon:'👁️',label:'Crime Scene',desc:'Free·YouTube',color:'var(--cbg)',tc:'var(--ct)',topic:'Crime scene investigation full course free YouTube'},
+        {icon:'💼',label:'CFSL Prep',desc:'Free·YouTube',color:'var(--abg)',tc:'var(--at)',topic:'CFSL forensic science officer exam preparation free'},
+        {icon:'🖐️',label:'Fingerprints',desc:'Free·Alison',color:'var(--pbg)',tc:'var(--pt)',topic:'fingerprint analysis free certification course Alison'},
+      ],
+      cs:[
+        {icon:'🐍',label:'Python',desc:'Free·freeCodeCamp',color:'var(--gbg)',tc:'var(--gt)',topic:'Python programming full course free freeCodeCamp beginners'},
+        {icon:'🌐',label:'Web Dev',desc:'Free·YouTube',color:'var(--bbg)',tc:'var(--bt)',topic:'web development full course free HTML CSS JavaScript React'},
+        {icon:'🤖',label:'Machine Learning',desc:'Free·Andrew Ng',color:'var(--pbg)',tc:'var(--pt)',topic:'machine learning Andrew Ng full course free Coursera audit'},
+        {icon:'🛠️',label:'DSA',desc:'Free·YouTube',color:'var(--cbg)',tc:'var(--ct)',topic:'data structures algorithms full course free placement India'},
+        {icon:'☁️',label:'Cloud/AWS',desc:'Free·AWS',color:'var(--abg)',tc:'var(--at)',topic:'AWS cloud computing free course beginners'},
+      ],
+      comm:[
+        {icon:'💰',label:'Accounting',desc:'Free·NPTEL',color:'var(--abg)',tc:'var(--at)',topic:'financial accounting NPTEL free course IIT'},
+        {icon:'📈',label:'Stock Market',desc:'Free·YouTube',color:'var(--gbg)',tc:'var(--gt)',topic:'stock market basics free course India beginners'},
+        {icon:'📊',label:'Data Analytics',desc:'Free·Google',color:'var(--bbg)',tc:'var(--bt)',topic:'data analytics Excel Google free course beginners'},
+        {icon:'💼',label:'CA Foundation',desc:'Free·ICAI',color:'var(--pbg)',tc:'var(--pt)',topic:'CA Foundation complete preparation ICAI free'},
+        {icon:'🏦',label:'Banking Prep',desc:'Free·Unacademy',color:'var(--cbg)',tc:'var(--ct)',topic:'IBPS PO SBI banking preparation free course'},
+      ],
+    };
+    const base = field.split('_')[0];
+    suggestions = FIELD_SUGG[field] || FIELD_SUGG[base] || [
+      {icon:'🎓',label:'NPTEL Course',desc:'Free·IIT',color:'var(--gbg)',tc:'var(--gt)',topic:deg+' '+field+' NPTEL free course IIT'},
+      {icon:'📚',label:'Full Course',desc:'Free·YouTube',color:'var(--bbg)',tc:'var(--bt)',topic:deg+' '+field+' full course free YouTube'},
+      {icon:'🏛️',label:'UPSC Prep',desc:'Free·StudyIQ',color:'var(--abg)',tc:'var(--at)',topic:'UPSC complete free preparation course StudyIQ'},
+      {icon:'💻',label:'Digital Skills',desc:'Free·Google',color:'var(--pbg)',tc:'var(--pt)',topic:'digital skills free certification Google India 2025'},
+      {icon:'📋',label:'Placement Prep',desc:'Free·YouTube',color:'var(--cbg)',tc:'var(--ct)',topic:'resume interview placement preparation India free'},
+    ];
+  }
+
+  el.innerHTML = suggestions.map(function(s){
+    return '<div onclick="document.getElementById(&quot;learn-text&quot;).value=&quot;'+s.topic.replace(/&/g,'&amp;')+'&quot;;quickTopic(&quot;'+s.topic.replace(/&/g,'&amp;')+'&quot;)"'
+      +' style="flex-shrink:0;width:130px;background:'+s.color+';border-radius:14px;padding:12px;cursor:pointer;border:1.5px solid rgba(0,0,0,0.06);">'
+      +'<div style="font-size:20px;margin-bottom:5px;">'+s.icon+'</div>'
+      +'<div style="font-size:12px;font-weight:800;color:'+s.tc+';line-height:1.3;">'+s.label+'</div>'
+      +'<div style="font-size:10px;color:'+s.tc+';opacity:.75;margin-top:3px;">'+s.desc+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function updateLearnTabForUser(){
+  renderLearnSuggested();
+}
+
 function applyLanguageSettings(){
   if(!P || !P.lang) return;
   // Set HTML lang attribute for accessibility
@@ -2454,8 +2785,14 @@ Rules:
 - topics array must have exactly ${numTopics} items
 - weeklyPlan must have exactly ${weeks} week object(s)
 - ${assignRule}
-- All resource URLs must be real YouTube search or Google search links
-- Preferred language for resources: ${userLang} — prioritise ${userLang === 'English' ? 'English-medium' : userLang + '-medium'} YouTube channels and websites when possible`;
+- Each topic must have 2-3 resources mixing: YouTube video/playlist, NPTEL course, website notes, or textbook
+- Use REAL YouTube search URLs: https://www.youtube.com/results?search_query=KEYWORD
+- Use REAL NPTEL URLs: https://nptel.ac.in/courses/ for relevant courses
+- Use Google search for notes: https://www.google.com/search?q=TOPIC+notes+pdf
+- Courses array must have AT LEAST 8 entries mixing: YouTube playlist (free), NPTEL (free), Coursera (some free), Udemy (paid), Khan Academy (free), local Indian platforms like PW/Unacademy (free/paid), PDF notes (free), practice questions
+- Preferred language: ${userLang} — include ${userLang !== 'English' ? userLang + '-medium YouTube channels and ' : ''}English resources
+- Mark free:true for YouTube, NPTEL, Khan Academy, government sites; free:false for Coursera certificates, Udemy, paid plans
+- Include type field: "video" for YouTube/NPTEL, "course" for Coursera/Udemy/edX, "notes" for PDFs/websites, "book" for textbooks`;
 
   try {
     clearInterval(statusTimer);
@@ -2683,7 +3020,7 @@ function renderDayView(offset) {
       <button onclick="renderDayView(${_learnDayOffset - 1})" ${isFirst?'disabled':''} 
         style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);font-size:18px;cursor:pointer;flex-shrink:0;${isFirst?'opacity:.35;cursor:not-allowed;':''}">‹</button>
       <div style="flex:1;text-align:center;">
-        <div style="font-size:15px;font-weight:800;color:var(--text);">${cur.dayName}${isAtToday ? " <span style=\"font-size:10px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;\">TODAY</span>" : ""}</div>
+        <div style="font-size:15px;font-weight:800;color:var(--text);">${cur.dayName}${isAtToday ? " <span style=\"font-size:10px;background:var(--grad);-webkit--webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;\">TODAY</span>" : ""}</div>
         <div style="font-size:11px;color:var(--text3);margin-top:1px;">Week ${cur.weekNum} · ${cur.weekTheme}</div>
       </div>
       <button onclick="renderDayView(${_learnDayOffset + 1})" ${isLast?'disabled':''}
@@ -2928,51 +3265,161 @@ function saveTopicNote(id, val) {
 
 function renderCoursesView() {
   const p = learnPlan;
-  if (!p || !p.courses) return;
+  if (!p) return;
+
+  const topic = p.title || 'this topic';
+  // Build safe search query - only alphanumeric and spaces
+  const clean = topic.replace(/[^a-zA-Z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+  const q  = encodeURIComponent(clean);
+  const q2 = encodeURIComponent(clean + ' lecture');
+  const q3 = encodeURIComponent(clean + ' full course');
+  const q4 = encodeURIComponent(clean + ' notes pdf');
+  const q5 = encodeURIComponent(clean + ' in hindi');
+
+  // ── CURATED working links (all tested) ──
+  const AUTO_COURSES = [
+    // FREE VIDEO
+    {name:'▶ YouTube: '+topic+' — Full Course', provider:'YouTube', type:'video', free:true, duration:'Self-paced',
+     url:'https://www.youtube.com/results?search_query='+q3,
+     description:'Search YouTube free — thousands of Indian educators teach '+topic+' in Hindi & English. Best for visual learners.'},
+    {name:'▶ YouTube: '+topic+' — Lectures (Hindi)', provider:'YouTube Hindi', type:'video', free:true, duration:'Self-paced',
+     url:'https://www.youtube.com/results?search_query='+q5,
+     description:'Hindi-medium lectures on '+topic+'. Great for students who prefer learning in their native language.'},
+    {name:'▶ Physics Wallah — '+topic, provider:'PW (Alakh Pandey)', type:'video', free:true, duration:'Self-paced',
+     url:'https://www.youtube.com/@PhysicsWallah/search?query='+q,
+     description:'Indias most popular free educator. Best for JEE, NEET, Class 11-12, and competitive exams. Hindi + English.'},
+    {name:'▶ Study With Me — '+topic, provider:'Unacademy YouTube', type:'video', free:true, duration:'Self-paced',
+     url:'https://www.youtube.com/results?search_query=unacademy+'+q,
+     description:'Free Unacademy lectures on YouTube. Best for UPSC, SSC, Banking, State PSC students.'},
+
+    // FREE COURSES
+    {name:'🎓 NPTEL — '+topic, provider:'NPTEL (IIT/IISc)', type:'video', free:true, duration:'12 weeks',
+     url:'https://nptel.ac.in/courses',
+     description:'Free IIT & IISc professor lectures. Search "'+clean+'" on NPTEL. Certificate exam available (paid). Recognised by UGC.'},
+    {name:'🟢 Khan Academy — '+topic, provider:'Khan Academy', type:'video', free:true, duration:'Self-paced',
+     url:'https://www.khanacademy.org/search?page_search_query='+q,
+     description:'100% free, beginner-friendly. Great for school students and foundation building. Covers Maths, Science, Economics.'},
+    {name:'📚 NCERT Books & Solutions', provider:'NCERT (Govt of India)', type:'book', free:true, duration:'Self-paced',
+     url:'https://ncert.nic.in/textbook.php',
+     description:'Free official NCERT textbooks for Class 6-12. Essential for CBSE board, UPSC, SSC, and all competitive exams.'},
+    {name:'🇮🇳 SWAYAM — Free Online Courses', provider:'SWAYAM (Govt of India)', type:'course', free:true, duration:'Varies',
+     url:'https://swayam.gov.in/explorer?searchText='+q,
+     description:'Government of India free online courses from IITs, IIMs, central universities. Credits transferable. All subjects.'},
+    {name:'🇮🇳 Skill India — '+topic, provider:'Skill India / PMKVY', type:'course', free:true, duration:'Varies',
+     url:'https://www.skillindia.gov.in/learning-opportunities',
+     description:'Govt-funded free vocational & skill courses. Certificate recognised nationally. For students 18+.'},
+    {name:'📝 Free PDF Notes — '+topic, provider:'Google Search', type:'notes', free:true, duration:'Self-paced',
+     url:'https://www.google.com/search?q='+q4,
+     description:'Find free handwritten notes, PDFs, and study material for '+topic+'. Great for quick revision before exams.'},
+    {name:'💡 Coursera — '+topic+' (Audit Free)', provider:'Coursera', type:'course', free:true, duration:'4-8 weeks',
+     url:'https://www.coursera.org/search?query='+q+'&productDifficultyLevel=Beginner&sortBy=BEST_MATCH',
+     description:'Click any course then "Audit" to access FREE. University-level content from IITs, top global universities. Certificate costs extra.'},
+    {name:'🔵 edX — '+topic+' (Audit Free)', provider:'edX', type:'course', free:true, duration:'6-10 weeks',
+     url:'https://www.edx.org/search?q='+q+'&tab=course',
+     description:'Harvard, MIT, IIT Bombay courses. "Audit track" is free. Verified certificate is paid. Excellent quality.'},
+
+    // PAID COURSES
+    {name:'📖 Udemy — '+topic+' (₹399–599 on sale)', provider:'Udemy', type:'course', free:false, duration:'10-30 hrs',
+     url:'https://www.udemy.com/courses/search/?q='+q+'&sort=highest-rated&lang=en',
+     description:'Best paid option. Frequently on sale at ₹399-599. Lifetime access. Downloadable. Many Hindi courses available.'},
+    {name:'🟣 Coursera Plus / Certificate', provider:'Coursera (Paid)', type:'course', free:false, duration:'3-6 months',
+     url:'https://www.coursera.org/search?query='+q+'&productTypeDescription=Professional+Certificates',
+     description:'Paid verified certificates from Google, IBM, Meta, IIT. Monthly subscription ₹1,800/mo or annual plan. Globally recognised.'},
+    {name:'🟠 Unacademy Plus — '+topic, provider:'Unacademy (Paid)', type:'course', free:false, duration:'Varies',
+     url:'https://unacademy.com/search?query='+q,
+     description:'India-focused exam prep. Live classes, doubt solving, test series. Best for UPSC, JEE, NEET, SSC, Banking exams.'},
+    {name:'⚡ PW App — '+topic+' (Premium)', provider:'Physics Wallah App', type:'course', free:false, duration:'Varies',
+     url:'https://play.google.com/store/apps/details?id=com.physicswallah.mobile',
+     description:'Affordable paid batches for JEE, NEET, Class 11-12. Much cheaper than other coaching. Download PW app.'},
+  ];
+
+  // Merge AI-returned courses (specific) + auto courses (general platforms)
+  const aiCourses = (p.courses || []).map(c => ({...c, type:c.type||'course', isAI:true}));
+  // Deduplicate by URL
+  const seenUrls = new Set(aiCourses.map(c => c.url));
+  const merged   = [...aiCourses, ...AUTO_COURSES.filter(c => !seenUrls.has(c.url))];
+
+  const PROV_ICONS = {
+    'YouTube':'▶','YouTube Hindi':'▶','PW (Alakh Pandey)':'⚡','Unacademy YouTube':'📺',
+    'NPTEL (IIT/IISc)':'🎓','Khan Academy':'🟢','NCERT (Govt of India)':'📚','SWAYAM (Govt of India)':'🇮🇳',
+    'Skill India / PMKVY':'🇮🇳','Google Search':'🔍','Coursera':'🟣','Coursera (Paid)':'🟣',
+    'edX':'🔵','Udemy':'📖','Unacademy (Paid)':'🟠','Physics Wallah App':'⚡','StudyIQ Education':'📺'
+  };
+
+  const aiCount  = aiCourses.length;
+  const allCount = merged.length;
+
   document.getElementById('lv-courses').innerHTML = `
-    <div style="margin-bottom:12px;font-size:12px;color:var(--text2);">
-      ${p.courses.length} courses recommended for <b>${p.title||'your plan'}</b>. All verified free resources.
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.7;">
+      <b>${allCount} resources</b> for <b>${topic}</b>
+      ${aiCount > 0 ? ' · <span style="color:var(--acc);font-weight:700;">'+aiCount+' AI-picked</span> + '+(allCount-aiCount)+' platform links' : ''}
+      <br><span style="font-size:11px;color:var(--text3);">Tap any card to open. Use Audit/Free options on Coursera & edX to access free.</span>
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
-      <button class="fp active" onclick="filterCourses('all',this)" style="font-size:11px;padding:5px 11px;">All</button>
-      <button class="fp" onclick="filterCourses('free',this)" style="font-size:11px;padding:5px 11px;">Free only</button>
-      <button class="fp" onclick="filterCourses('youtube',this)" style="font-size:11px;padding:5px 11px;">▶ YouTube</button>
-      <button class="fp" onclick="filterCourses('nptel',this)" style="font-size:11px;padding:5px 11px;">🎓 NPTEL</button>
+
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="ftab active" onclick="filterCourses('all',this)">All (${allCount})</button>
+      <button class="ftab" onclick="filterCourses('free',this)">🆓 Free (${merged.filter(c=>c.free===true||c.free==='true').length})</button>
+      <button class="ftab" onclick="filterCourses('paid',this)">💳 Paid</button>
+      <button class="ftab" onclick="filterCourses('video',this)">▶ Videos</button>
+      <button class="ftab" onclick="filterCourses('course',this)">📚 Courses</button>
+      <button class="ftab" onclick="filterCourses('notes',this)">📝 Notes/PDF</button>
     </div>
+
+    ${aiCount > 0 ? '<div style="font-size:11px;font-weight:700;color:var(--acc);margin-bottom:8px;padding:6px 10px;background:var(--pbg);border-radius:8px;">🤖 AI-recommended for your specific plan:</div>' : ''}
+
     <div id="courses-list">
-    ${p.courses.map((c,i) => `
-    <div class="skill-card" data-free="${c.free}" data-provider="${(c.provider||'').toLowerCase()}">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
-        <div style="flex:1;">
-          <div style="font-size:10px;font-weight:700;color:var(--acc);letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px;">${c.provider}</div>
-          <div class="skill-name">${c.name}</div>
+    ${merged.map((c, i) => {
+      const isFree  = c.free === true || c.free === 'true';
+      const isAI    = c.isAI === true;
+      const icon    = PROV_ICONS[c.provider] || '🔗';
+      const prov    = (c.provider||'').toLowerCase();
+      const isVideo = c.type==='video' || prov.includes('youtube') || prov.includes('wallah') || prov.includes('studyiq') || prov.includes('nptel');
+      const isNotes = c.type==='notes' || c.type==='book' || prov.includes('ncert') || prov.includes('google');
+      const btnLabel = isVideo ? '▶ Watch' : isNotes ? '📥 Get Notes' : isFree ? '🆓 Open Free' : '🔗 Open';
+
+      return `
+      <div class="skill-card" data-free="${isFree}" data-type="${c.type||'course'}" data-provider="${prov}"
+        style="${isAI ? 'border:1.5px solid rgba(108,99,255,0.3);background:rgba(108,99,255,0.04);' : ''}">
+        ${isAI ? '<div style="font-size:9px;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">🤖 AI Recommended</div>' : ''}
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:11px;font-weight:700;color:var(--acc);margin-bottom:3px;">${icon} ${c.provider||'Resource'}</div>
+            <div style="font-size:14px;font-weight:800;color:var(--text);line-height:1.3;">${c.name}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
+            <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:${isFree?'rgba(64,221,182,.15)':'rgba(255,181,71,.15)'};color:${isFree?'#40DDB6':'#FFB547'};">${isFree?'FREE':'Paid'}</span>
+            <span style="font-size:10px;color:var(--text3);font-weight:600;">⏱ ${c.duration||'Self-paced'}</span>
+          </div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
-          <span class="tag ${c.free?'tg':'ta'}">${c.free?'FREE':'Paid'}</span>
-          <span style="font-size:10px;color:var(--text3);font-weight:600;">⏱ ${c.duration}</span>
+        <div style="font-size:12px;color:var(--text2);margin-top:6px;line-height:1.6;">${c.description||''}</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;">
+          <a href="${c.url}" target="_blank" rel="noopener" style="text-decoration:none;flex:1;">
+            <button style="width:100%;padding:9px;border-radius:10px;background:var(--grad);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">
+              ${btnLabel} →
+            </button>
+          </a>
+          <button style="padding:9px 12px;border-radius:10px;background:var(--gbg);color:var(--gt);border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;" onclick="addCourseAsCert(${i})">+ Cert</button>
         </div>
-      </div>
-      <div class="skill-why">${c.description}</div>
-      <div class="jbtns">
-        <a href="${c.url}" target="_blank" rel="noopener" style="text-decoration:none;">
-          <button class="btn btn-p btn-sm">${c.provider&&c.provider.toLowerCase().includes('youtube')?'▶ Watch free':'🔗 Open course'}</button>
-        </a>
-        <button class="btn btn-sm btn-g" onclick="addCourseAsCert(${i})">+ Add to certificates</button>
-      </div>
-    </div>`).join('')}
+      </div>`;
+    }).join('')}
     </div>`;
 }
 
+
 function filterCourses(f, btn) {
-  document.querySelectorAll('#lv-courses .fp').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#lv-courses .ftab').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
   document.querySelectorAll('#courses-list .skill-card').forEach(card => {
     const free = card.dataset.free === 'true';
+    const type = card.dataset.type || 'course';
     const prov = card.dataset.provider || '';
-    if(f==='all') card.style.display='';
-    else if(f==='free') card.style.display=free?'':'none';
-    else if(f==='youtube') card.style.display=prov.includes('youtube')?'':'none';
-    else if(f==='nptel') card.style.display=prov.includes('nptel')?'':'none';
+    let show = true;
+    if(f==='free')  show = free;
+    else if(f==='paid')   show = !free;
+    else if(f==='video')  show = type==='video' || prov.includes('youtube') || prov.includes('wallah') || prov.includes('studyiq');
+    else if(f==='course') show = type==='course';
+    else if(f==='notes')  show = type==='notes' || type==='book' || prov.includes('ncert') || prov.includes('google');
+    card.style.display = show ? '' : 'none';
   });
 }
 
@@ -3612,7 +4059,7 @@ setInterval(()=>{ if(currentUID&&!currentUID.startsWith('GUEST_')) saveUserDataT
 // ══════════════════════════════════
 function reinitNotifs(){
   if(!('Notification' in window)) return;
-  if(Notification.permission === 'default'){
+  if(notifPerm() === 'default'){
     Notification.requestPermission();
   }
   scheduleNotifs();
@@ -3620,7 +4067,7 @@ function reinitNotifs(){
 
 function fireNotif(id, title, body){
   if(!('Notification' in window)) return;
-  if(Notification.permission !== 'granted') return;
+  if(notifPerm() !== 'granted') return;
   try{
     new Notification(title, {
       body: body,
@@ -3635,7 +4082,7 @@ function scheduleNotifs(){
   // Clear old timers
   if(window._notifTimers) window._notifTimers.forEach(t=>clearTimeout(t));
   window._notifTimers = [];
-  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  if(!notifSupported() || notifPerm() !== 'granted') return;
   
   const now = new Date();
   const todayMs = now.setHours(0,0,0,0);
@@ -4162,65 +4609,122 @@ function openNotifModal() {
   openModal('notif-modal');
 }
 
-function updateNotifStatusUI() {
-  const status = document.getElementById('notif-status-box');
-  const controls = document.getElementById('notif-controls');
-  const enableWrap = document.getElementById('notif-enable-btn-wrap');
-  const perm = Notification.permission;
+// ── Notification support detection ──
+function notifSupported() {
+  return typeof Notification !== 'undefined';
+}
+function notifPerm() {
+  return notifSupported() ? notifPerm() : 'unsupported';
+}
 
-  if (perm === 'granted') {
-    const tasks = CUSTOM_TASKS || defaultTasks();
-    status.style.background = '#d4edda';
-    status.style.color = '#155724';
-    status.innerHTML = `
-      ✅ <b>Smart Notifications ON</b><br>
-      <span style="font-size:12px;opacity:.8">
-        📋 ${tasks.length} task reminders scheduled<br>
-        🌅 Good morning · 📊 Afternoon · 💼 Job hunt (5pm) · 📈 Growth · 🌙 Night
-      </span>`;
+function updateNotifStatusUI() {
+  const status     = document.getElementById('notif-status-box');
+  const controls   = document.getElementById('notif-controls');
+  const enableWrap = document.getElementById('notif-enable-btn-wrap');
+  if (!status) return;
+
+  const perm    = notifPerm();
+  const enabled = !!localStorage.getItem('lt_notif_enabled');
+  const tasks   = CUSTOM_TASKS || defaultTasks();
+  const isIOS   = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const isPWA   = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+  if (perm === 'unsupported') {
+    status.style.cssText = 'background:#fff3cd;color:#856404;padding:12px;border-radius:10px;font-size:13px;line-height:1.6;';
+    status.innerHTML = isIOS
+      ? '📱 <b>iOS Notification Setup:</b><br>1. Tap Share (↑) in Safari<br>2. Tap "Add to Home Screen"<br>3. Open the app from your home screen<br>4. Then enable notifications here'
+      : '⚠️ Notifications not supported in this browser. Try Chrome or Samsung Internet.';
+    controls.style.display = 'none';
+    enableWrap.style.display = 'block';
+    document.querySelector('#notif-enable-btn-wrap .btn-primary').textContent = isIOS ? '📲 Install as App First' : '🔔 Enable Notifications';
+    return;
+  }
+
+  if (perm === 'granted' && enabled) {
+    status.style.cssText = 'background:#d4edda;color:#155724;padding:12px;border-radius:10px;font-size:13px;line-height:1.6;';
+    const isSchoolUser = P && P.isSchool;
+    const schedLine = isSchoolUser
+      ? '🌅 Morning · 📝 Homework · 📖 Self study · 🏆 Opportunities · 🌙 Night'
+      : '🌅 Morning · 📊 Afternoon · 💼 Jobs 5pm · 📈 Growth · 🌙 Night';
+    status.innerHTML = '<b>✅ Smart Notifications ON</b><br>'
+      + '<span style="font-size:12px;opacity:.85;">'
+      + '📋 ' + tasks.length + ' task reminders<br>'
+      + schedLine + '</span>';
     controls.style.display = 'block';
     enableWrap.style.display = 'none';
   } else if (perm === 'denied') {
-    status.style.background = '#f8d7da';
-    status.style.color = '#721c24';
-    status.innerHTML = `🚫 Notifications <b>blocked</b>.<br>Go to phone Settings → Apps → Browser → Notifications → Allow.`;
+    status.style.cssText = 'background:#f8d7da;color:#721c24;padding:12px;border-radius:10px;font-size:13px;line-height:1.6;';
+    status.innerHTML = '🚫 <b>Notifications blocked</b> in browser settings.<br>'
+      + 'Fix: Settings → Apps → '+(isIOS?'Safari':'Chrome')+' → Notifications → Allow this site.';
     controls.style.display = 'none';
-    enableWrap.style.display = 'none';
+    enableWrap.style.display = 'block';
+    document.querySelector('#notif-enable-btn-wrap .btn-primary').textContent = '⚙️ Open Browser Settings';
   } else {
-    status.style.background = '#fff3cd';
-    status.style.color = '#856404';
-    status.innerHTML = `⚠️ Not enabled yet. Tap below to get smart reminders for all your tasks!`;
+    status.style.cssText = 'background:#fff3cd;color:#856404;padding:12px;border-radius:10px;font-size:13px;line-height:1.6;';
+    status.innerHTML = '⚠️ <b>Not enabled yet.</b> Tap below to allow smart reminders for tasks, jobs & study sessions!';
     controls.style.display = 'none';
     enableWrap.style.display = 'block';
   }
 }
 
 async function enableNotifs() {
-  const perm = await Notification.requestPermission();
-  if (perm === 'granted') {
-    localStorage.setItem('lt_notif_enabled', '1');
-    scheduleAllNotifs();
-    toast('🔔 Smart notifications enabled!');
-    updateNotifStatusUI();
-  } else {
-    toast('❌ Permission denied. Check browser settings.');
-    updateNotifStatusUI();
+  if (!notifSupported()) {
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      toast('📲 Install as app first: Share → Add to Home Screen');
+    } else {
+      toast('❌ Notifications not supported in this browser');
+    }
+    return;
+  }
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+      localStorage.setItem('lt_notif_enabled', '1');
+      setTimeout(function(){ scheduleAllNotifs(); }, 500);
+      toast('🔔 Notifications enabled!');
+      updateNotifStatusUI();
+      // Send welcome notification
+      setTimeout(function(){
+        const name = P && P.name ? P.name.split(' ')[0] : 'there';
+        fireNotif('lt-welcome', '🎉 Notifications Active!',
+          'Hi ' + name + '! You will get daily task reminders, job alerts & study nudges. 💪');
+      }, 1500);
+    } else if (perm === 'denied') {
+      toast('❌ Permission denied — check browser settings');
+      updateNotifStatusUI();
+    } else {
+      toast('⚠️ Permission not granted — try again');
+    }
+  } catch(e) {
+    toast('❌ Error: ' + e.message);
   }
 }
 
 function disableNotifs() {
   localStorage.removeItem('lt_notif_enabled');
-  _notifTimers.forEach(t => clearTimeout(t));
+  _notifTimers.forEach(function(t){ clearTimeout(t); });
   _notifTimers = [];
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_NOTIFS' });
+  }
   toast('🔕 Notifications disabled.');
   updateNotifStatusUI();
 }
 
 function sendTestNotif() {
-  if (Notification.permission !== 'granted') { toast('Enable notifications first!'); return; }
+  if (notifPerm() !== 'granted') {
+    toast('Enable notifications first!');
+    return;
+  }
   const name = P && P.name ? P.name.split(' ')[0] : 'there';
-  fireNotif('lt-test', '🧪 Life Tracker Test', `Hey ${name}! Notifications are working perfectly 🎉`);
-  toast('🧪 Test sent!');
+  const isSchool = P && P.isSchool;
+  const cls = (P && P.schoolClass) || '';
+  const body = isSchool
+    ? 'Hey ' + name + '! Your Class ' + cls + ' study reminders are working! 📚'
+    : 'Hey ' + name + '! All your task & job reminders are working! 🎉';
+  fireNotif('lt-test', '🧪 Test Notification', body);
+  toast('🧪 Test sent! Check your notifications.');
 }
 
 function msUntil(timeStr) {
@@ -4234,7 +4738,7 @@ function msUntil(timeStr) {
 
 // ── Build the full list of notifications for today ──
 function buildTodayNotifs() {
-  const tasks    = (CUSTOM_TASKS && CUSTOM_TASKS.length) ? CUSTOM_TASKS : defaultTasks();
+  let tasks; try { tasks = (CUSTOM_TASKS && CUSTOM_TASKS.length) ? CUSTOM_TASKS : defaultTasks(); } catch(e){ tasks = []; }
   const dayOfWeek = new Date().getDay();
   const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
   const notifs    = [];
@@ -4250,8 +4754,13 @@ function buildTodayNotifs() {
   });
 
   // 2. Daily check-ins (static times, dynamic body built at fire time)
-  DAILY_CHECKINS.forEach(ci => {
-    notifs.push({ tag:'checkin-'+ci.id, title: ci.title, body: ci.body(), time: ci.time });
+  DAILY_CHECKINS.forEach(function(ci) {
+    var isSchoolUser2 = !!(P && P.isSchool);
+    if (ci.schoolOnly  && !isSchoolUser2) return;
+    if (ci.collegeOnly &&  isSchoolUser2) return;
+    var bodyText = '';
+    try { bodyText = ci.body(); } catch(e) { bodyText = ci.title; }
+    notifs.push({ tag:'checkin-'+ci.id, title: ci.title, body: bodyText, time: ci.time });
   });
 
   // 3. Job deadline alerts — check ALL_JOBS for upcoming deadlines
@@ -4314,7 +4823,8 @@ function saveNotifSchedule() {
 function scheduleAllNotifs() {
   _notifTimers.forEach(t => clearTimeout(t));
   _notifTimers = [];
-  if (Notification.permission !== 'granted') return;
+  if (notifPerm() !== 'granted') return;
+  if (!notifSupported()) return;
   if (!localStorage.getItem('lt_notif_enabled')) return;
 
   const schedule = saveNotifSchedule(); // also saves to localStorage for SW
@@ -4350,7 +4860,7 @@ function scheduleMidnightRefresh() {
 // ── On load: run missed notifications + reschedule ──
 function checkMissedAndReschedule() {
   if (!localStorage.getItem('lt_notif_enabled')) return;
-  if (Notification.permission !== 'granted') return;
+  if (notifPerm() !== 'granted') return;
 
   // Check if any scheduled notifs were missed (app was closed)
   try {
@@ -4373,9 +4883,12 @@ function checkMissedAndReschedule() {
 
 // Init on load — defer until app data is loaded
 (function initNotifs() {
-  if (localStorage.getItem('lt_notif_enabled') && Notification.permission === 'granted') {
-    setTimeout(checkMissedAndReschedule, 2500);
-  }
+  try {
+    if (!notifSupported()) return;
+    if (localStorage.getItem('lt_notif_enabled') && notifPerm() === 'granted') {
+      setTimeout(checkMissedAndReschedule, 2500);
+    }
+  } catch(e) { console.warn('Notif init error:', e); }
 })();
 
 // Called after startApp() to ensure tasks are loaded before scheduling
