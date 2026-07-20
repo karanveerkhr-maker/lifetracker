@@ -426,18 +426,121 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   <div class="ob-step" id="ob4">
     <div class="ob-prog-bar"><div class="ob-prog-seg done"></div><div class="ob-prog-seg done"></div><div class="ob-prog-seg done"></div><div class="ob-prog-seg done"></div></div>
     <div class="ob-step-label">Step 4 of 4</div>
-    <div class="ob-h">Almost there!</div>
+    <div class="ob-h">Almost there! 🎯</div>
     <div class="ob-sub">A few last details to personalise your dashboard.</div>
-    <div class="ob-field" style="margin-top:20px;"><label>Your name</label><input id="ob-name" type="text" placeholder="e.g. Priya Sharma"></div>
-    <div class="ob-field"><label>College / University</label><input id="ob-college" type="text" placeholder="e.g. Punjab University"></div>
-    <div class="ob-field"><label>State</label>
-      <select id="ob-state"><option>Punjab</option><option>Haryana</option><option>Delhi</option><option>UP</option><option>Rajasthan</option><option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option><option>Tamil Nadu</option><option>West Bengal</option><option>Other</option></select>
+
+    <!-- Common fields -->
+    <div class="ob-field" style="margin-top:20px;">
+      <label>Your name</label>
+      <input id="ob-name" type="text" placeholder="e.g. Priya Sharma" autocomplete="given-name">
     </div>
-    <div class="ob-field"><label>12th marks %</label><input id="ob-m12" type="number" placeholder="e.g. 75" min="30" max="100"></div>
-    <div class="ob-field"><label>Primary career goal</label>
-      <select id="ob-goal"><option value="govt">Government Job</option><option value="bank">Bank Job (IBPS/SBI)</option><option value="core">Core field career</option><option value="higher">Higher studies / PG</option><option value="private">Private sector</option><option value="mixed">All of the above</option></select>
+    <div class="ob-field">
+      <label>📱 Mobile number</label>
+      <div style="display:flex;gap:8px;">
+        <div style="padding:13px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);background:var(--bg3);font-size:14px;font-weight:700;color:var(--text2);white-space:nowrap;">+91</div>
+        <input id="ob-phone" type="tel" placeholder="10-digit number" maxlength="10" pattern="[6-9][0-9]{9}"
+          style="flex:1;padding:13px 14px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:15px;background:var(--bg2);color:var(--text);font-family:inherit;outline:none;">
+      </div>
+      <div id="phone-err" style="display:none;font-size:11px;color:var(--ct);margin-top:4px;">Please enter a valid 10-digit mobile number</div>
     </div>
-    <button class="ob-btn" onclick="finishOnboarding()">🚀 Set up my tracker</button>
+
+    <!-- School-only fields (shown dynamically) -->
+    <div id="ob4-school-fields" style="display:none;">
+      <div class="ob-field">
+        <label>Class</label>
+        <select id="ob-class">
+          <option value="6">Class 6</option><option value="7">Class 7</option>
+          <option value="8">Class 8</option><option value="9">Class 9</option>
+          <option value="10" selected>Class 10</option>
+          <option value="11">Class 11</option><option value="12">Class 12</option>
+        </select>
+      </div>
+      <div class="ob-field" id="ob4-stream-wrap" style="display:none;">
+        <label>Stream (Class 11-12)</label>
+        <select id="ob-stream">
+          <option value="science_pcm">Science — PCM (Physics, Chemistry, Maths)</option>
+          <option value="science_pcb">Science — PCB (Physics, Chemistry, Biology)</option>
+          <option value="science_pcmb">Science — PCMB (All four)</option>
+          <option value="commerce">Commerce</option>
+          <option value="arts">Arts / Humanities</option>
+        </select>
+      </div>
+      <div class="ob-field">
+        <label>Board</label>
+        <select id="ob-board">
+          <option value="cbse">CBSE</option>
+          <option value="icse">ICSE / ISC</option>
+          <option value="state">State Board</option>
+          <option value="ib">IB (International)</option>
+          <option value="nios">NIOS (Open School)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- College-only fields (shown dynamically) -->
+    <div id="ob4-college-fields">
+      <div class="ob-field">
+        <label id="ob-school-label">College / University</label>
+        <input id="ob-college" type="text" placeholder="e.g. Punjab University, DAV School">
+      </div>
+      <div class="ob-field">
+        <label>12th marks %</label>
+        <input id="ob-m12" type="number" placeholder="e.g. 75" min="30" max="100">
+      </div>
+    </div>
+
+    <!-- Common fields -->
+    <div class="ob-field">
+      <label>State / UT</label>
+      <select id="ob-state">
+        <option value="">-- Select State --</option>
+        <option>Andhra Pradesh</option><option>Arunachal Pradesh</option>
+        <option>Assam</option><option>Bihar</option><option>Chhattisgarh</option>
+        <option>Goa</option><option>Gujarat</option><option>Haryana</option>
+        <option>Himachal Pradesh</option><option>Jharkhand</option><option>Karnataka</option>
+        <option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option>
+        <option>Manipur</option><option>Meghalaya</option><option>Mizoram</option>
+        <option>Nagaland</option><option>Odisha</option><option>Punjab</option>
+        <option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option>
+        <option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option>
+        <option>Uttarakhand</option><option>West Bengal</option>
+        <option>Delhi (NCT)</option><option>Jammu &amp; Kashmir</option>
+        <option>Ladakh</option><option>Chandigarh</option><option>Puducherry</option>
+        <option>Andaman &amp; Nicobar</option><option>Lakshadweep</option>
+        <option>Dadra &amp; Nagar Haveli</option>
+      </select>
+    </div>
+    <div class="ob-field">
+      <label>Preferred language for study content</label>
+      <select id="ob-lang">
+        <option value="en">English</option>
+        <option value="hi">Hindi (हिंदी)</option>
+        <option value="bn">Bengali (বাংলা)</option>
+        <option value="ta">Tamil (தமிழ்)</option>
+        <option value="te">Telugu (తెలుగు)</option>
+        <option value="mr">Marathi (मराठी)</option>
+        <option value="gu">Gujarati (ગુજરાતી)</option>
+        <option value="kn">Kannada (ಕನ್ನಡ)</option>
+        <option value="ml">Malayalam (മലയാളം)</option>
+        <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+        <option value="or">Odia (ଓଡ଼ିଆ)</option>
+        <option value="as">Assamese (অসমীয়া)</option>
+        <option value="ur">Urdu (اردو)</option>
+      </select>
+    </div>
+    <div class="ob-field">
+      <label>Primary goal</label>
+      <select id="ob-goal">
+        <option value="govt">Government Job</option>
+        <option value="bank">Bank Job (IBPS/SBI)</option>
+        <option value="core">Core field career</option>
+        <option value="higher">Higher studies / PG / Entrance</option>
+        <option value="private">Private sector / Corporate</option>
+        <option value="mixed">All of the above</option>
+      </select>
+    </div>
+
+    <button class="ob-btn" onclick="finishOnboarding()">🚀 Start my journey!</button>
     <button class="ob-back" onclick="goOb(3)">← Back</button>
   </div>
 </div>
@@ -1000,24 +1103,34 @@ function selDegType(type,el){
     // Update ob3 to show school fields
     document.getElementById('ob3-title').textContent='Your class & board';
     document.getElementById('ob3-sub').textContent='We will personalise content for your level.';
-    document.getElementById('ob3-school').style.display='block';
-    document.getElementById('ob3-college').style.display='none';
-    document.getElementById('ob-school-label').textContent='School Name';
-    // Show stream selector only for 11-12
-    document.getElementById('ob-class').onchange=function(){
-      const cls=parseInt(this.value);
-      document.getElementById('ob-stream-wrap').style.display=cls>=11?'block':'none';
-    };
+    if(document.getElementById('ob3-school')) document.getElementById('ob3-school').style.display='block';
+    if(document.getElementById('ob3-college')) document.getElementById('ob3-college').style.display='none';
+    // Show school fields in ob4, hide college fields
+    if(document.getElementById('ob4-school-fields')) document.getElementById('ob4-school-fields').style.display='block';
+    if(document.getElementById('ob4-college-fields')) document.getElementById('ob4-college-fields').style.display='none';
+    if(document.getElementById('ob-school-label')) document.getElementById('ob-school-label').textContent='School Name';
+    // Show stream selector for class 11-12 (ob3 and ob4 both)
+    function handleClsChange(){
+      const v = parseInt(document.getElementById('ob-class').value||'10');
+      ['ob-stream-wrap','ob4-stream-wrap'].forEach(function(id){
+        const el=document.getElementById(id);
+        if(el) el.style.display=v>=11?'block':'none';
+      });
+    }
+    var clsEl=document.getElementById('ob-class');
+    if(clsEl) clsEl.onchange=handleClsChange;
     goOb(2);
     return;
   }
 
   // College path
-  document.getElementById('ob3-title').textContent='Your current year & semester';
-  document.getElementById('ob3-sub').textContent='We will show you the right topics as you progress.';
-  document.getElementById('ob3-school').style.display='none';
-  document.getElementById('ob3-college').style.display='block';
-  document.getElementById('ob-school-label').textContent='College / University';
+  if(document.getElementById('ob3-title')) document.getElementById('ob3-title').textContent='Your current year & semester';
+  if(document.getElementById('ob3-sub')) document.getElementById('ob3-sub').textContent='We will show you the right topics as you progress.';
+  if(document.getElementById('ob3-school')) document.getElementById('ob3-school').style.display='none';
+  if(document.getElementById('ob3-college')) document.getElementById('ob3-college').style.display='block';
+  if(document.getElementById('ob4-school-fields')) document.getElementById('ob4-school-fields').style.display='none';
+  if(document.getElementById('ob4-college-fields')) document.getElementById('ob4-college-fields').style.display='block';
+  if(document.getElementById('ob-school-label')) document.getElementById('ob-school-label').textContent='College / University';
   const fields=FIELDS_BY_DEGREE[type]||[];
   const grid=document.getElementById('ob2-options');
   grid.innerHTML=fields.map(f=>
@@ -1053,21 +1166,25 @@ function finishOnboarding(){
   }
   const isSchool = obDegType === 'School';
   if(isSchool){
-    const cls   = parseInt(document.getElementById('ob-class').value)||10;
-    const board = document.getElementById('ob-board').value||'cbse';
-    const stream= cls>=11 ? (document.getElementById('ob-stream').value||'') : '';
+    const clsEl   = document.getElementById('ob-class');
+    const boardEl = document.getElementById('ob-board');
+    const streamEl= document.getElementById('ob-stream');
+    const cls   = clsEl   ? (parseInt(clsEl.value)||10)    : 10;
+    const board = boardEl ? (boardEl.value||'cbse')         : 'cbse';
+    const stream= (cls>=11 && streamEl) ? (streamEl.value||'') : '';
     const streamLabel = {science_pcm:'Science PCM',science_pcb:'Science PCB',science_pcmb:'Science PCMB',commerce:'Commerce',arts:'Arts'}[stream]||'';
     const boardLabel  = {cbse:'CBSE',icse:'ICSE',state:'State Board',ib:'IB',nios:'NIOS'}[board]||board.toUpperCase();
     const degreeLabel = 'Class '+cls+(streamLabel?' '+streamLabel:'')+' ('+boardLabel+')';
     const fobj = (FIELDS_BY_DEGREE['School']||[]).find(f=>f.val===obField)||{label:obField};
+    const schoolName = (document.getElementById('ob-college')||{}).value||'';
     P={name,degType:'School',field:obField,fieldLabel:fobj.label,degreeLabel,
-       school:document.getElementById('ob-college').value.trim(),
-       college:document.getElementById('ob-college').value.trim(),
-       state:document.getElementById('ob-state').value,
-       lang:document.getElementById('ob-lang').value||'en',
+       school:schoolName,
+       college:schoolName,
+       state:document.getElementById('ob-state').value||'',
+       lang:(document.getElementById('ob-lang')||{value:'en'}).value||'en',
        board,stream,schoolClass:cls,m12:board,
        sem:cls,year:cls<=8?1:cls<=10?2:3,maxSem:12,
-       goal:document.getElementById('ob-goal').value,
+       goal:(document.getElementById('ob-goal')||{value:'higher'}).value||'higher',
        phone:'+91'+phone,setupDone:true,isSchool:true,
        _uid:'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
        _joinedAt:new Date().toISOString()};
@@ -1093,45 +1210,45 @@ function finishOnboarding(){
 
 // CONTENT DATABASE
 const ALL_TOPICS=[
-  {id:'fs1',fields:['forensic'],cat:'Core FS',title:'Fingerprint Classification & Minutiae',desc:'Henry system, ridge counting, AFIS. All 5 patterns. Tested in FSL/police jobs.',priority:'high',resources:[{t:'Alison: Fingerprint Analysis (Free)',u:'https://alison.com/courses/fingerprint-analysis'},{t:'YouTube: Fingerprint Analysis',u:'https://www.youtube.com/watch?v=RDMMnF9pXdA'},{t:'NPTEL Forensic Science',u:'https://nptel.ac.in/courses/113/107/113107094/'}]},
-  {id:'fs2',fields:['forensic'],cat:'Core FS',title:'Bloodstain Pattern Analysis',desc:'Impact angle, area of origin, cast-off patterns. CFSL entrance & FSL Punjab questions.',priority:'high',resources:[{t:'YouTube: BPA explained',u:'https://www.youtube.com/watch?v=GhMELuGIi5c'},{t:'Alison: Crime Scene Investigation',u:'https://alison.com/courses/crime-scene-investigation-revised'}]},
-  {id:'fs3',fields:['forensic'],cat:'Core FS',title:'Forensic Toxicology — Drug Classification',desc:'Narcotics, stimulants, NDPS Act + spot tests. FSL serology & toxicology sections.',priority:'high',resources:[{t:'Alison: Toxicology (Free)',u:'https://alison.com/courses/toxicology'},{t:'YouTube: Forensic Toxicology',u:'https://www.youtube.com/watch?v=mMh0lxJQJbM'}]},
-  {id:'fs4',fields:['forensic'],cat:'Core FS',title:'Forensic Ballistics',desc:'Rifled vs smooth bore, GSR collection, firing mechanism. High FSL relevance.',priority:'high',resources:[{t:'YouTube: Forensic Ballistics',u:'https://www.youtube.com/watch?v=YzNQ0sx7NWI'}]},
-  {id:'cs1',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Data Structures & Algorithms',desc:'Arrays, linked lists, trees, sorting, searching. Asked in every tech interview and GATE.',priority:'high',resources:[{t:'GeeksforGeeks DSA (Free)',u:'https://www.geeksforgeeks.org/data-structures/'},{t:'YouTube: DSA by Abdul Bari',u:'https://www.youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O'},{t:'CS50 Harvard (Free)',u:'https://cs50.harvard.edu/x/'}]},
-  {id:'cs2',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Database Management — SQL',desc:'SELECT, JOIN, normalization, transactions. NIELIT CCC, bank IT officer, SSC require SQL.',priority:'high',resources:[{t:'W3Schools SQL (Free)',u:'https://www.w3schools.com/sql/'},{t:'YouTube: SQL Tutorial Hindi',u:'https://www.youtube.com/watch?v=weiZuX4H5oc'},{t:'SQLZoo Practice (Free)',u:'https://sqlzoo.net/'}]},
-  {id:'cs3',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Python Programming',desc:'Syntax, functions, OOP, file handling. Needed for data science, automation, backend.',priority:'high',resources:[{t:'Python.org Tutorial (Free)',u:'https://docs.python.org/3/tutorial/'},{t:'YouTube: Python full course',u:'https://www.youtube.com/watch?v=_uQrJ0TkZlc'},{t:'Codecademy Python (Free)',u:'https://www.codecademy.com/learn/learn-python-3'}]},
-  {id:'cs4',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Operating Systems & Networking',desc:'Process management, memory, TCP/IP, OSI model. GATE + IBPS IT officer topics.',priority:'high',resources:[{t:'NPTEL OS Course (Free)',u:'https://nptel.ac.in/courses/106/105/106105182/'},{t:'YouTube: Networking for beginners',u:'https://www.youtube.com/watch?v=qiQR5rTSshw'}]},
-  {id:'bt1',fields:['biotech'],cat:'Core Biotech',title:'PCR & Molecular Biology Techniques',desc:'PCR, gel electrophoresis, cloning. Used in research labs, CDFD, NCCS recruitment.',priority:'high',resources:[{t:'YouTube: PCR explained',u:'https://www.youtube.com/watch?v=iQsu3Kz9NYo'},{t:'NPTEL Biotechnology',u:'https://nptel.ac.in/courses/102/103/102103013/'}]},
-  {id:'bt2',fields:['biotech'],cat:'Core Biotech',title:'Bioinformatics Tools',desc:'BLAST, NCBI, protein structure prediction. CSIR-JRF, DBT, pharma companies.',priority:'high',resources:[{t:'YouTube: Bioinformatics for beginners',u:'https://www.youtube.com/watch?v=ZyBGJaT4tRo'},{t:'EMBL-EBI Training (Free)',u:'https://www.ebi.ac.uk/training/'}]},
-  {id:'chem1',fields:['chemistry'],cat:'Core Chemistry',title:'Organic Reaction Mechanisms',desc:'SN1/SN2, elimination, addition. GATE Chemistry, CSIR-JRF, pharma industry.',priority:'high',resources:[{t:'Khan Academy Organic Chemistry',u:'https://www.khanacademy.org/science/organic-chemistry'},{t:'YouTube: Organic Chemistry Hindi',u:'https://www.youtube.com/watch?v=MDaIM7HxX64'}]},
-  {id:'eco1',fields:['economics','general','accounting','bba'],cat:'Core Economics',title:'Micro & Macro Economics',desc:'Demand-supply, national income, inflation, monetary policy. UPSC, State PSC, RBI Grade B.',priority:'high',resources:[{t:'Khan Academy Economics (Free)',u:'https://www.khanacademy.org/economics-finance-domain'},{t:'YouTube: Economics NCERT',u:'https://www.youtube.com/watch?v=EJHPltmAVLA'}]},
-  {id:'eco2',fields:['general','accounting','bba','ca'],cat:'Core Commerce',title:'Financial Accounting',desc:'Balance sheet, P&L, journal entries. IBPS SO, RBI, SSC require basic accounting.',priority:'high',resources:[{t:'YouTube: Financial Accounting Hindi',u:'https://www.youtube.com/watch?v=AjV2pA2LMJA'},{t:'IGNOU Study Material (Free)',u:'https://egyankosh.ac.in/'}]},
-  {id:'law1',fields:['llb','ballb'],cat:'Core Law',title:'Indian Penal Code — Key Sections',desc:'IPC Sec 302, 307, 376, 420, 498A. Essential for judiciary, legal aid, prosecution.',priority:'high',resources:[{t:'YouTube: IPC sections for judiciary',u:'https://www.youtube.com/watch?v=5bT2dW2TWXI'},{t:'DRISHTI IAS Law Notes (Free)',u:'https://www.drishtiias.com/legaliq'}]},
-  {id:'law2',fields:['llb','ballb'],cat:'Core Law',title:'Constitutional Law',desc:'FR, DPSP, Writs, judicial review. All judiciary exams + UPSC law optional.',priority:'high',resources:[{t:'YouTube: Constitutional law by LawSikho',u:'https://www.youtube.com/watch?v=rMlDSzJJd6s'},{t:'Indian Kanoon (Free case law)',u:'https://indiankanoon.org/'}]},
-  {id:'h1',fields:['history','polisci','english','sociology','hindi','journalism','geography'],cat:'Core Arts',title:'Modern India — Freedom Struggle',desc:'1857, Gandhi, INC, important Acts, Partition. UPSC, State PSC, SSC — very high weightage.',priority:'high',resources:[{t:'YouTube: Modern India complete series',u:'https://www.youtube.com/watch?v=GXNvoiKdSPM'},{t:'NCERT Class 8-10 History (Free)',u:'https://ncert.nic.in/textbook.php?hess1=0-10'}]},
-  {id:'h2',fields:['history'],cat:'Core History',title:'Ancient & Medieval India',desc:'Vedic age, Maurya, Gupta, Delhi Sultanate, Mughals. 5–8 marks in every GK section.',priority:'high',resources:[{t:'YouTube: Ancient India NCERT',u:'https://www.youtube.com/watch?v=tzK_8HfbJjE'}]},
-  {id:'pol1',fields:['polisci','ballb','sociology'],cat:'Core Polity',title:'Indian Constitution — Basics',desc:'Preamble, FR & DPSP, Parliament structure, President, PM. Tested in EVERY competitive exam.',priority:'high',resources:[{t:'YouTube: Indian Polity by Laxmikanth',u:'https://www.youtube.com/watch?v=rMlDSzJJd6s'},{t:'NCERT Political Science (Free)',u:'https://ncert.nic.in/textbook.php?ieps1=0-5'}]},
-  {id:'med1',fields:['mbbs','bds','bpt','bpharm'],cat:'Core Medical',title:'Human Anatomy — Gross & Regional',desc:'Organ systems, nerve pathways. NEET PG, USMLE, AIIMS faculty, govt hospital jobs.',priority:'high',resources:[{t:'YouTube: Anatomy lectures',u:'https://www.youtube.com/watch?v=ROvbQEGPH0I'},{t:'Kenhub Anatomy (Free tier)',u:'https://www.kenhub.com/en/library/anatomy'}]},
-  {id:'med2',fields:['bpharm'],cat:'Core Pharmacy',title:'Pharmacology — Drug Classes',desc:'Antibiotics, antihypertensives, analgesics. GPAT, Drug Inspector, pharma jobs.',priority:'high',resources:[{t:'YouTube: Pharmacology drug classes',u:'https://www.youtube.com/watch?v=VKkBuN_dZyE'}]},
-  {id:'eng1',fields:['mech','civil','chemical','ece','poly_mech','poly_civil','poly_elec'],cat:'Core Engineering',title:'Engineering Mathematics',desc:'Linear algebra, calculus, probability. GATE — 13 marks common to all branches.',priority:'high',resources:[{t:'YouTube: Engineering Maths for GATE',u:'https://www.youtube.com/watch?v=OAy0TcHH90I'},{t:'NPTEL Maths (Free)',u:'https://nptel.ac.in/courses/111/107/111107108/'}]},
-  {id:'eng2',fields:['cse','ece','mech','civil','ai'],cat:'Core Engineering',title:'GATE — Subject-specific preparation',desc:'GATE 2027 prep. PSU jobs (BHEL, ONGC, HPCL) require GATE score.',priority:'high',resources:[{t:'NPTEL GATE Lectures (Free)',u:'https://nptel.ac.in'},{t:'YouTube: GATE preparation strategy',u:'https://www.youtube.com/watch?v=b3TZhLqCiyg'}]},
+  {id:'fs1',fields:['forensic'],cat:'Core FS',title:'Fingerprint Classification & Minutiae',desc:'Henry system, ridge counting, AFIS. All 5 patterns. Tested in FSL/police jobs.',priority:'high',resources:[{t:'Alison: Fingerprint Analysis (Free)',u:'https://alison.com/courses?query=forensic+science'},{t:'YouTube: Fingerprint Analysis',u:'https://www.youtube.com/results?search_query=fingerprint+analysis+forensic+science'},{t:'NPTEL Forensic Science',u:'https://nptel.ac.in/courses'}]},
+  {id:'fs2',fields:['forensic'],cat:'Core FS',title:'Bloodstain Pattern Analysis',desc:'Impact angle, area of origin, cast-off patterns. CFSL entrance & FSL Punjab questions.',priority:'high',resources:[{t:'YouTube: BPA explained',u:'https://www.youtube.com/results?search_query=bloodstain+pattern+analysis+forensic'},{t:'Alison: Crime Scene Investigation',u:'https://alison.com/courses?query=forensic+science'}]},
+  {id:'fs3',fields:['forensic'],cat:'Core FS',title:'Forensic Toxicology — Drug Classification',desc:'Narcotics, stimulants, NDPS Act + spot tests. FSL serology & toxicology sections.',priority:'high',resources:[{t:'Alison: Toxicology (Free)',u:'https://alison.com/tag/biology'},{t:'YouTube: Forensic Toxicology',u:'https://www.youtube.com/results?search_query=forensic+toxicology+drug+classification+lecture'}]},
+  {id:'fs4',fields:['forensic'],cat:'Core FS',title:'Forensic Ballistics',desc:'Rifled vs smooth bore, GSR collection, firing mechanism. High FSL relevance.',priority:'high',resources:[{t:'YouTube: Forensic Ballistics',u:'https://www.youtube.com/results?search_query=forensic+ballistics+lecture+free'}]},
+  {id:'cs1',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Data Structures & Algorithms',desc:'Arrays, linked lists, trees, sorting, searching. Asked in every tech interview and GATE.',priority:'high',resources:[{t:'GeeksforGeeks DSA (Free)',u:'https://www.geeksforgeeks.org/data-structures/'},{t:'YouTube: DSA by Abdul Bari',u:'https://www.youtube.com/results?search_query=DSA+Abdul+Bari+full+course+free'},{t:'CS50 Harvard (Free)',u:'https://cs50.harvard.edu/x/'}]},
+  {id:'cs2',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Database Management — SQL',desc:'SELECT, JOIN, normalization, transactions. NIELIT CCC, bank IT officer, SSC require SQL.',priority:'high',resources:[{t:'W3Schools SQL (Free)',u:'https://www.w3schools.com/sql/'},{t:'YouTube: SQL Tutorial Hindi',u:'https://www.youtube.com/results?search_query=SQL+tutorial+Hindi+free+database'},{t:'SQLZoo Practice (Free)',u:'https://sqlzoo.net/'}]},
+  {id:'cs3',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Python Programming',desc:'Syntax, functions, OOP, file handling. Needed for data science, automation, backend.',priority:'high',resources:[{t:'Python.org Tutorial (Free)',u:'https://docs.python.org/3/tutorial/'},{t:'YouTube: Python full course',u:'https://www.youtube.com/results?search_query=Python+programming+full+course+free+beginners'},{t:'Codecademy Python (Free)',u:'https://www.codecademy.com/learn/learn-python-3'}]},
+  {id:'cs4',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Operating Systems & Networking',desc:'Process management, memory, TCP/IP, OSI model. GATE + IBPS IT officer topics.',priority:'high',resources:[{t:'NPTEL OS Course (Free)',u:'https://nptel.ac.in/courses'},{t:'YouTube: Networking for beginners',u:'https://www.youtube.com/results?search_query=computer+networking+full+course+free+beginners'}]},
+  {id:'bt1',fields:['biotech'],cat:'Core Biotech',title:'PCR & Molecular Biology Techniques',desc:'PCR, gel electrophoresis, cloning. Used in research labs, CDFD, NCCS recruitment.',priority:'high',resources:[{t:'YouTube: PCR explained',u:'https://www.youtube.com/results?search_query=PCR+technique+explained+molecular+biology'},{t:'NPTEL Biotechnology',u:'https://nptel.ac.in/courses'}]},
+  {id:'bt2',fields:['biotech'],cat:'Core Biotech',title:'Bioinformatics Tools',desc:'BLAST, NCBI, protein structure prediction. CSIR-JRF, DBT, pharma companies.',priority:'high',resources:[{t:'YouTube: Bioinformatics for beginners',u:'https://www.youtube.com/results?search_query=bioinformatics+for+beginners+BLAST+NCBI'},{t:'EMBL-EBI Training (Free)',u:'https://www.ebi.ac.uk/training/'}]},
+  {id:'chem1',fields:['chemistry'],cat:'Core Chemistry',title:'Organic Reaction Mechanisms',desc:'SN1/SN2, elimination, addition. GATE Chemistry, CSIR-JRF, pharma industry.',priority:'high',resources:[{t:'Khan Academy Organic Chemistry',u:'https://www.khanacademy.org/science/organic-chemistry'},{t:'YouTube: Organic Chemistry Hindi',u:'https://www.youtube.com/results?search_query=organic+chemistry+reaction+mechanisms+Hindi'}]},
+  {id:'eco1',fields:['economics','general','accounting','bba'],cat:'Core Economics',title:'Micro & Macro Economics',desc:'Demand-supply, national income, inflation, monetary policy. UPSC, State PSC, RBI Grade B.',priority:'high',resources:[{t:'Khan Academy Economics (Free)',u:'https://www.khanacademy.org/economics-finance-domain'},{t:'YouTube: Economics NCERT',u:'https://www.youtube.com/results?search_query=economics+NCERT+class+12+free+lecture'}]},
+  {id:'eco2',fields:['general','accounting','bba','ca'],cat:'Core Commerce',title:'Financial Accounting',desc:'Balance sheet, P&L, journal entries. IBPS SO, RBI, SSC require basic accounting.',priority:'high',resources:[{t:'YouTube: Financial Accounting Hindi',u:'https://www.youtube.com/results?search_query=financial+accounting+class+11+CBSE+free'},{t:'IGNOU Study Material (Free)',u:'https://egyankosh.ac.in/handle/123456789/1'}]},
+  {id:'law1',fields:['llb','ballb'],cat:'Core Law',title:'Indian Penal Code — Key Sections',desc:'IPC Sec 302, 307, 376, 420, 498A. Essential for judiciary, legal aid, prosecution.',priority:'high',resources:[{t:'YouTube: IPC sections for judiciary',u:'https://www.youtube.com/results?search_query=IPC+sections+Indian+Penal+Code+judiciary+exam'},{t:'DRISHTI IAS Law Notes (Free)',u:'https://www.drishtiias.com/to-the-points'}]},
+  {id:'law2',fields:['llb','ballb'],cat:'Core Law',title:'Constitutional Law',desc:'FR, DPSP, Writs, judicial review. All judiciary exams + UPSC law optional.',priority:'high',resources:[{t:'YouTube: Constitutional law by LawSikho',u:'https://www.youtube.com/results?search_query=Indian+polity+Constitution+Laxmikanth+free'},{t:'Indian Kanoon (Free case law)',u:'https://indiankanoon.org/'}]},
+  {id:'h1',fields:['history','polisci','english','sociology','hindi','journalism','geography'],cat:'Core Arts',title:'Modern India — Freedom Struggle',desc:'1857, Gandhi, INC, important Acts, Partition. UPSC, State PSC, SSC — very high weightage.',priority:'high',resources:[{t:'YouTube: Modern India complete series',u:'https://www.youtube.com/results?search_query=modern+India+freedom+struggle+UPSC+free'},{t:'NCERT Class 8-10 History (Free)',u:'https://ncert.nic.in/textbook.php?hess1=0-10'}]},
+  {id:'h2',fields:['history'],cat:'Core History',title:'Ancient & Medieval India',desc:'Vedic age, Maurya, Gupta, Delhi Sultanate, Mughals. 5–8 marks in every GK section.',priority:'high',resources:[{t:'YouTube: Ancient India NCERT',u:'https://www.youtube.com/results?search_query=ancient+medieval+India+NCERT+history+free'}]},
+  {id:'pol1',fields:['polisci','ballb','sociology'],cat:'Core Polity',title:'Indian Constitution — Basics',desc:'Preamble, FR & DPSP, Parliament structure, President, PM. Tested in EVERY competitive exam.',priority:'high',resources:[{t:'YouTube: Indian Polity by Laxmikanth',u:'https://www.youtube.com/results?search_query=Indian+polity+Constitution+Laxmikanth+free'},{t:'NCERT Political Science (Free)',u:'https://ncert.nic.in/textbook.php?ieps1=0-5'}]},
+  {id:'med1',fields:['mbbs','bds','bpt','bpharm'],cat:'Core Medical',title:'Human Anatomy — Gross & Regional',desc:'Organ systems, nerve pathways. NEET PG, USMLE, AIIMS faculty, govt hospital jobs.',priority:'high',resources:[{t:'YouTube: Anatomy lectures',u:'https://www.youtube.com/results?search_query=human+anatomy+medical+free+lecture'},{t:'Kenhub Anatomy (Free tier)',u:'https://www.kenhub.com/en/library/anatomy'}]},
+  {id:'med2',fields:['bpharm'],cat:'Core Pharmacy',title:'Pharmacology — Drug Classes',desc:'Antibiotics, antihypertensives, analgesics. GPAT, Drug Inspector, pharma jobs.',priority:'high',resources:[{t:'YouTube: Pharmacology drug classes',u:'https://www.youtube.com/results?search_query=pharmacology+drug+classes+GPAT+free'}]},
+  {id:'eng1',fields:['mech','civil','chemical','ece','poly_mech','poly_civil','poly_elec'],cat:'Core Engineering',title:'Engineering Mathematics',desc:'Linear algebra, calculus, probability. GATE — 13 marks common to all branches.',priority:'high',resources:[{t:'YouTube: Engineering Maths for GATE',u:'https://www.youtube.com/results?search_query=engineering+mathematics+GATE+free+lecture'},{t:'NPTEL Maths (Free)',u:'https://nptel.ac.in/courses'}]},
+  {id:'eng2',fields:['cse','ece','mech','civil','ai'],cat:'Core Engineering',title:'GATE — Subject-specific preparation',desc:'GATE 2027 prep. PSU jobs (BHEL, ONGC, HPCL) require GATE score.',priority:'high',resources:[{t:'NPTEL GATE Lectures (Free)',u:'https://nptel.ac.in'},{t:'YouTube: GATE preparation strategy',u:'https://www.youtube.com/results?search_query=GATE+preparation+strategy+free+2025'}]},
   // ── SCHOOL TOPICS ──
-  {id:'sch1',fields:['school_sci','school_jee'],cat:'School — Physics',title:'Mechanics — Laws of Motion',desc:'Newton laws, friction, circular motion, work-energy. CBSE Class 11 + JEE foundation.',priority:'high',resources:[{t:'Khan Academy Physics (Free)',u:'https://www.khanacademy.org/science/physics'},{t:'YouTube: Physics Wallah Class 11',u:'https://www.youtube.com/watch?v=HWTPm3pA3cM'},{t:'NCERT Class 11 Physics PDF',u:'https://ncert.nic.in/textbook.php?keph1=0-5'}]},
-  {id:'sch2',fields:['school_sci','school_jee','school_neet'],cat:'School — Chemistry',title:'Chemical Bonding & Periodic Table',desc:'Ionic/covalent bonds, VSEPR, periodic trends. Class 11 NCERT. JEE + NEET high weightage.',priority:'high',resources:[{t:'Khan Academy Chemistry',u:'https://www.khanacademy.org/science/chemistry'},{t:'YouTube: PW Chemistry Class 11',u:'https://www.youtube.com/watch?v=RsWNwmMgXuA'},{t:'NCERT Class 11 Chemistry',u:'https://ncert.nic.in/textbook.php?kech1=0-14'}]},
-  {id:'sch3',fields:['school_sci','school_neet'],cat:'School — Biology',title:'Cell Biology & Genetics',desc:'Cell organelles, mitosis/meiosis, Mendelian genetics. NEET has 90+ biology questions.',priority:'high',resources:[{t:'YouTube: Unacademy NEET Biology',u:'https://www.youtube.com/watch?v=kVkiimvsTsc'},{t:'NCERT Class 11 Biology',u:'https://ncert.nic.in/textbook.php?kebo1=0-22'}]},
-  {id:'sch4',fields:['school_sci','school_jee','school_9_10'],cat:'School — Mathematics',title:'Algebra, Quadratics & Trigonometry',desc:'Quadratic equations, trigo ratios, coordinate geometry. CBSE 10-12 + JEE Mains backbone.',priority:'high',resources:[{t:'Khan Academy Maths (Free)',u:'https://www.khanacademy.org/math'},{t:'YouTube: CBSE Maths Class 10',u:'https://www.youtube.com/watch?v=WB5D2A5XNi8'},{t:'NCERT Maths Class 10',u:'https://ncert.nic.in/textbook.php?jemh1=0-15'}]},
-  {id:'sch5',fields:['school_comm'],cat:'School — Commerce',title:'Accountancy — Basic Concepts',desc:'Journal entries, ledger, trial balance. CBSE Class 11-12 Accounts. CA foundation start.',priority:'high',resources:[{t:'YouTube: Accounts Class 11 CBSE',u:'https://www.youtube.com/watch?v=AjV2pA2LMJA'},{t:'NCERT Accountancy Class 11',u:'https://ncert.nic.in/textbook.php?kacc1=0-9'}]},
-  {id:'sch6',fields:['school_comm'],cat:'School — Commerce',title:'Business Studies & Economics',desc:'Forms of business, consumer protection, demand-supply. CBSE 11-12. Also for CA foundation.',priority:'high',resources:[{t:'YouTube: Business Studies Class 11',u:'https://www.youtube.com/watch?v=EJHPltmAVLA'},{t:'NCERT Economics Class 11',u:'https://ncert.nic.in/textbook.php?keep1=0-9'}]},
-  {id:'sch7',fields:['school_arts'],cat:'School — Arts',title:'Indian History — NCERT Class 12',desc:'Partition, nationalism, world wars. CBSE board + NDA, CLAT, UPSC foundation.',priority:'high',resources:[{t:'YouTube: History Class 12 NCERT',u:'https://www.youtube.com/watch?v=tzK_8HfbJjE'},{t:'NCERT Class 12 History',u:'https://ncert.nic.in/textbook.php?lhis1=0-9'}]},
-  {id:'sch8',fields:['school_arts'],cat:'School — Arts',title:'Political Science — Indian Constitution',desc:'Preamble, FRs, DPSPs, Parliament. CBSE 11-12. Foundation for UPSC/State PSC prep.',priority:'high',resources:[{t:'YouTube: Pol Science Class 11 NCERT',u:'https://www.youtube.com/watch?v=rMlDSzJJd6s'},{t:'NCERT Political Science',u:'https://ncert.nic.in/textbook.php?ieps1=0-10'}]},
-  {id:'sch9',fields:['school_gen','school_9_10'],cat:'School — General',title:'Science — NCERT Class 8-10 Concepts',desc:'Light, electricity, chemical reactions, heredity. Board exams + Olympiad + Navodaya.',priority:'high',resources:[{t:'Khan Academy India (Free)',u:'https://khanacademy.org'},{t:'YouTube: CBSE Class 10 Science',u:'https://www.youtube.com/watch?v=kVkiimvsTsc'},{t:'NCERT Science Class 10',u:'https://ncert.nic.in/textbook.php?jesc1=0-16'}]},
+  {id:'sch1',fields:['school_sci','school_jee'],cat:'School — Physics',title:'Mechanics — Laws of Motion',desc:'Newton laws, friction, circular motion, work-energy. CBSE Class 11 + JEE foundation.',priority:'high',resources:[{t:'Khan Academy Physics (Free)',u:'https://www.khanacademy.org/science/physics'},{t:'YouTube: Physics Wallah Class 11',u:'https://www.youtube.com/results?search_query=physics+class+11+laws+of+motion+free+Physics+Wallah'},{t:'NCERT Class 11 Physics PDF',u:'https://ncert.nic.in/textbook.php?keph1=0-5'}]},
+  {id:'sch2',fields:['school_sci','school_jee','school_neet'],cat:'School — Chemistry',title:'Chemical Bonding & Periodic Table',desc:'Ionic/covalent bonds, VSEPR, periodic trends. Class 11 NCERT. JEE + NEET high weightage.',priority:'high',resources:[{t:'Khan Academy Chemistry',u:'https://www.khanacademy.org/science/chemistry'},{t:'YouTube: PW Chemistry Class 11',u:'https://www.youtube.com/results?search_query=chemistry+class+11+chemical+bonding+free+Physics+Wallah'},{t:'NCERT Class 11 Chemistry',u:'https://ncert.nic.in/textbook.php?kech1=0-14'}]},
+  {id:'sch3',fields:['school_sci','school_neet'],cat:'School — Biology',title:'Cell Biology & Genetics',desc:'Cell organelles, mitosis/meiosis, Mendelian genetics. NEET has 90+ biology questions.',priority:'high',resources:[{t:'YouTube: Unacademy NEET Biology',u:'https://www.youtube.com/results?search_query=biology+class+11+cell+division+NEET+free'},{t:'NCERT Class 11 Biology',u:'https://ncert.nic.in/textbook.php?kebo1=0-22'}]},
+  {id:'sch4',fields:['school_sci','school_jee','school_9_10'],cat:'School — Mathematics',title:'Algebra, Quadratics & Trigonometry',desc:'Quadratic equations, trigo ratios, coordinate geometry. CBSE 10-12 + JEE Mains backbone.',priority:'high',resources:[{t:'Khan Academy Maths (Free)',u:'https://www.khanacademy.org/math'},{t:'YouTube: CBSE Maths Class 10',u:'https://www.youtube.com/results?search_query=maths+class+10+CBSE+board+algebra+trigonometry+free'},{t:'NCERT Maths Class 10',u:'https://ncert.nic.in/textbook.php?jemh1=0-15'}]},
+  {id:'sch5',fields:['school_comm'],cat:'School — Commerce',title:'Accountancy — Basic Concepts',desc:'Journal entries, ledger, trial balance. CBSE Class 11-12 Accounts. CA foundation start.',priority:'high',resources:[{t:'YouTube: Accounts Class 11 CBSE',u:'https://www.youtube.com/results?search_query=financial+accounting+class+11+CBSE+free'},{t:'NCERT Accountancy Class 11',u:'https://ncert.nic.in/textbook.php?kacc1=0-9'}]},
+  {id:'sch6',fields:['school_comm'],cat:'School — Commerce',title:'Business Studies & Economics',desc:'Forms of business, consumer protection, demand-supply. CBSE 11-12. Also for CA foundation.',priority:'high',resources:[{t:'YouTube: Business Studies Class 11',u:'https://www.youtube.com/results?search_query=economics+NCERT+class+12+free+lecture'},{t:'NCERT Economics Class 11',u:'https://ncert.nic.in/textbook.php?keep1=0-9'}]},
+  {id:'sch7',fields:['school_arts'],cat:'School — Arts',title:'Indian History — NCERT Class 12',desc:'Partition, nationalism, world wars. CBSE board + NDA, CLAT, UPSC foundation.',priority:'high',resources:[{t:'YouTube: History Class 12 NCERT',u:'https://www.youtube.com/results?search_query=ancient+medieval+India+NCERT+history+free'},{t:'NCERT Class 12 History',u:'https://ncert.nic.in/textbook.php?lhis1=0-9'}]},
+  {id:'sch8',fields:['school_arts'],cat:'School — Arts',title:'Political Science — Indian Constitution',desc:'Preamble, FRs, DPSPs, Parliament. CBSE 11-12. Foundation for UPSC/State PSC prep.',priority:'high',resources:[{t:'YouTube: Pol Science Class 11 NCERT',u:'https://www.youtube.com/results?search_query=Indian+polity+Constitution+Laxmikanth+free'},{t:'NCERT Political Science',u:'https://ncert.nic.in/textbook.php?ieps1=0-10'}]},
+  {id:'sch9',fields:['school_gen','school_9_10'],cat:'School — General',title:'Science — NCERT Class 8-10 Concepts',desc:'Light, electricity, chemical reactions, heredity. Board exams + Olympiad + Navodaya.',priority:'high',resources:[{t:'Khan Academy India (Free)',u:'https://khanacademy.org'},{t:'YouTube: CBSE Class 10 Science',u:'https://www.youtube.com/results?search_query=biology+class+11+cell+division+NEET+free'},{t:'NCERT Science Class 10',u:'https://ncert.nic.in/textbook.php?jesc1=0-16'}]},
   {id:'sch10',fields:['school_olymp','school_sci','school_gen'],cat:'School — Olympiad',title:'Olympiad Preparation (NSO/IMO/NTSE)',desc:'Higher-order thinking problems, reasoning, advanced topics. SOF, NTSE Stage 1 prep.',priority:'high',resources:[{t:'SOF Previous Papers (Free)',u:'https://www.sofworld.org/sample-papers'},{t:'YouTube: NTSE preparation strategy',u:'https://www.youtube.com/@StudyIQ'}]},
 
-  {id:'gk1',fields:['all'],cat:'GK / Current Affairs',title:'Current Affairs — This Month',desc:'National appointments, awards, sports, international summits. 10–15 marks in every exam.',priority:'high',resources:[{t:'GKToday Daily Current Affairs (Free)',u:'https://www.gktoday.in/current-affairs/'},{t:'YouTube: StudyIQ Daily CA',u:'https://www.youtube.com/c/StudyIQ'},{t:'Testbook Daily GK Quiz',u:'https://testbook.com/current-affairs-quiz'}]},
+  {id:'gk1',fields:['all'],cat:'GK / Current Affairs',title:'Current Affairs — This Month',desc:'National appointments, awards, sports, international summits. 10–15 marks in every exam.',priority:'high',resources:[{t:'GKToday Daily Current Affairs (Free)',u:'https://www.gktoday.in/current-affairs/'},{t:'YouTube: StudyIQ Daily CA',u:'https://www.youtube.com/@StudyIQ'},{t:'Testbook Daily GK Quiz',u:'https://testbook.com/current-affairs-quiz'}]},
   {id:'gk2',fields:['all'],cat:'Static GK',title:'Static GK — India & World',desc:'Countries/capitals, National parks, rivers, first in India, constitutional articles.',priority:'high',resources:[{t:'IndiaBix GK (Free practice)',u:'https://www.indiabix.com/general-knowledge/questions-and-answers/'},{t:'GKToday Static GK',u:'https://www.gktoday.in/general-knowledge/'}]},
   {id:'r1',fields:['all'],cat:'Reasoning',title:'Reasoning — Coding, Series, Blood Relations',desc:'Coding-decoding, number series, blood relations, directions. 20–30 marks in SSC/IBPS/state exams.',priority:'high',resources:[{t:'IndiaBix Reasoning (Free)',u:'https://www.indiabix.com/logical-reasoning/questions-and-answers/'},{t:'YouTube: Reasoning tricks in Hindi',u:'https://www.youtube.com/@StudyIQ'},{t:'Testbook Reasoning Quiz',u:'https://testbook.com/reasoning-questions'}]},
-  {id:'r2',fields:['all'],cat:'Reasoning',title:'Syllogisms & Analogies',desc:'Venn diagram method. 10 guaranteed marks across SSC, IBPS, State PSC.',priority:'high',resources:[{t:'IndiaBix Syllogism (Free)',u:'https://www.indiabix.com/verbal-reasoning/syllogism/'},{t:'YouTube: Syllogism tricks',u:'https://www.youtube.com/watch?v=V3V7U8LWMM4'}]},
-  {id:'b1',fields:['all'],cat:'Quant / Maths',title:'Number System & Simplification',desc:'BODMAS, squares, cubes, percentages. Most common in IBPS, SSC, state exams.',priority:'high',resources:[{t:'IndiaBix Aptitude (Free)',u:'https://www.indiabix.com/aptitude/questions-and-answers/'},{t:'YouTube: Quant shortcuts Hindi',u:'https://www.youtube.com/watch?v=pCmfVqSuKsE'},{t:'Testbook Quant Quiz',u:'https://testbook.com/quantitative-aptitude-questions'}]},
+  {id:'r2',fields:['all'],cat:'Reasoning',title:'Syllogisms & Analogies',desc:'Venn diagram method. 10 guaranteed marks across SSC, IBPS, State PSC.',priority:'high',resources:[{t:'IndiaBix Syllogism (Free)',u:'https://www.indiabix.com/verbal-reasoning/syllogism/'},{t:'YouTube: Syllogism tricks',u:'https://www.youtube.com/results?search_query=syllogism+tricks+Hindi+reasoning+SSC+IBPS'}]},
+  {id:'b1',fields:['all'],cat:'Quant / Maths',title:'Number System & Simplification',desc:'BODMAS, squares, cubes, percentages. Most common in IBPS, SSC, state exams.',priority:'high',resources:[{t:'IndiaBix Aptitude (Free)',u:'https://www.indiabix.com/aptitude/questions-and-answers/'},{t:'YouTube: Quant shortcuts Hindi',u:'https://www.youtube.com/results?search_query=quantitative+aptitude+shortcuts+Hindi+SSC+IBPS'},{t:'Testbook Quant Quiz',u:'https://testbook.com/quantitative-aptitude-questions'}]},
 ];
 
 const ALL_SKILLS=[
@@ -1140,16 +1257,16 @@ const ALL_SKILLS=[
    why:'Required in every govt & bank exam (DEO, LDC, IBPS IT). Basic computer skills = extra marks in every test.',
    time:'2 weeks',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — MS Office Full Course Hindi',url:'https://www.youtube.com/watch?v=wmFO80Xn8EM',free:true},
-     {type:'video',label:'Free — Computer Basics by NIELIT',url:'https://www.youtube.com/watch?v=gPGudpbq8xQ',free:true},
-     {type:'web',label:'Free — Swayam NIELIT Course',url:'https://swayam.gov.in/nd2_cec20_cs23/preview',free:true},
+     {type:'video',label:'Free — MS Office Full Course Hindi',url:'https://www.youtube.com/results?search_query=MS+Office+full+course+Hindi+free+Word+Excel',free:true},
+     {type:'video',label:'Free — Computer Basics by NIELIT',url:'https://www.youtube.com/results?search_query=computer+basics+NIELIT+CCC+free+Hindi',free:true},
+     {type:'web',label:'Free — Swayam NIELIT Course',url:'https://swayam.gov.in/explorer?searchText=computer',free:true},
      {type:'paid',label:'Paid — Coursera Google IT Support (₹1,800/mo)',url:'https://www.coursera.org/professional-certificates/google-it-support',free:false},
    ]},
   {id:'sk_eng',fields:['all'],cat:'must',name:'English Communication Skills',
    why:'Better English = better SSC/IBPS scores + confident interviews. Helps in every career path.',
    time:'Ongoing',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — Spoken English Full Course (Hindi)',url:'https://www.youtube.com/watch?v=dHiJaEMMWSQ',free:true},
+     {type:'video',label:'Free — Spoken English Full Course (Hindi)',url:'https://www.youtube.com/results?search_query=spoken+English+full+course+Hindi+free',free:true},
      {type:'web',label:'Free — Duolingo English (App)',url:'https://www.duolingo.com',free:true},
      {type:'web',label:'Free — BBC Learning English',url:'https://www.bbc.co.uk/learningenglish',free:true},
      {type:'paid',label:'Paid — Coursera English Communication (₹1,800/mo)',url:'https://www.coursera.org/learn/everyday-writing',free:false},
@@ -1176,7 +1293,7 @@ const ALL_SKILLS=[
    why:'IBPS PO/Clerk + SBI = 50,000+ vacancies/year. Any graduate can apply. 2 hrs/day = clear in 3 months.',
    time:'3 months',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — IBPS PO Full Prep Series',url:'https://www.youtube.com/watch?v=pCmfVqSuKsE',free:true},
+     {type:'video',label:'Free — IBPS PO Full Prep Series',url:'https://www.youtube.com/results?search_query=quantitative+aptitude+shortcuts+Hindi+SSC+IBPS',free:true},
      {type:'web',label:'Free — Testbook Free Mock Tests',url:'https://testbook.com/ibps-po',free:true},
      {type:'web',label:'Free — Oliveboard Free Mocks',url:'https://www.oliveboard.in/ibps-po/',free:true},
      {type:'paid',label:'Paid — Testbook Pass All-in-One (₹299/mo)',url:'https://testbook.com/testbook-pass',free:false},
@@ -1188,24 +1305,24 @@ const ALL_SKILLS=[
    why:'Directly tested in FSL & Punjab Police Technical exams. Alison gives a free verifiable certificate.',
    time:'3 weeks',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — Fingerprint Classification YouTube',url:'https://www.youtube.com/watch?v=RDMMnF9pXdA',free:true},
-     {type:'web',label:'Free — Alison Fingerprint Analysis (Free cert)',url:'https://alison.com/courses/fingerprint-analysis',free:true},
-     {type:'web',label:'Free — NPTEL Forensic Science',url:'https://nptel.ac.in/courses/113/107/113107094/',free:true},
+     {type:'video',label:'Free — Fingerprint Classification YouTube',url:'https://www.youtube.com/results?search_query=fingerprint+analysis+forensic+science',free:true},
+     {type:'web',label:'Free — Alison Fingerprint Analysis (Free cert)',url:'https://alison.com/courses?query=forensic+science',free:true},
+     {type:'web',label:'Free — NPTEL Forensic Science',url:'https://nptel.ac.in/courses',free:true},
      {type:'paid',label:'Paid — Coursera Crime Scene & Forensics (₹1,800/mo)',url:'https://www.coursera.org/learn/crime-scene-investigation',free:false},
    ]},
   {id:'sk_tox',fields:['forensic'],cat:'core',name:'Forensic Toxicology',
    why:'FSL serology + NDPS Act drug case knowledge. Alison free cert adds weight to your resume.',
    time:'3 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Forensic Toxicology YouTube',url:'https://www.youtube.com/watch?v=mMh0lxJQJbM',free:true},
-     {type:'web',label:'Free — Alison Toxicology (Free cert)',url:'https://alison.com/courses/toxicology',free:true},
+     {type:'video',label:'Free — Forensic Toxicology YouTube',url:'https://www.youtube.com/results?search_query=forensic+toxicology+drug+classification+lecture',free:true},
+     {type:'web',label:'Free — Alison Toxicology (Free cert)',url:'https://alison.com/tag/biology',free:true},
      {type:'paid',label:'Paid — Coursera Forensic Science (₹1,800/mo)',url:'https://www.coursera.org/learn/forensic-science',free:false},
    ]},
   {id:'sk_dna',fields:['forensic','biotech'],cat:'core',name:'DNA Profiling & PCR',
    why:'CFSL Junior Scientific Assistant + FSL both ask DNA typing. Get ahead before Sem 5.',
    time:'4 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — PCR Technique Explained',url:'https://www.youtube.com/watch?v=iQsu3Kz9NYo',free:true},
+     {type:'video',label:'Free — PCR Technique Explained',url:'https://www.youtube.com/results?search_query=PCR+technique+explained+molecular+biology',free:true},
      {type:'web',label:'Free — Coursera DNA Decoded (audit free)',url:'https://www.coursera.org/learn/dna-decoded',free:true},
      {type:'web',label:'Free — Khan Academy Molecular Bio',url:'https://www.khanacademy.org/science/ap-biology/gene-expression-and-regulation',free:true},
      {type:'paid',label:'Paid — Coursera Genomic Data Science (₹1,800/mo)',url:'https://www.coursera.org/specializations/genomic-data-science',free:false},
@@ -1235,7 +1352,7 @@ const ALL_SKILLS=[
    why:'Data analyst, ML engineer, automation — 2× salary vs general grad. Kaggle is free & job-ready.',
    time:'2 months',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — Python Full Course (freeCodeCamp)',url:'https://www.youtube.com/watch?v=_uQrJ0TkZlc',free:true},
+     {type:'video',label:'Free — Python Full Course (freeCodeCamp)',url:'https://www.youtube.com/results?search_query=Python+programming+full+course+free+beginners',free:true},
      {type:'web',label:'Free — Kaggle Python + Data Science Courses',url:'https://www.kaggle.com/learn',free:true},
      {type:'web',label:'Free — Python.org Official Tutorial',url:'https://docs.python.org/3/tutorial/',free:true},
      {type:'paid',label:'Paid — Coursera IBM Data Science Certificate (₹1,800/mo)',url:'https://www.coursera.org/professional-certificates/ibm-data-science',free:false},
@@ -1245,7 +1362,7 @@ const ALL_SKILLS=[
    why:'Asked in every tech interview — Google, Microsoft, Amazon + GATE. GeeksforGeeks is free.',
    time:'2 months',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — DSA Full Course — Abdul Bari',url:'https://www.youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O',free:true},
+     {type:'video',label:'Free — DSA Full Course — Abdul Bari',url:'https://www.youtube.com/results?search_query=DSA+Abdul+Bari+full+course+free',free:true},
      {type:'web',label:'Free — GeeksforGeeks DSA Self-Paced',url:'https://www.geeksforgeeks.org/data-structures/',free:true},
      {type:'web',label:'Free — LeetCode Practice Problems',url:'https://leetcode.com/problemset/',free:true},
      {type:'paid',label:'Paid — Udemy DSA Masterclass (₹599)',url:'https://www.udemy.com/course/datastructurescncpp/',free:false},
@@ -1274,7 +1391,7 @@ const ALL_SKILLS=[
    why:'Banking, CA, finance analyst + IBPS SO Finance — Excel + financial statements = top resume.',
    time:'3 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Financial Modeling Full Course',url:'https://www.youtube.com/watch?v=AjV2pA2LMJA',free:true},
+     {type:'video',label:'Free — Financial Modeling Full Course',url:'https://www.youtube.com/results?search_query=financial+accounting+class+11+CBSE+free',free:true},
      {type:'web',label:'Free — CFI Excel & Financial Modeling',url:'https://corporatefinanceinstitute.com/resources/excel/',free:true},
      {type:'web',label:'Free — Investopedia Financial Concepts',url:'https://www.investopedia.com/financial-modeling-4689763',free:true},
      {type:'paid',label:'Paid — Udemy Financial Modeling in Excel (₹599)',url:'https://www.udemy.com/course/financial-modeling/',free:false},
@@ -1294,7 +1411,7 @@ const ALL_SKILLS=[
    why:'Lawyers need drafting + research from day 1. Indian Kanoon is free for all case laws.',
    time:'Ongoing',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Legal Drafting Skills (LawSikho YouTube)',url:'https://www.youtube.com/watch?v=5bT2dW2TWXI',free:true},
+     {type:'video',label:'Free — Legal Drafting Skills (LawSikho YouTube)',url:'https://www.youtube.com/results?search_query=IPC+sections+Indian+Penal+Code+judiciary+exam',free:true},
      {type:'web',label:'Free — Indian Kanoon (all case laws free)',url:'https://indiankanoon.org/',free:true},
      {type:'web',label:'Free — SCC Online Free Access (limited)',url:'https://www.scconline.com/',free:true},
      {type:'paid',label:'Paid — LawSikho Certificate Courses (₹15,000+)',url:'https://lawsikho.com/',free:false},
@@ -1303,7 +1420,7 @@ const ALL_SKILLS=[
    why:'State Civil Judge PCS-J = ₹77,840/month. Requires LLB + clearing state judiciary exam.',
    time:'6 months',level:'Advanced',
    resources:[
-     {type:'video',label:'Free — Judiciary Exam Strategy',url:'https://www.youtube.com/watch?v=rMlDSzJJd6s',free:true},
+     {type:'video',label:'Free — Judiciary Exam Strategy',url:'https://www.youtube.com/results?search_query=Indian+polity+Constitution+Laxmikanth+free',free:true},
      {type:'web',label:'Free — Drishti Judiciary Notes',url:'https://www.drishtijudiciary.com/',free:true},
      {type:'paid',label:'Paid — Drishti Judiciary Course (₹12,000)',url:'https://www.drishtijudiciary.com/online-course',free:false},
    ]},
@@ -1314,7 +1431,7 @@ const ALL_SKILLS=[
    time:'6 months',level:'Advanced',
    resources:[
      {type:'video',label:'Free — GATE CS Full Course (NPTEL)',url:'https://nptel.ac.in/',free:true},
-     {type:'video',label:'Free — GATE Maths by IIT Professors',url:'https://www.youtube.com/watch?v=OAy0TcHH90I',free:true},
+     {type:'video',label:'Free — GATE Maths by IIT Professors',url:'https://www.youtube.com/results?search_query=engineering+mathematics+GATE+free+lecture',free:true},
      {type:'web',label:'Free — GATE Overflow (community + PYQs)',url:'https://gateoverflow.in/',free:true},
      {type:'paid',label:'Paid — Made Easy Classroom Course (₹40,000+)',url:'https://www.madeeasyindia.in/',free:false},
      {type:'paid',label:'Paid — Unacademy GATE (₹8,000/mo)',url:'https://unacademy.com/goal/gate',free:false},
@@ -1333,7 +1450,7 @@ const ALL_SKILLS=[
    why:'Health informatics + medical billing — growing hospital admin & insurance career. AAPC cert globally recognized.',
    time:'6 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Medical Coding Introduction',url:'https://www.youtube.com/watch?v=VKkBuN_dZyE',free:true},
+     {type:'video',label:'Free — Medical Coding Introduction',url:'https://www.youtube.com/results?search_query=pharmacology+drug+classes+GPAT+free',free:true},
      {type:'web',label:'Free — AAPC Free Medical Coding Resources',url:'https://www.aapc.com/medical-coding/medical-coding.aspx',free:true},
      {type:'paid',label:'Paid — AAPC CPC Certification (₹25,000)',url:'https://www.aapc.com/certification/cpc/',free:false},
    ]},
@@ -1341,7 +1458,7 @@ const ALL_SKILLS=[
    why:'Growing pharma industry need. Regulatory affairs = ₹4–8 LPA pharma jobs.',
    time:'4 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Pharmacovigilance Explained',url:'https://www.youtube.com/watch?v=VKkBuN_dZyE',free:true},
+     {type:'video',label:'Free — Pharmacovigilance Explained',url:'https://www.youtube.com/results?search_query=pharmacology+drug+classes+GPAT+free',free:true},
      {type:'web',label:'Free — WHO Pharmacovigilance Training',url:'https://www.who.int/teams/regulation-prequalification/pharmacovigilance',free:true},
      {type:'paid',label:'Paid — Coursera Drug Development (₹1,800/mo)',url:'https://www.coursera.org/learn/drug-development-product-management',free:false},
    ]},
@@ -1351,7 +1468,7 @@ const ALL_SKILLS=[
    why:'CSIR-JRF, DBT, research labs — bioinformatics = essential for molecular biology career.',
    time:'4 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Bioinformatics for Beginners',url:'https://www.youtube.com/watch?v=ZyBGJaT4tRo',free:true},
+     {type:'video',label:'Free — Bioinformatics for Beginners',url:'https://www.youtube.com/results?search_query=bioinformatics+for+beginners+BLAST+NCBI',free:true},
      {type:'web',label:'Free — EMBL-EBI Training (free online courses)',url:'https://www.ebi.ac.uk/training/',free:true},
      {type:'web',label:'Free — Coursera Bioinformatics (audit free)',url:'https://www.coursera.org/specializations/bioinformatics',free:true},
      {type:'paid',label:'Paid — Coursera Genomic Data Science (₹1,800/mo)',url:'https://www.coursera.org/specializations/genomic-data-science',free:false},
@@ -2273,6 +2390,31 @@ function resetApp(){
   document.getElementById('onboarding').classList.remove('hidden');
   goOb(1);
 }
+function toggleSidebar(){
+  var sb=document.getElementById('sidebar');
+  var ov=document.getElementById('sb-overlay');
+  if(!sb) return;
+  var isOpen=sb.classList.toggle('open');
+  if(ov) ov.classList.toggle('show',isOpen);
+  document.body.style.overflow=isOpen?'hidden':'';
+}
+
+function updateGreeting(){
+  var h=new Date().getHours();
+  var name=P&&P.name?' '+P.name.split(' ')[0]:'';
+  var g=h<12?'Good Morning'+name+'! ☀️':h<17?'Good Afternoon'+name+'! 🌤️':h<21?'Good Evening'+name+'! 🌆':'Good Night'+name+'! 🌙';
+  // Update all possible greeting elements
+  var els=['greet-h','topbar-greeting'];
+  els.forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=g;});
+  // Update avatar initials
+  if(P&&P.name){
+    var init=P.name.charAt(0).toUpperCase();
+    ['sb-avatar','topbar-avatar','hdr-avatar'].forEach(function(id){var el=document.getElementById(id);if(el&&el.tagName!=='INPUT')el.textContent=init;});
+    var sbNm=document.getElementById('sb-name');if(sbNm)sbNm.textContent=P.name;
+    var sbDg=document.getElementById('sb-deg');if(sbDg)sbDg.textContent=P.degreeLabel||'';
+  }
+}
+
 function startApp(){
   document.getElementById('onboarding').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
@@ -2541,8 +2683,8 @@ function buildSmartPlan(topic, hours, weeks, totalDaysOverride) {
 
   const RESOURCES_MAP = {
     psychology: [{name:'Crash Course Psychology (Free)',type:'YouTube',url:`https://www.youtube.com/playlist?list=PL8dPuuaLjXtOPRKzVLY0jJY-uHOH9KVU6`},{name:'Simply Psychology Notes',type:'Website',url:`https://www.simplypsychology.org`},{name:'Khan Academy Psychology',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`}],
-    python: [{name:'Python Tutorial - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/watch?v=rfscVS0vtbw`},{name:'W3Schools Python',type:'Website',url:`https://www.w3schools.com/python/`},{name:'Python Official Docs',type:'Website',url:`https://docs.python.org/3/tutorial/`}],
-    dsa: [{name:'DSA Full Course - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/watch?v=8hly31xKli0`},{name:'GeeksforGeeks DSA',type:'Website',url:`https://www.geeksforgeeks.org/data-structures/`},{name:'LeetCode Practice',type:'Website',url:`https://leetcode.com/problemset/`}],
+    python: [{name:'Python Tutorial - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/results?search_query=Python+full+course+free+beginners+freeCodeCamp`},{name:'W3Schools Python',type:'Website',url:`https://www.w3schools.com/python/`},{name:'Python Official Docs',type:'Website',url:`https://docs.python.org/3/tutorial/`}],
+    dsa: [{name:'DSA Full Course - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/results?search_query=DSA+data+structures+algorithms+full+course+free`},{name:'GeeksforGeeks DSA',type:'Website',url:`https://www.geeksforgeeks.org/data-structures/`},{name:'LeetCode Practice',type:'Website',url:`https://leetcode.com/problemset/`}],
     forensic: [{name:'Forensic Science - YouTube',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'NIST Forensic Resources',type:'Website',url:`https://www.nist.gov/forensics`},{name:'Forensic Science Notes PDF',type:'Website',url:`https://www.google.com/search?q=forensic+science+notes+pdf+free+download`}],
     ssc: [{name:'SSC CGL Full Course - Adda247',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'Adda247 SSC',type:'Website',url:`https://www.adda247.com/ssc-jobs/`},{name:'SSC Official Site',type:'Website',url:`https://ssc.nic.in`}],
     maths: [{name:'Maths Tricks - Vedic Maths',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'Khan Academy Maths',type:'Website',url:`https://www.khanacademy.org/math`},{name:'GFG Quant Practice',type:'Website',url:`https://www.geeksforgeeks.org/quantitative-aptitude/`}],
