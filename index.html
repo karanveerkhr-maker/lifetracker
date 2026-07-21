@@ -5,8 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0F0E17">
-<title>Life Tracker OS</title>
+<meta name="theme-color" content="#6C5FFF">
+<title>Life Tracker</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ── TOKENS ── */
 :root{
@@ -24,7 +28,8 @@
   --nav-h:64px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
 
 /* ── LOGIN SCREEN ── */
 #login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(160deg,#F7F8FC,#EEEEFF);z-index:900;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
@@ -564,12 +569,31 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
     <!-- ═══ DASHBOARD ═══ -->
     <div id="s-today" class="sec active">
-      <!-- Greeting -->
-      <div class="greet-widget">
+      <!-- Motivational Widget (combined with greeting) -->
+      <div id="motive-widget" class="greet-widget">
         <div class="greet-glow"></div><div class="greet-glow2"></div>
         <div class="greet-h" id="greet-h">Good morning! 👋</div>
         <div class="greet-sub" id="greet-sub">Ready to make today productive?</div>
-        <div class="greet-quote" id="greet-quote">"<b>The expert in anything was once a beginner.</b>" — Helen Hayes</div>
+        <div id="motive-quote" class="greet-quote" style="font-style:italic;"></div>
+        <div style="display:flex;gap:16px;margin-top:12px;">
+          <div style="text-align:center;flex:1;">
+            <div id="mw-streak" style="font-size:20px;font-weight:800;color:#fff;">0🔥</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.06em;">Streak</div>
+          </div>
+          <div style="text-align:center;flex:1;">
+            <div id="mw-today" style="font-size:20px;font-weight:800;color:#fff;">0/0</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.06em;">Today</div>
+          </div>
+          <div style="text-align:center;flex:1;">
+            <div id="mw-pct" style="font-size:20px;font-weight:800;color:#fff;">0%</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.06em;">This Week</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.15);display:flex;align-items:center;gap:8px;">
+          <span style="font-size:12px;color:rgba(255,255,255,.6);font-weight:700;text-transform:uppercase;letter-spacing:.05em;">⏭ Next</span>
+          <span id="mw-next" style="font-size:12px;font-weight:600;color:#fff;flex:1;">—</span>
+          <span id="mw-next-time" style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7);background:rgba(255,255,255,.15);padding:3px 9px;border-radius:20px;"></span>
+        </div>
       </div>
 
       <!-- Stats -->
@@ -633,14 +657,42 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 
     <!-- ═══ SCHEDULE ═══ -->
     <div id="s-schedule" class="sec">
-      <div class="widget" style="background:linear-gradient(135deg,rgba(124,111,255,.08),rgba(64,221,182,.05));border-color:rgba(124,111,255,.25);margin-bottom:12px;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:3px;">📅 Daily Schedule</div>
-        <div style="font-size:12px;color:var(--text2);">Tap any block to mark it done. Customise in settings.</div>
+
+      <!-- Hero Banner -->
+      <div class="widget" style="background:linear-gradient(135deg,rgba(108,95,255,.12),rgba(0,191,166,.08));border-color:rgba(108,95,255,.3);margin-bottom:14px;">
+        <div style="font-size:15px;font-weight:800;margin-bottom:4px;">🗓️ AI Schedule Builder</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">Upload your college/school timetable photo — AI reads it and builds your complete daily routine including classes, travel, study, gym & sleep.</div>
       </div>
-      <div id="sched-list"></div>
-      <div style="margin-top:4px;">
-        <button class="btn btn-ghost" style="width:100%;justify-content:center;" onclick="openModal('routine-modal')">⚙️ Customise Schedule</button>
+
+      <!-- Schedule exists view -->
+      <div id="sched-exists" style="display:none;">
+        <div id="sched-list"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="openModal('ai-schedule-modal')">🤖 Rebuild with AI</button>
+          <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="openModal('task-edit-modal');openAddTask()">+ Add Task</button>
+        </div>
       </div>
+
+      <!-- Empty / first time view -->
+      <div id="sched-empty">
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+
+          <!-- Option 1: Upload Timetable -->
+          <div onclick="openModal('ai-schedule-modal')" style="background:var(--bg2);border:2px solid rgba(108,95,255,.3);border-radius:var(--r);padding:18px 16px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-10px;top:-10px;font-size:56px;opacity:.08;">📷</div>
+            <div style="font-size:13px;font-weight:800;color:var(--acc);margin-bottom:4px;">📷 Upload Timetable + AI Build</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6;">Take a photo of your college/school timetable. AI reads it and creates your full daily schedule with all classes, travel, study, gym and sleep.</div>
+            <div style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:var(--acc);color:#fff;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;">🚀 Start AI Build</div>
+          </div>
+
+          <!-- Option 2: Quick Manual -->
+          <div onclick="openModal('routine-modal')" style="background:var(--bg2);border:1.5px solid var(--border2);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .18s;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:3px;">⚙️ Quick Setup (Manual)</div>
+            <div style="font-size:12px;color:var(--text2);">Set college hours, gym, study time — we build a basic schedule for you.</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ═══ STUDY ═══ -->
@@ -835,6 +887,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
       <button class="btn btn-ghost" style="width:100%;justify-content:center;color:var(--acc3);border-color:rgba(255,107,107,.3);" onclick="resetApp()">↺ Reset & restart</button>
     </div>
 
+    <!-- ═══ SKILLS ═══ -->
+    <div id="s-skills" class="sec">
+      <div class="stitle">⭐ Skills & Career</div>
+      <div class="widget" style="background:linear-gradient(135deg,rgba(108,95,255,.08),rgba(0,191,166,.05));border-color:rgba(108,95,255,.2);margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Build skills for your future 🚀</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">Learn in-demand skills matched to your field and career goals. All resources are free.</div>
+      </div>
+      <div id="skill-filters" class="filter-row" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none;"></div>
+      <div id="skill-list"></div>
+    </div>
+
+    <!-- ═══ STATS ═══ -->
+    
+
   </div>
 
   <!-- Bottom Nav -->
@@ -842,6 +908,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     <button class="nb active" onclick="sw('today',this)">
       <div class="nb-icon">🏠</div><div>Home</div><div class="nb-dot"></div>
     </button>
+
     <button class="nb" onclick="sw('schedule',this)">
       <div class="nb-icon">📅</div><div>Plan</div><div class="nb-dot"></div>
     </button>
@@ -853,6 +920,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
     </button>
     <button class="nb" onclick="sw('learn',this)">
       <div class="nb-icon">💡</div><div>Learn</div><div class="nb-dot"></div>
+    </button>
+    <button class="nb" onclick="sw('skills',this)">
+      <div class="nb-icon">⭐</div><div>Skills</div><div class="nb-dot"></div>
     </button>
     <button class="nb" onclick="sw('profile',this)">
       <div class="nb-icon">👤</div><div>Me</div><div class="nb-dot"></div>
@@ -900,10 +970,139 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   </div>
 </div>
 
-<!-- Routine Modal -->
+<!-- AI Schedule Builder Modal -->
+<div class="modal-bg" id="ai-schedule-modal">
+  <div class="modal" style="max-height:92vh;overflow-y:auto;">
+    <h3>🤖 AI Schedule Builder<button class="modal-close" onclick="closeModal('ai-schedule-modal')">✕</button></h3>
+
+    <!-- Step indicator -->
+    <div style="display:flex;gap:6px;margin-bottom:18px;" id="ai-sched-steps">
+      <div class="ai-step active" data-step="1" style="flex:1;height:4px;border-radius:2px;background:var(--acc);"></div>
+      <div class="ai-step" data-step="2" style="flex:1;height:4px;border-radius:2px;background:var(--bg4);"></div>
+      <div class="ai-step" data-step="3" style="flex:1;height:4px;border-radius:2px;background:var(--bg4);"></div>
+    </div>
+
+    <!-- STEP 1: Upload timetable -->
+    <div id="ai-step-1">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Step 1 — Upload your timetable</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6;">Photo of your school/college timetable, or skip if you don't have one.</div>
+
+      <label for="tt-upload" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed rgba(108,95,255,.4);border-radius:var(--r);padding:28px 16px;cursor:pointer;background:rgba(108,95,255,.04);gap:8px;margin-bottom:12px;transition:all .2s;" id="tt-upload-label">
+        <div style="font-size:36px;" id="tt-upload-icon">📷</div>
+        <div style="font-size:13px;font-weight:700;color:var(--acc);" id="tt-upload-text">Tap to upload timetable photo</div>
+        <div style="font-size:11px;color:var(--text3);">JPG, PNG, PDF — college or school timetable</div>
+      </label>
+      <input type="file" id="tt-upload" accept="image/*,.pdf" style="display:none;" onchange="handleTTUpload(this)">
+
+      <div id="tt-preview" style="display:none;margin-bottom:12px;">
+        <img id="tt-preview-img" style="width:100%;border-radius:var(--rs);border:1px solid var(--border);max-height:200px;object-fit:contain;">
+        <div id="tt-preview-name" style="font-size:11px;color:var(--acc);font-weight:600;margin-top:6px;text-align:center;"></div>
+      </div>
+
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="aiSchedNext(2)">Next →</button>
+        <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="aiSchedNext(2,'skip')">Skip — No timetable</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Daily timings -->
+    <div id="ai-step-2" style="display:none;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;">Step 2 — Your daily timings</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:14px;">Tell us your routine so we can build around your life.</div>
+
+      <div class="field"><label>⏰ Wake up time</label>
+        <select id="ai-wake">
+          <option value="04:30">4:30 AM</option><option value="05:00">5:00 AM</option>
+          <option value="05:30">5:30 AM</option><option value="06:00" selected>6:00 AM</option>
+          <option value="06:30">6:30 AM</option><option value="07:00">7:00 AM</option>
+          <option value="07:30">7:30 AM</option><option value="08:00">8:00 AM</option>
+        </select>
+      </div>
+      <div class="field"><label>🚌 Travel time to college/school (one way)</label>
+        <select id="ai-travel">
+          <option value="0">No travel (hostel/near)</option>
+          <option value="15">15 minutes</option><option value="20">20 minutes</option>
+          <option value="30" selected>30 minutes</option><option value="45">45 minutes</option>
+          <option value="60">1 hour</option><option value="90">1.5 hours</option>
+          <option value="120">2+ hours</option>
+        </select>
+      </div>
+      <div class="field"><label>🏫 College/School timing</label>
+        <select id="ai-college-time">
+          <option value="none">No college/school (holidays)</option>
+          <option value="08:00-13:00">8:00 AM – 1:00 PM</option>
+          <option value="08:00-14:00">8:00 AM – 2:00 PM</option>
+          <option value="08:00-15:00">8:00 AM – 3:00 PM</option>
+          <option value="09:00-14:00" selected>9:00 AM – 2:00 PM</option>
+          <option value="09:00-15:00">9:00 AM – 3:00 PM</option>
+          <option value="09:00-16:00">9:00 AM – 4:00 PM</option>
+          <option value="10:00-16:00">10:00 AM – 4:00 PM</option>
+          <option value="10:00-17:00">10:00 AM – 5:00 PM</option>
+        </select>
+      </div>
+      <div class="field"><label>💪 Gym / Exercise preference</label>
+        <select id="ai-gym">
+          <option value="none">No gym</option>
+          <option value="morning">Morning (6–7 AM)</option>
+          <option value="evening" selected>Evening (6–7 PM)</option>
+          <option value="night">Night (8–9 PM)</option>
+        </select>
+      </div>
+      <div class="field"><label>🌙 Sleep time</label>
+        <select id="ai-sleep">
+          <option value="21:00">9:00 PM</option><option value="21:30">9:30 PM</option>
+          <option value="22:00">10:00 PM</option><option value="22:30">10:30 PM</option>
+          <option value="23:00" selected>11:00 PM</option><option value="23:30">11:30 PM</option>
+          <option value="00:00">12:00 AM</option>
+        </select>
+      </div>
+      <div class="field"><label>📚 Study hours per day</label>
+        <select id="ai-study-hrs">
+          <option value="1">1 hour</option><option value="2" selected>2 hours</option>
+          <option value="3">3 hours</option><option value="4">4 hours</option>
+          <option value="5">5+ hours</option>
+        </select>
+      </div>
+      <div class="field"><label>🎯 Any extra activity?</label>
+        <select id="ai-extra">
+          <option value="none">Nothing extra</option>
+          <option value="coaching">Coaching / Tuition</option>
+          <option value="parttime">Part-time job</option>
+          <option value="sport">Sport / Practice</option>
+          <option value="hobby">Hobby class</option>
+        </select>
+      </div>
+      <div class="modal-btns">
+        <button class="btn btn-ghost" onclick="aiSchedNext(1)">← Back</button>
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="aiSchedNext(3)">Next →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: AI generating -->
+    <div id="ai-step-3" style="display:none;">
+      <div id="ai-sched-loading" style="text-align:center;padding:24px 0;">
+        <div style="font-size:42px;margin-bottom:14px;">🤖</div>
+        <div style="font-size:15px;font-weight:800;margin-bottom:6px;color:var(--acc);">Building your schedule...</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:20px;" id="ai-sched-status">Reading your timetable with AI...</div>
+        <div style="border:3px solid var(--border2);border-top:3px solid var(--acc);border-radius:50%;width:32px;height:32px;animation:spin .7s linear infinite;margin:0 auto;"></div>
+      </div>
+      <div id="ai-sched-result" style="display:none;">
+        <div style="font-size:13px;font-weight:700;color:var(--gt);margin-bottom:12px;text-align:center;">✅ Schedule ready! Review and save.</div>
+        <div id="ai-sched-preview" style="max-height:300px;overflow-y:auto;margin-bottom:14px;"></div>
+        <div id="ai-sched-error" style="display:none;background:var(--cbg);color:var(--ct);border-radius:var(--rs);padding:12px;font-size:12px;margin-bottom:12px;"></div>
+        <div class="modal-btns">
+          <button class="btn btn-ghost" onclick="aiSchedNext(2)">← Redo</button>
+          <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveAISchedule()">✓ Save Schedule</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Routine Modal (quick manual) -->
 <div class="modal-bg" id="routine-modal">
   <div class="modal">
-    <h3>⚙️ Schedule Settings<button class="modal-close" onclick="closeModal('routine-modal')">✕</button></h3>
+    <h3>⚙️ Quick Schedule Setup<button class="modal-close" onclick="closeModal('routine-modal')">✕</button></h3>
     <div class="field"><label>College hours</label>
       <select id="r-college"><option value="8-4">8AM – 4PM</option><option value="8-5">8AM – 5PM</option><option value="9-4">9AM – 4PM</option><option value="9-5">9AM – 5PM</option><option value="none">No college</option></select>
     </div>
@@ -920,6 +1119,43 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
   </div>
 </div>
 
+
+<!-- TASK EDIT / ADD MODAL -->
+<div class="modal-bg" id="task-edit-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3 id="task-edit-title">✏️ Edit Task</h3>
+    <input type="hidden" id="te-idx" value="-1">
+    <div class="field">
+      <label>Task name</label>
+      <input id="te-label" type="text" placeholder="e.g. Morning routine, Physics class...">
+    </div>
+    <div class="field">
+      <label>Description (optional)</label>
+      <input id="te-desc" type="text" placeholder="Short description">
+    </div>
+    <div class="field">
+      <label>Time</label>
+      <input id="te-time" type="time" value="08:00">
+    </div>
+    <div class="field">
+      <label>Category</label>
+      <select id="te-cat">
+        <option value="free">🌅 Free / Morning / Meals</option>
+        <option value="college">🏫 College / School</option>
+        <option value="gym">💪 Gym / Exercise</option>
+        <option value="study">📚 Study / Revision</option>
+        <option value="job-prep">💼 Job Prep / Skills</option>
+        <option value="sleep">😴 Sleep / Rest</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveTaskEdit()">✓ Save</button>
+      <button class="btn btn-r" id="te-del-btn" onclick="deleteTask()" style="display:none;">🗑 Delete</button>
+      <button class="btn btn-ghost" onclick="closeModal('task-edit-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <!-- NOTIFICATION MODAL -->
 <div class="modal-bg" id="notif-modal">
@@ -1210,45 +1446,45 @@ function finishOnboarding(){
 
 // CONTENT DATABASE
 const ALL_TOPICS=[
-  {id:'fs1',fields:['forensic'],cat:'Core FS',title:'Fingerprint Classification & Minutiae',desc:'Henry system, ridge counting, AFIS. All 5 patterns. Tested in FSL/police jobs.',priority:'high',resources:[{t:'Alison: Fingerprint Analysis (Free)',u:'https://alison.com/courses?query=forensic+science'},{t:'YouTube: Fingerprint Analysis',u:'https://www.youtube.com/results?search_query=fingerprint+analysis+forensic+science'},{t:'NPTEL Forensic Science',u:'https://nptel.ac.in/courses'}]},
-  {id:'fs2',fields:['forensic'],cat:'Core FS',title:'Bloodstain Pattern Analysis',desc:'Impact angle, area of origin, cast-off patterns. CFSL entrance & FSL Punjab questions.',priority:'high',resources:[{t:'YouTube: BPA explained',u:'https://www.youtube.com/results?search_query=bloodstain+pattern+analysis+forensic'},{t:'Alison: Crime Scene Investigation',u:'https://alison.com/courses?query=forensic+science'}]},
-  {id:'fs3',fields:['forensic'],cat:'Core FS',title:'Forensic Toxicology — Drug Classification',desc:'Narcotics, stimulants, NDPS Act + spot tests. FSL serology & toxicology sections.',priority:'high',resources:[{t:'Alison: Toxicology (Free)',u:'https://alison.com/tag/biology'},{t:'YouTube: Forensic Toxicology',u:'https://www.youtube.com/results?search_query=forensic+toxicology+drug+classification+lecture'}]},
-  {id:'fs4',fields:['forensic'],cat:'Core FS',title:'Forensic Ballistics',desc:'Rifled vs smooth bore, GSR collection, firing mechanism. High FSL relevance.',priority:'high',resources:[{t:'YouTube: Forensic Ballistics',u:'https://www.youtube.com/results?search_query=forensic+ballistics+lecture+free'}]},
-  {id:'cs1',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Data Structures & Algorithms',desc:'Arrays, linked lists, trees, sorting, searching. Asked in every tech interview and GATE.',priority:'high',resources:[{t:'GeeksforGeeks DSA (Free)',u:'https://www.geeksforgeeks.org/data-structures/'},{t:'YouTube: DSA by Abdul Bari',u:'https://www.youtube.com/results?search_query=DSA+Abdul+Bari+full+course+free'},{t:'CS50 Harvard (Free)',u:'https://cs50.harvard.edu/x/'}]},
-  {id:'cs2',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Database Management — SQL',desc:'SELECT, JOIN, normalization, transactions. NIELIT CCC, bank IT officer, SSC require SQL.',priority:'high',resources:[{t:'W3Schools SQL (Free)',u:'https://www.w3schools.com/sql/'},{t:'YouTube: SQL Tutorial Hindi',u:'https://www.youtube.com/results?search_query=SQL+tutorial+Hindi+free+database'},{t:'SQLZoo Practice (Free)',u:'https://sqlzoo.net/'}]},
-  {id:'cs3',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Python Programming',desc:'Syntax, functions, OOP, file handling. Needed for data science, automation, backend.',priority:'high',resources:[{t:'Python.org Tutorial (Free)',u:'https://docs.python.org/3/tutorial/'},{t:'YouTube: Python full course',u:'https://www.youtube.com/results?search_query=Python+programming+full+course+free+beginners'},{t:'Codecademy Python (Free)',u:'https://www.codecademy.com/learn/learn-python-3'}]},
-  {id:'cs4',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Operating Systems & Networking',desc:'Process management, memory, TCP/IP, OSI model. GATE + IBPS IT officer topics.',priority:'high',resources:[{t:'NPTEL OS Course (Free)',u:'https://nptel.ac.in/courses'},{t:'YouTube: Networking for beginners',u:'https://www.youtube.com/results?search_query=computer+networking+full+course+free+beginners'}]},
-  {id:'bt1',fields:['biotech'],cat:'Core Biotech',title:'PCR & Molecular Biology Techniques',desc:'PCR, gel electrophoresis, cloning. Used in research labs, CDFD, NCCS recruitment.',priority:'high',resources:[{t:'YouTube: PCR explained',u:'https://www.youtube.com/results?search_query=PCR+technique+explained+molecular+biology'},{t:'NPTEL Biotechnology',u:'https://nptel.ac.in/courses'}]},
-  {id:'bt2',fields:['biotech'],cat:'Core Biotech',title:'Bioinformatics Tools',desc:'BLAST, NCBI, protein structure prediction. CSIR-JRF, DBT, pharma companies.',priority:'high',resources:[{t:'YouTube: Bioinformatics for beginners',u:'https://www.youtube.com/results?search_query=bioinformatics+for+beginners+BLAST+NCBI'},{t:'EMBL-EBI Training (Free)',u:'https://www.ebi.ac.uk/training/'}]},
-  {id:'chem1',fields:['chemistry'],cat:'Core Chemistry',title:'Organic Reaction Mechanisms',desc:'SN1/SN2, elimination, addition. GATE Chemistry, CSIR-JRF, pharma industry.',priority:'high',resources:[{t:'Khan Academy Organic Chemistry',u:'https://www.khanacademy.org/science/organic-chemistry'},{t:'YouTube: Organic Chemistry Hindi',u:'https://www.youtube.com/results?search_query=organic+chemistry+reaction+mechanisms+Hindi'}]},
-  {id:'eco1',fields:['economics','general','accounting','bba'],cat:'Core Economics',title:'Micro & Macro Economics',desc:'Demand-supply, national income, inflation, monetary policy. UPSC, State PSC, RBI Grade B.',priority:'high',resources:[{t:'Khan Academy Economics (Free)',u:'https://www.khanacademy.org/economics-finance-domain'},{t:'YouTube: Economics NCERT',u:'https://www.youtube.com/results?search_query=economics+NCERT+class+12+free+lecture'}]},
-  {id:'eco2',fields:['general','accounting','bba','ca'],cat:'Core Commerce',title:'Financial Accounting',desc:'Balance sheet, P&L, journal entries. IBPS SO, RBI, SSC require basic accounting.',priority:'high',resources:[{t:'YouTube: Financial Accounting Hindi',u:'https://www.youtube.com/results?search_query=financial+accounting+class+11+CBSE+free'},{t:'IGNOU Study Material (Free)',u:'https://egyankosh.ac.in/handle/123456789/1'}]},
-  {id:'law1',fields:['llb','ballb'],cat:'Core Law',title:'Indian Penal Code — Key Sections',desc:'IPC Sec 302, 307, 376, 420, 498A. Essential for judiciary, legal aid, prosecution.',priority:'high',resources:[{t:'YouTube: IPC sections for judiciary',u:'https://www.youtube.com/results?search_query=IPC+sections+Indian+Penal+Code+judiciary+exam'},{t:'DRISHTI IAS Law Notes (Free)',u:'https://www.drishtiias.com/to-the-points'}]},
-  {id:'law2',fields:['llb','ballb'],cat:'Core Law',title:'Constitutional Law',desc:'FR, DPSP, Writs, judicial review. All judiciary exams + UPSC law optional.',priority:'high',resources:[{t:'YouTube: Constitutional law by LawSikho',u:'https://www.youtube.com/results?search_query=Indian+polity+Constitution+Laxmikanth+free'},{t:'Indian Kanoon (Free case law)',u:'https://indiankanoon.org/'}]},
-  {id:'h1',fields:['history','polisci','english','sociology','hindi','journalism','geography'],cat:'Core Arts',title:'Modern India — Freedom Struggle',desc:'1857, Gandhi, INC, important Acts, Partition. UPSC, State PSC, SSC — very high weightage.',priority:'high',resources:[{t:'YouTube: Modern India complete series',u:'https://www.youtube.com/results?search_query=modern+India+freedom+struggle+UPSC+free'},{t:'NCERT Class 8-10 History (Free)',u:'https://ncert.nic.in/textbook.php?hess1=0-10'}]},
-  {id:'h2',fields:['history'],cat:'Core History',title:'Ancient & Medieval India',desc:'Vedic age, Maurya, Gupta, Delhi Sultanate, Mughals. 5–8 marks in every GK section.',priority:'high',resources:[{t:'YouTube: Ancient India NCERT',u:'https://www.youtube.com/results?search_query=ancient+medieval+India+NCERT+history+free'}]},
-  {id:'pol1',fields:['polisci','ballb','sociology'],cat:'Core Polity',title:'Indian Constitution — Basics',desc:'Preamble, FR & DPSP, Parliament structure, President, PM. Tested in EVERY competitive exam.',priority:'high',resources:[{t:'YouTube: Indian Polity by Laxmikanth',u:'https://www.youtube.com/results?search_query=Indian+polity+Constitution+Laxmikanth+free'},{t:'NCERT Political Science (Free)',u:'https://ncert.nic.in/textbook.php?ieps1=0-5'}]},
-  {id:'med1',fields:['mbbs','bds','bpt','bpharm'],cat:'Core Medical',title:'Human Anatomy — Gross & Regional',desc:'Organ systems, nerve pathways. NEET PG, USMLE, AIIMS faculty, govt hospital jobs.',priority:'high',resources:[{t:'YouTube: Anatomy lectures',u:'https://www.youtube.com/results?search_query=human+anatomy+medical+free+lecture'},{t:'Kenhub Anatomy (Free tier)',u:'https://www.kenhub.com/en/library/anatomy'}]},
-  {id:'med2',fields:['bpharm'],cat:'Core Pharmacy',title:'Pharmacology — Drug Classes',desc:'Antibiotics, antihypertensives, analgesics. GPAT, Drug Inspector, pharma jobs.',priority:'high',resources:[{t:'YouTube: Pharmacology drug classes',u:'https://www.youtube.com/results?search_query=pharmacology+drug+classes+GPAT+free'}]},
-  {id:'eng1',fields:['mech','civil','chemical','ece','poly_mech','poly_civil','poly_elec'],cat:'Core Engineering',title:'Engineering Mathematics',desc:'Linear algebra, calculus, probability. GATE — 13 marks common to all branches.',priority:'high',resources:[{t:'YouTube: Engineering Maths for GATE',u:'https://www.youtube.com/results?search_query=engineering+mathematics+GATE+free+lecture'},{t:'NPTEL Maths (Free)',u:'https://nptel.ac.in/courses'}]},
-  {id:'eng2',fields:['cse','ece','mech','civil','ai'],cat:'Core Engineering',title:'GATE — Subject-specific preparation',desc:'GATE 2027 prep. PSU jobs (BHEL, ONGC, HPCL) require GATE score.',priority:'high',resources:[{t:'NPTEL GATE Lectures (Free)',u:'https://nptel.ac.in'},{t:'YouTube: GATE preparation strategy',u:'https://www.youtube.com/results?search_query=GATE+preparation+strategy+free+2025'}]},
+  {id:'fs1',fields:['forensic'],cat:'Core FS',title:'Fingerprint Classification & Minutiae',desc:'Henry system, ridge counting, AFIS. All 5 patterns. Tested in FSL/police jobs.',priority:'high',resources:[{t:'Alison: Fingerprint Analysis (Free)',u:'https://alison.com/courses/introduction-to-forensic-science'},{t:'YouTube: Fingerprint Analysis',u:'https://www.youtube.com/results?search_query=forensic+science+lecture+free'},{t:'NPTEL Forensic Science',u:'https://nptel.ac.in/courses'}]},
+  {id:'fs2',fields:['forensic'],cat:'Core FS',title:'Bloodstain Pattern Analysis',desc:'Impact angle, area of origin, cast-off patterns. CFSL entrance & FSL Punjab questions.',priority:'high',resources:[{t:'YouTube: BPA explained',u:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English'},{t:'Alison: Crime Scene Investigation',u:'https://alison.com/courses/introduction-to-forensic-science'}]},
+  {id:'fs3',fields:['forensic'],cat:'Core FS',title:'Forensic Toxicology — Drug Classification',desc:'Narcotics, stimulants, NDPS Act + spot tests. FSL serology & toxicology sections.',priority:'high',resources:[{t:'Alison: Toxicology (Free)',u:'https://alison.com/courses/introduction-to-toxicology-and-its-effects-on-human-health'},{t:'YouTube: Forensic Toxicology',u:'https://www.youtube.com/results?search_query=forensic+science+lecture+free'}]},
+  {id:'fs4',fields:['forensic'],cat:'Core FS',title:'Forensic Ballistics',desc:'Rifled vs smooth bore, GSR collection, firing mechanism. High FSL relevance.',priority:'high',resources:[{t:'YouTube: Forensic Ballistics',u:'https://www.youtube.com/results?search_query=forensic+science+lecture+free'}]},
+  {id:'cs1',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Data Structures & Algorithms',desc:'Arrays, linked lists, trees, sorting, searching. Asked in every tech interview and GATE.',priority:'high',resources:[{t:'GeeksforGeeks DSA (Free)',u:'https://www.geeksforgeeks.org/data-structures/'},{t:'YouTube: DSA by Abdul Bari',u:'https://www.youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O'},{t:'CS50 Harvard (Free)',u:'https://cs50.harvard.edu/x/'}]},
+  {id:'cs2',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Database Management — SQL',desc:'SELECT, JOIN, normalization, transactions. NIELIT CCC, bank IT officer, SSC require SQL.',priority:'high',resources:[{t:'W3Schools SQL (Free)',u:'https://www.w3schools.com/sql/'},{t:'YouTube: SQL Tutorial Hindi',u:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course'},{t:'SQLZoo Practice (Free)',u:'https://sqlzoo.net/'}]},
+  {id:'cs3',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Python Programming',desc:'Syntax, functions, OOP, file handling. Needed for data science, automation, backend.',priority:'high',resources:[{t:'Python.org Tutorial (Free)',u:'https://docs.python.org/3/tutorial/'},{t:'YouTube: Python full course',u:'https://www.youtube.com/results?search_query=python+programming+full+course+free'},{t:'Codecademy Python (Free)',u:'https://www.codecademy.com/learn/learn-python-3'}]},
+  {id:'cs4',fields:['cs','bca','mca','cse','ai','poly_cs'],cat:'Core CS',title:'Operating Systems & Networking',desc:'Process management, memory, TCP/IP, OSI model. GATE + IBPS IT officer topics.',priority:'high',resources:[{t:'NPTEL OS Course (Free)',u:'https://nptel.ac.in/courses'},{t:'YouTube: Networking for beginners',u:'https://www.youtube.com/results?search_query=banking+IBPS+SBI+preparation+free'}]},
+  {id:'bt1',fields:['biotech'],cat:'Core Biotech',title:'PCR & Molecular Biology Techniques',desc:'PCR, gel electrophoresis, cloning. Used in research labs, CDFD, NCCS recruitment.',priority:'high',resources:[{t:'YouTube: PCR explained',u:'https://www.youtube.com/results?search_query=biology+NEET+full+course+free'},{t:'NPTEL Biotechnology',u:'https://nptel.ac.in/courses'}]},
+  {id:'bt2',fields:['biotech'],cat:'Core Biotech',title:'Bioinformatics Tools',desc:'BLAST, NCBI, protein structure prediction. CSIR-JRF, DBT, pharma companies.',priority:'high',resources:[{t:'YouTube: Bioinformatics for beginners',u:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English'},{t:'EMBL-EBI Training (Free)',u:'https://www.ebi.ac.uk/training/'}]},
+  {id:'chem1',fields:['chemistry'],cat:'Core Chemistry',title:'Organic Reaction Mechanisms',desc:'SN1/SN2, elimination, addition. GATE Chemistry, CSIR-JRF, pharma industry.',priority:'high',resources:[{t:'Khan Academy Organic Chemistry',u:'https://www.khanacademy.org/science/organic-chemistry'},{t:'YouTube: Organic Chemistry Hindi',u:'https://www.youtube.com/playlist?list=PLF5jDKhBM7HblVo7BrEBNnNBL7H6CBXPU'}]},
+  {id:'eco1',fields:['economics','general','accounting','bba'],cat:'Core Economics',title:'Micro & Macro Economics',desc:'Demand-supply, national income, inflation, monetary policy. UPSC, State PSC, RBI Grade B.',priority:'high',resources:[{t:'Khan Academy Economics (Free)',u:'https://www.khanacademy.org/economics-finance-domain'},{t:'YouTube: Economics NCERT',u:'https://www.youtube.com/playlist?list=PLZq9KA8pKz3l4p7gJSC8Q95j8dU62ZnKy'}]},
+  {id:'eco2',fields:['general','accounting','bba','ca'],cat:'Core Commerce',title:'Financial Accounting',desc:'Balance sheet, P&L, journal entries. IBPS SO, RBI, SSC require basic accounting.',priority:'high',resources:[{t:'YouTube: Financial Accounting Hindi',u:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course'},{t:'IGNOU Study Material (Free)',u:'https://egyankosh.ac.in/handle/123456789/1'}]},
+  {id:'law1',fields:['llb','ballb'],cat:'Core Law',title:'Indian Penal Code — Key Sections',desc:'IPC Sec 302, 307, 376, 420, 498A. Essential for judiciary, legal aid, prosecution.',priority:'high',resources:[{t:'YouTube: IPC sections for judiciary',u:'https://www.youtube.com/playlist?list=PLgmkNzdxjE7Nfub0bNhbJNKal5RBjMTqJ'},{t:'DRISHTI IAS Law Notes (Free)',u:'https://www.drishtiias.com/to-the-points'}]},
+  {id:'law2',fields:['llb','ballb'],cat:'Core Law',title:'Constitutional Law',desc:'FR, DPSP, Writs, judicial review. All judiciary exams + UPSC law optional.',priority:'high',resources:[{t:'YouTube: Constitutional law by LawSikho',u:'https://www.youtube.com/playlist?list=PLgmkNzdxjE7P6VJBonBhLhJw1QFLD_FG3'},{t:'Indian Kanoon (Free case law)',u:'https://indiankanoon.org/'}]},
+  {id:'h1',fields:['history','polisci','english','sociology','hindi','journalism','geography'],cat:'Core Arts',title:'Modern India — Freedom Struggle',desc:'1857, Gandhi, INC, important Acts, Partition. UPSC, State PSC, SSC — very high weightage.',priority:'high',resources:[{t:'YouTube: Modern India complete series',u:'https://www.youtube.com/playlist?list=PLgmkNzdxjE7NKJGQN4B-o-A1hLRjAy64A'},{t:'NCERT Class 8-10 History (Free)',u:'https://ncert.nic.in/textbook.php?hess1=0-10'}]},
+  {id:'h2',fields:['history'],cat:'Core History',title:'Ancient & Medieval India',desc:'Vedic age, Maurya, Gupta, Delhi Sultanate, Mughals. 5–8 marks in every GK section.',priority:'high',resources:[{t:'YouTube: Ancient India NCERT',u:'https://www.youtube.com/playlist?list=PLF5jDKhBM7HbivlPJNJREZTvOL2-nm9bO'}]},
+  {id:'pol1',fields:['polisci','ballb','sociology'],cat:'Core Polity',title:'Indian Constitution — Basics',desc:'Preamble, FR & DPSP, Parliament structure, President, PM. Tested in EVERY competitive exam.',priority:'high',resources:[{t:'YouTube: Indian Polity by Laxmikanth',u:'https://www.youtube.com/playlist?list=PLgmkNzdxjE7P6VJBonBhLhJw1QFLD_FG3'},{t:'NCERT Political Science (Free)',u:'https://ncert.nic.in/textbook.php?ieps1=0-5'}]},
+  {id:'med1',fields:['mbbs','bds','bpt','bpharm'],cat:'Core Medical',title:'Human Anatomy — Gross & Regional',desc:'Organ systems, nerve pathways. NEET PG, USMLE, AIIMS faculty, govt hospital jobs.',priority:'high',resources:[{t:'YouTube: Anatomy lectures',u:'https://www.youtube.com/playlist?list=PLrOyM49ctTx-xtyVeuO7ylclgXHd4ws9a'},{t:'Kenhub Anatomy (Free tier)',u:'https://www.kenhub.com/en/library/anatomy'}]},
+  {id:'med2',fields:['bpharm'],cat:'Core Pharmacy',title:'Pharmacology — Drug Classes',desc:'Antibiotics, antihypertensives, analgesics. GPAT, Drug Inspector, pharma jobs.',priority:'high',resources:[{t:'YouTube: Pharmacology drug classes',u:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English'}]},
+  {id:'eng1',fields:['mech','civil','chemical','ece','poly_mech','poly_civil','poly_elec'],cat:'Core Engineering',title:'Engineering Mathematics',desc:'Linear algebra, calculus, probability. GATE — 13 marks common to all branches.',priority:'high',resources:[{t:'YouTube: Engineering Maths for GATE',u:'https://www.youtube.com/playlist?list=PLXjn5V5hZV_hPMiPWbJ3dD4G1Q4NPPQ4l'},{t:'NPTEL Maths (Free)',u:'https://nptel.ac.in/courses'}]},
+  {id:'eng2',fields:['cse','ece','mech','civil','ai'],cat:'Core Engineering',title:'GATE — Subject-specific preparation',desc:'GATE 2027 prep. PSU jobs (BHEL, ONGC, HPCL) require GATE score.',priority:'high',resources:[{t:'NPTEL GATE Lectures (Free)',u:'https://nptel.ac.in'},{t:'YouTube: GATE preparation strategy',u:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English'}]},
   // ── SCHOOL TOPICS ──
-  {id:'sch1',fields:['school_sci','school_jee'],cat:'School — Physics',title:'Mechanics — Laws of Motion',desc:'Newton laws, friction, circular motion, work-energy. CBSE Class 11 + JEE foundation.',priority:'high',resources:[{t:'Khan Academy Physics (Free)',u:'https://www.khanacademy.org/science/physics'},{t:'YouTube: Physics Wallah Class 11',u:'https://www.youtube.com/results?search_query=physics+class+11+laws+of+motion+free+Physics+Wallah'},{t:'NCERT Class 11 Physics PDF',u:'https://ncert.nic.in/textbook.php?keph1=0-5'}]},
-  {id:'sch2',fields:['school_sci','school_jee','school_neet'],cat:'School — Chemistry',title:'Chemical Bonding & Periodic Table',desc:'Ionic/covalent bonds, VSEPR, periodic trends. Class 11 NCERT. JEE + NEET high weightage.',priority:'high',resources:[{t:'Khan Academy Chemistry',u:'https://www.khanacademy.org/science/chemistry'},{t:'YouTube: PW Chemistry Class 11',u:'https://www.youtube.com/results?search_query=chemistry+class+11+chemical+bonding+free+Physics+Wallah'},{t:'NCERT Class 11 Chemistry',u:'https://ncert.nic.in/textbook.php?kech1=0-14'}]},
-  {id:'sch3',fields:['school_sci','school_neet'],cat:'School — Biology',title:'Cell Biology & Genetics',desc:'Cell organelles, mitosis/meiosis, Mendelian genetics. NEET has 90+ biology questions.',priority:'high',resources:[{t:'YouTube: Unacademy NEET Biology',u:'https://www.youtube.com/results?search_query=biology+class+11+cell+division+NEET+free'},{t:'NCERT Class 11 Biology',u:'https://ncert.nic.in/textbook.php?kebo1=0-22'}]},
-  {id:'sch4',fields:['school_sci','school_jee','school_9_10'],cat:'School — Mathematics',title:'Algebra, Quadratics & Trigonometry',desc:'Quadratic equations, trigo ratios, coordinate geometry. CBSE 10-12 + JEE Mains backbone.',priority:'high',resources:[{t:'Khan Academy Maths (Free)',u:'https://www.khanacademy.org/math'},{t:'YouTube: CBSE Maths Class 10',u:'https://www.youtube.com/results?search_query=maths+class+10+CBSE+board+algebra+trigonometry+free'},{t:'NCERT Maths Class 10',u:'https://ncert.nic.in/textbook.php?jemh1=0-15'}]},
-  {id:'sch5',fields:['school_comm'],cat:'School — Commerce',title:'Accountancy — Basic Concepts',desc:'Journal entries, ledger, trial balance. CBSE Class 11-12 Accounts. CA foundation start.',priority:'high',resources:[{t:'YouTube: Accounts Class 11 CBSE',u:'https://www.youtube.com/results?search_query=financial+accounting+class+11+CBSE+free'},{t:'NCERT Accountancy Class 11',u:'https://ncert.nic.in/textbook.php?kacc1=0-9'}]},
-  {id:'sch6',fields:['school_comm'],cat:'School — Commerce',title:'Business Studies & Economics',desc:'Forms of business, consumer protection, demand-supply. CBSE 11-12. Also for CA foundation.',priority:'high',resources:[{t:'YouTube: Business Studies Class 11',u:'https://www.youtube.com/results?search_query=economics+NCERT+class+12+free+lecture'},{t:'NCERT Economics Class 11',u:'https://ncert.nic.in/textbook.php?keep1=0-9'}]},
-  {id:'sch7',fields:['school_arts'],cat:'School — Arts',title:'Indian History — NCERT Class 12',desc:'Partition, nationalism, world wars. CBSE board + NDA, CLAT, UPSC foundation.',priority:'high',resources:[{t:'YouTube: History Class 12 NCERT',u:'https://www.youtube.com/results?search_query=ancient+medieval+India+NCERT+history+free'},{t:'NCERT Class 12 History',u:'https://ncert.nic.in/textbook.php?lhis1=0-9'}]},
-  {id:'sch8',fields:['school_arts'],cat:'School — Arts',title:'Political Science — Indian Constitution',desc:'Preamble, FRs, DPSPs, Parliament. CBSE 11-12. Foundation for UPSC/State PSC prep.',priority:'high',resources:[{t:'YouTube: Pol Science Class 11 NCERT',u:'https://www.youtube.com/results?search_query=Indian+polity+Constitution+Laxmikanth+free'},{t:'NCERT Political Science',u:'https://ncert.nic.in/textbook.php?ieps1=0-10'}]},
-  {id:'sch9',fields:['school_gen','school_9_10'],cat:'School — General',title:'Science — NCERT Class 8-10 Concepts',desc:'Light, electricity, chemical reactions, heredity. Board exams + Olympiad + Navodaya.',priority:'high',resources:[{t:'Khan Academy India (Free)',u:'https://khanacademy.org'},{t:'YouTube: CBSE Class 10 Science',u:'https://www.youtube.com/results?search_query=biology+class+11+cell+division+NEET+free'},{t:'NCERT Science Class 10',u:'https://ncert.nic.in/textbook.php?jesc1=0-16'}]},
+  {id:'sch1',fields:['school_sci','school_jee'],cat:'School — Physics',title:'Mechanics — Laws of Motion',desc:'Newton laws, friction, circular motion, work-energy. CBSE Class 11 + JEE foundation.',priority:'high',resources:[{t:'Khan Academy Physics (Free)',u:'https://www.khanacademy.org/science/physics'},{t:'YouTube: Physics Wallah Class 11',u:'https://www.youtube.com/playlist?list=PLVLoWQFkZbhXCCyWPHvEfMiHXhFoJt5K2'},{t:'NCERT Class 11 Physics PDF',u:'https://ncert.nic.in/textbook.php?keph1=0-5'}]},
+  {id:'sch2',fields:['school_sci','school_jee','school_neet'],cat:'School — Chemistry',title:'Chemical Bonding & Periodic Table',desc:'Ionic/covalent bonds, VSEPR, periodic trends. Class 11 NCERT. JEE + NEET high weightage.',priority:'high',resources:[{t:'Khan Academy Chemistry',u:'https://www.khanacademy.org/science/chemistry'},{t:'YouTube: PW Chemistry Class 11',u:'https://www.youtube.com/playlist?list=PLVLoWQFkZbhV1dPRo1PF24VLbI3jMEFi_'},{t:'NCERT Class 11 Chemistry',u:'https://ncert.nic.in/textbook.php?kech1=0-14'}]},
+  {id:'sch3',fields:['school_sci','school_neet'],cat:'School — Biology',title:'Cell Biology & Genetics',desc:'Cell organelles, mitosis/meiosis, Mendelian genetics. NEET has 90+ biology questions.',priority:'high',resources:[{t:'YouTube: Unacademy NEET Biology',u:'https://www.youtube.com/playlist?list=PLVLoWQFkZbhXLn1J5S9-E2eLKGCwZB_JL'},{t:'NCERT Class 11 Biology',u:'https://ncert.nic.in/textbook.php?kebo1=0-22'}]},
+  {id:'sch4',fields:['school_sci','school_jee','school_9_10'],cat:'School — Mathematics',title:'Algebra, Quadratics & Trigonometry',desc:'Quadratic equations, trigo ratios, coordinate geometry. CBSE 10-12 + JEE Mains backbone.',priority:'high',resources:[{t:'Khan Academy Maths (Free)',u:'https://www.khanacademy.org/math'},{t:'YouTube: CBSE Maths Class 10',u:'https://www.youtube.com/playlist?list=PLF5jDKhBM7HbiQmXMJ7rqtm-rYA1w4RqG'},{t:'NCERT Maths Class 10',u:'https://ncert.nic.in/textbook.php?jemh1=0-15'}]},
+  {id:'sch5',fields:['school_comm'],cat:'School — Commerce',title:'Accountancy — Basic Concepts',desc:'Journal entries, ledger, trial balance. CBSE Class 11-12 Accounts. CA foundation start.',priority:'high',resources:[{t:'YouTube: Accounts Class 11 CBSE',u:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course'},{t:'NCERT Accountancy Class 11',u:'https://ncert.nic.in/textbook.php?kacc1=0-9'}]},
+  {id:'sch6',fields:['school_comm'],cat:'School — Commerce',title:'Business Studies & Economics',desc:'Forms of business, consumer protection, demand-supply. CBSE 11-12. Also for CA foundation.',priority:'high',resources:[{t:'YouTube: Business Studies Class 11',u:'https://www.youtube.com/playlist?list=PLZq9KA8pKz3l4p7gJSC8Q95j8dU62ZnKy'},{t:'NCERT Economics Class 11',u:'https://ncert.nic.in/textbook.php?keep1=0-9'}]},
+  {id:'sch7',fields:['school_arts'],cat:'School — Arts',title:'Indian History — NCERT Class 12',desc:'Partition, nationalism, world wars. CBSE board + NDA, CLAT, UPSC foundation.',priority:'high',resources:[{t:'YouTube: History Class 12 NCERT',u:'https://www.youtube.com/playlist?list=PLF5jDKhBM7HbivlPJNJREZTvOL2-nm9bO'},{t:'NCERT Class 12 History',u:'https://ncert.nic.in/textbook.php?lhis1=0-9'}]},
+  {id:'sch8',fields:['school_arts'],cat:'School — Arts',title:'Political Science — Indian Constitution',desc:'Preamble, FRs, DPSPs, Parliament. CBSE 11-12. Foundation for UPSC/State PSC prep.',priority:'high',resources:[{t:'YouTube: Pol Science Class 11 NCERT',u:'https://www.youtube.com/playlist?list=PLgmkNzdxjE7P6VJBonBhLhJw1QFLD_FG3'},{t:'NCERT Political Science',u:'https://ncert.nic.in/textbook.php?ieps1=0-10'}]},
+  {id:'sch9',fields:['school_gen','school_9_10'],cat:'School — General',title:'Science — NCERT Class 8-10 Concepts',desc:'Light, electricity, chemical reactions, heredity. Board exams + Olympiad + Navodaya.',priority:'high',resources:[{t:'Khan Academy India (Free)',u:'https://khanacademy.org'},{t:'YouTube: CBSE Class 10 Science',u:'https://www.youtube.com/playlist?list=PLVLoWQFkZbhXLn1J5S9-E2eLKGCwZB_JL'},{t:'NCERT Science Class 10',u:'https://ncert.nic.in/textbook.php?jesc1=0-16'}]},
   {id:'sch10',fields:['school_olymp','school_sci','school_gen'],cat:'School — Olympiad',title:'Olympiad Preparation (NSO/IMO/NTSE)',desc:'Higher-order thinking problems, reasoning, advanced topics. SOF, NTSE Stage 1 prep.',priority:'high',resources:[{t:'SOF Previous Papers (Free)',u:'https://www.sofworld.org/sample-papers'},{t:'YouTube: NTSE preparation strategy',u:'https://www.youtube.com/@StudyIQ'}]},
 
   {id:'gk1',fields:['all'],cat:'GK / Current Affairs',title:'Current Affairs — This Month',desc:'National appointments, awards, sports, international summits. 10–15 marks in every exam.',priority:'high',resources:[{t:'GKToday Daily Current Affairs (Free)',u:'https://www.gktoday.in/current-affairs/'},{t:'YouTube: StudyIQ Daily CA',u:'https://www.youtube.com/@StudyIQ'},{t:'Testbook Daily GK Quiz',u:'https://testbook.com/current-affairs-quiz'}]},
   {id:'gk2',fields:['all'],cat:'Static GK',title:'Static GK — India & World',desc:'Countries/capitals, National parks, rivers, first in India, constitutional articles.',priority:'high',resources:[{t:'IndiaBix GK (Free practice)',u:'https://www.indiabix.com/general-knowledge/questions-and-answers/'},{t:'GKToday Static GK',u:'https://www.gktoday.in/general-knowledge/'}]},
   {id:'r1',fields:['all'],cat:'Reasoning',title:'Reasoning — Coding, Series, Blood Relations',desc:'Coding-decoding, number series, blood relations, directions. 20–30 marks in SSC/IBPS/state exams.',priority:'high',resources:[{t:'IndiaBix Reasoning (Free)',u:'https://www.indiabix.com/logical-reasoning/questions-and-answers/'},{t:'YouTube: Reasoning tricks in Hindi',u:'https://www.youtube.com/@StudyIQ'},{t:'Testbook Reasoning Quiz',u:'https://testbook.com/reasoning-questions'}]},
-  {id:'r2',fields:['all'],cat:'Reasoning',title:'Syllogisms & Analogies',desc:'Venn diagram method. 10 guaranteed marks across SSC, IBPS, State PSC.',priority:'high',resources:[{t:'IndiaBix Syllogism (Free)',u:'https://www.indiabix.com/verbal-reasoning/syllogism/'},{t:'YouTube: Syllogism tricks',u:'https://www.youtube.com/results?search_query=syllogism+tricks+Hindi+reasoning+SSC+IBPS'}]},
-  {id:'b1',fields:['all'],cat:'Quant / Maths',title:'Number System & Simplification',desc:'BODMAS, squares, cubes, percentages. Most common in IBPS, SSC, state exams.',priority:'high',resources:[{t:'IndiaBix Aptitude (Free)',u:'https://www.indiabix.com/aptitude/questions-and-answers/'},{t:'YouTube: Quant shortcuts Hindi',u:'https://www.youtube.com/results?search_query=quantitative+aptitude+shortcuts+Hindi+SSC+IBPS'},{t:'Testbook Quant Quiz',u:'https://testbook.com/quantitative-aptitude-questions'}]},
+  {id:'r2',fields:['all'],cat:'Reasoning',title:'Syllogisms & Analogies',desc:'Venn diagram method. 10 guaranteed marks across SSC, IBPS, State PSC.',priority:'high',resources:[{t:'IndiaBix Syllogism (Free)',u:'https://www.indiabix.com/verbal-reasoning/syllogism/'},{t:'YouTube: Syllogism tricks',u:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course'}]},
+  {id:'b1',fields:['all'],cat:'Quant / Maths',title:'Number System & Simplification',desc:'BODMAS, squares, cubes, percentages. Most common in IBPS, SSC, state exams.',priority:'high',resources:[{t:'IndiaBix Aptitude (Free)',u:'https://www.indiabix.com/aptitude/questions-and-answers/'},{t:'YouTube: Quant shortcuts Hindi',u:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course'},{t:'Testbook Quant Quiz',u:'https://testbook.com/quantitative-aptitude-questions'}]},
 ];
 
 const ALL_SKILLS=[
@@ -1257,8 +1493,8 @@ const ALL_SKILLS=[
    why:'Required in every govt & bank exam (DEO, LDC, IBPS IT). Basic computer skills = extra marks in every test.',
    time:'2 weeks',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — MS Office Full Course Hindi',url:'https://www.youtube.com/results?search_query=MS+Office+full+course+Hindi+free+Word+Excel',free:true},
-     {type:'video',label:'Free — Computer Basics by NIELIT',url:'https://www.youtube.com/results?search_query=computer+basics+NIELIT+CCC+free+Hindi',free:true},
+     {type:'video',label:'Free — MS Office Full Course Hindi',url:'https://www.youtube.com/results?search_query=banking+IBPS+SBI+preparation+free',free:true},
+     {type:'video',label:'Free — Computer Basics by NIELIT',url:'https://www.youtube.com/results?search_query=banking+IBPS+SBI+preparation+free',free:true},
      {type:'web',label:'Free — Swayam NIELIT Course',url:'https://swayam.gov.in/explorer?searchText=computer',free:true},
      {type:'paid',label:'Paid — Coursera Google IT Support (₹1,800/mo)',url:'https://www.coursera.org/professional-certificates/google-it-support',free:false},
    ]},
@@ -1266,7 +1502,7 @@ const ALL_SKILLS=[
    why:'Better English = better SSC/IBPS scores + confident interviews. Helps in every career path.',
    time:'Ongoing',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — Spoken English Full Course (Hindi)',url:'https://www.youtube.com/results?search_query=spoken+English+full+course+Hindi+free',free:true},
+     {type:'video',label:'Free — Spoken English Full Course (Hindi)',url:'https://www.youtube.com/results?search_query=English+grammar+full+course+free',free:true},
      {type:'web',label:'Free — Duolingo English (App)',url:'https://www.duolingo.com',free:true},
      {type:'web',label:'Free — BBC Learning English',url:'https://www.bbc.co.uk/learningenglish',free:true},
      {type:'paid',label:'Paid — Coursera English Communication (₹1,800/mo)',url:'https://www.coursera.org/learn/everyday-writing',free:false},
@@ -1275,7 +1511,7 @@ const ALL_SKILLS=[
    why:'30 min daily = 15+ extra marks in SSC, IBPS, State PSC. Most scoring section if practised.',
    time:'Ongoing',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — Reasoning Full Course Hindi',url:'https://www.youtube.com/watch?v=KkMMgvMJiuM',free:true},
+     {type:'video',label:'Free — Reasoning Full Course Hindi',url:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course',free:true},
      {type:'web',label:'Free — IndiaBix Practice (unlimited)',url:'https://www.indiabix.com/logical-reasoning/questions-and-answers/',free:true},
      {type:'web',label:'Free — Testbook Reasoning Quiz',url:'https://testbook.com/reasoning-questions',free:true},
      {type:'paid',label:'Paid — Testbook Pass (₹299/mo, full course)',url:'https://testbook.com/testbook-pass',free:false},
@@ -1293,7 +1529,7 @@ const ALL_SKILLS=[
    why:'IBPS PO/Clerk + SBI = 50,000+ vacancies/year. Any graduate can apply. 2 hrs/day = clear in 3 months.',
    time:'3 months',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — IBPS PO Full Prep Series',url:'https://www.youtube.com/results?search_query=quantitative+aptitude+shortcuts+Hindi+SSC+IBPS',free:true},
+     {type:'video',label:'Free — IBPS PO Full Prep Series',url:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course',free:true},
      {type:'web',label:'Free — Testbook Free Mock Tests',url:'https://testbook.com/ibps-po',free:true},
      {type:'web',label:'Free — Oliveboard Free Mocks',url:'https://www.oliveboard.in/ibps-po/',free:true},
      {type:'paid',label:'Paid — Testbook Pass All-in-One (₹299/mo)',url:'https://testbook.com/testbook-pass',free:false},
@@ -1305,8 +1541,8 @@ const ALL_SKILLS=[
    why:'Directly tested in FSL & Punjab Police Technical exams. Alison gives a free verifiable certificate.',
    time:'3 weeks',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — Fingerprint Classification YouTube',url:'https://www.youtube.com/results?search_query=fingerprint+analysis+forensic+science',free:true},
-     {type:'web',label:'Free — Alison Fingerprint Analysis (Free cert)',url:'https://alison.com/courses?query=forensic+science',free:true},
+     {type:'video',label:'Free — Fingerprint Classification YouTube',url:'https://www.youtube.com/results?search_query=forensic+science+lecture+free',free:true},
+     {type:'web',label:'Free — Alison Fingerprint Analysis (Free cert)',url:'https://alison.com/courses/introduction-to-forensic-science',free:true},
      {type:'web',label:'Free — NPTEL Forensic Science',url:'https://nptel.ac.in/courses',free:true},
      {type:'paid',label:'Paid — Coursera Crime Scene & Forensics (₹1,800/mo)',url:'https://www.coursera.org/learn/crime-scene-investigation',free:false},
    ]},
@@ -1314,15 +1550,15 @@ const ALL_SKILLS=[
    why:'FSL serology + NDPS Act drug case knowledge. Alison free cert adds weight to your resume.',
    time:'3 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Forensic Toxicology YouTube',url:'https://www.youtube.com/results?search_query=forensic+toxicology+drug+classification+lecture',free:true},
-     {type:'web',label:'Free — Alison Toxicology (Free cert)',url:'https://alison.com/tag/biology',free:true},
+     {type:'video',label:'Free — Forensic Toxicology YouTube',url:'https://www.youtube.com/results?search_query=forensic+science+lecture+free',free:true},
+     {type:'web',label:'Free — Alison Toxicology (Free cert)',url:'https://alison.com/courses/introduction-to-toxicology-and-its-effects-on-human-health',free:true},
      {type:'paid',label:'Paid — Coursera Forensic Science (₹1,800/mo)',url:'https://www.coursera.org/learn/forensic-science',free:false},
    ]},
   {id:'sk_dna',fields:['forensic','biotech'],cat:'core',name:'DNA Profiling & PCR',
    why:'CFSL Junior Scientific Assistant + FSL both ask DNA typing. Get ahead before Sem 5.',
    time:'4 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — PCR Technique Explained',url:'https://www.youtube.com/results?search_query=PCR+technique+explained+molecular+biology',free:true},
+     {type:'video',label:'Free — PCR Technique Explained',url:'https://www.youtube.com/results?search_query=biology+NEET+full+course+free',free:true},
      {type:'web',label:'Free — Coursera DNA Decoded (audit free)',url:'https://www.coursera.org/learn/dna-decoded',free:true},
      {type:'web',label:'Free — Khan Academy Molecular Bio',url:'https://www.khanacademy.org/science/ap-biology/gene-expression-and-regulation',free:true},
      {type:'paid',label:'Paid — Coursera Genomic Data Science (₹1,800/mo)',url:'https://www.coursera.org/specializations/genomic-data-science',free:false},
@@ -1331,7 +1567,7 @@ const ALL_SKILLS=[
    why:'Cyber forensics = fastest-growing forensic job. NIA, CBI, state cyber cells hire actively.',
    time:'6 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Digital Forensics Full Course',url:'https://www.youtube.com/watch?v=V9HKXL4XWYQ',free:true},
+     {type:'video',label:'Free — Digital Forensics Full Course',url:'https://www.youtube.com/results?search_query=forensic+science+lecture+free',free:true},
      {type:'web',label:'Free — NPTEL Cyber Security',url:'https://nptel.ac.in/courses/106/105/106105031/',free:true},
      {type:'paid',label:'Paid — Coursera Digital Forensics (₹1,800/mo)',url:'https://www.coursera.org/learn/digital-forensics',free:false},
      {type:'paid',label:'Paid — Udemy Digital Forensics Bootcamp (₹599)',url:'https://www.udemy.com/course/digital-forensics/',free:false},
@@ -1342,7 +1578,7 @@ const ALL_SKILLS=[
    why:'React + Node.js = ₹4–8 LPA fresher salary. The Odin Project is 100% free and industry-standard.',
    time:'3 months',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Full Stack Web Dev Roadmap (Fireship)',url:'https://www.youtube.com/watch?v=ysEN5RaKOlA',free:true},
+     {type:'video',label:'Free — Full Stack Web Dev Roadmap (Fireship)',url:'https://www.youtube.com/results?search_query=web+development+full+course+free',free:true},
      {type:'web',label:'Free — The Odin Project (full curriculum)',url:'https://www.theodinproject.com/',free:true},
      {type:'web',label:'Free — freeCodeCamp.org (certifications)',url:'https://www.freecodecamp.org/',free:true},
      {type:'paid',label:'Paid — Udemy Full Stack Bootcamp by Colt Steele (₹599)',url:'https://www.udemy.com/course/the-web-developer-bootcamp/',free:false},
@@ -1352,7 +1588,7 @@ const ALL_SKILLS=[
    why:'Data analyst, ML engineer, automation — 2× salary vs general grad. Kaggle is free & job-ready.',
    time:'2 months',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — Python Full Course (freeCodeCamp)',url:'https://www.youtube.com/results?search_query=Python+programming+full+course+free+beginners',free:true},
+     {type:'video',label:'Free — Python Full Course (freeCodeCamp)',url:'https://www.youtube.com/results?search_query=python+programming+full+course+free',free:true},
      {type:'web',label:'Free — Kaggle Python + Data Science Courses',url:'https://www.kaggle.com/learn',free:true},
      {type:'web',label:'Free — Python.org Official Tutorial',url:'https://docs.python.org/3/tutorial/',free:true},
      {type:'paid',label:'Paid — Coursera IBM Data Science Certificate (₹1,800/mo)',url:'https://www.coursera.org/professional-certificates/ibm-data-science',free:false},
@@ -1362,7 +1598,7 @@ const ALL_SKILLS=[
    why:'Asked in every tech interview — Google, Microsoft, Amazon + GATE. GeeksforGeeks is free.',
    time:'2 months',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — DSA Full Course — Abdul Bari',url:'https://www.youtube.com/results?search_query=DSA+Abdul+Bari+full+course+free',free:true},
+     {type:'video',label:'Free — DSA Full Course — Abdul Bari',url:'https://www.youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O',free:true},
      {type:'web',label:'Free — GeeksforGeeks DSA Self-Paced',url:'https://www.geeksforgeeks.org/data-structures/',free:true},
      {type:'web',label:'Free — LeetCode Practice Problems',url:'https://leetcode.com/problemset/',free:true},
      {type:'paid',label:'Paid — Udemy DSA Masterclass (₹599)',url:'https://www.udemy.com/course/datastructurescncpp/',free:false},
@@ -1371,7 +1607,7 @@ const ALL_SKILLS=[
    why:'Cloud skills = ₹6+ LPA fresher. AWS Free Tier + free cert prep = zero cost to start.',
    time:'4 weeks',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — AWS Full Course (freeCodeCamp)',url:'https://www.youtube.com/watch?v=ulprqHHWlng',free:true},
+     {type:'video',label:'Free — AWS Full Course (freeCodeCamp)',url:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English',free:true},
      {type:'web',label:'Free — AWS Skill Builder (official free courses)',url:'https://explore.skillbuilder.aws/learn',free:true},
      {type:'paid',label:'Paid — Udemy AWS Certified Cloud Practitioner (₹599)',url:'https://www.udemy.com/course/aws-certified-cloud-practitioner-new/',free:false},
      {type:'paid',label:'Paid — Coursera AWS Fundamentals (₹1,800/mo)',url:'https://www.coursera.org/specializations/aws-fundamentals',free:false},
@@ -1380,7 +1616,7 @@ const ALL_SKILLS=[
    why:'AI/ML = highest salary in tech sector. Andrew Ng\'s course is the gold standard worldwide.',
    time:'3 months',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Neural Networks by 3Blue1Brown',url:'https://www.youtube.com/watch?v=aircAruvnKk',free:true},
+     {type:'video',label:'Free — Neural Networks by 3Blue1Brown',url:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English',free:true},
      {type:'web',label:'Free — Google ML Crash Course',url:'https://developers.google.com/machine-learning/crash-course',free:true},
      {type:'web',label:'Free — Fast.ai Practical Deep Learning',url:'https://www.fast.ai/',free:true},
      {type:'paid',label:'Paid — Coursera ML Specialization — Andrew Ng (₹1,800/mo)',url:'https://www.coursera.org/specializations/machine-learning-introduction',free:false},
@@ -1391,7 +1627,7 @@ const ALL_SKILLS=[
    why:'Banking, CA, finance analyst + IBPS SO Finance — Excel + financial statements = top resume.',
    time:'3 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Financial Modeling Full Course',url:'https://www.youtube.com/results?search_query=financial+accounting+class+11+CBSE+free',free:true},
+     {type:'video',label:'Free — Financial Modeling Full Course',url:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course',free:true},
      {type:'web',label:'Free — CFI Excel & Financial Modeling',url:'https://corporatefinanceinstitute.com/resources/excel/',free:true},
      {type:'web',label:'Free — Investopedia Financial Concepts',url:'https://www.investopedia.com/financial-modeling-4689763',free:true},
      {type:'paid',label:'Paid — Udemy Financial Modeling in Excel (₹599)',url:'https://www.udemy.com/course/financial-modeling/',free:false},
@@ -1401,7 +1637,7 @@ const ALL_SKILLS=[
    why:'Most in-demand skill for commerce jobs. Accountant, tax clerk, CA article roles all need Tally.',
    time:'3 weeks',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — Tally Prime Full Course Hindi',url:'https://www.youtube.com/watch?v=Xt_nF9OEkjc',free:true},
+     {type:'video',label:'Free — Tally Prime Full Course Hindi',url:'https://www.youtube.com/results?search_query=Hindi+grammar+full+course+free',free:true},
      {type:'web',label:'Free — Tally Official Learning Hub',url:'https://tallysolutions.com/learning/',free:true},
      {type:'paid',label:'Paid — Udemy Tally Prime + GST Course (₹499)',url:'https://www.udemy.com/course/tally-erp/',free:false},
    ]},
@@ -1411,7 +1647,7 @@ const ALL_SKILLS=[
    why:'Lawyers need drafting + research from day 1. Indian Kanoon is free for all case laws.',
    time:'Ongoing',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Legal Drafting Skills (LawSikho YouTube)',url:'https://www.youtube.com/results?search_query=IPC+sections+Indian+Penal+Code+judiciary+exam',free:true},
+     {type:'video',label:'Free — Legal Drafting Skills (LawSikho YouTube)',url:'https://www.youtube.com/playlist?list=PLgmkNzdxjE7Nfub0bNhbJNKal5RBjMTqJ',free:true},
      {type:'web',label:'Free — Indian Kanoon (all case laws free)',url:'https://indiankanoon.org/',free:true},
      {type:'web',label:'Free — SCC Online Free Access (limited)',url:'https://www.scconline.com/',free:true},
      {type:'paid',label:'Paid — LawSikho Certificate Courses (₹15,000+)',url:'https://lawsikho.com/',free:false},
@@ -1420,7 +1656,7 @@ const ALL_SKILLS=[
    why:'State Civil Judge PCS-J = ₹77,840/month. Requires LLB + clearing state judiciary exam.',
    time:'6 months',level:'Advanced',
    resources:[
-     {type:'video',label:'Free — Judiciary Exam Strategy',url:'https://www.youtube.com/results?search_query=Indian+polity+Constitution+Laxmikanth+free',free:true},
+     {type:'video',label:'Free — Judiciary Exam Strategy',url:'https://www.youtube.com/playlist?list=PLgmkNzdxjE7P6VJBonBhLhJw1QFLD_FG3',free:true},
      {type:'web',label:'Free — Drishti Judiciary Notes',url:'https://www.drishtijudiciary.com/',free:true},
      {type:'paid',label:'Paid — Drishti Judiciary Course (₹12,000)',url:'https://www.drishtijudiciary.com/online-course',free:false},
    ]},
@@ -1431,7 +1667,7 @@ const ALL_SKILLS=[
    time:'6 months',level:'Advanced',
    resources:[
      {type:'video',label:'Free — GATE CS Full Course (NPTEL)',url:'https://nptel.ac.in/',free:true},
-     {type:'video',label:'Free — GATE Maths by IIT Professors',url:'https://www.youtube.com/results?search_query=engineering+mathematics+GATE+free+lecture',free:true},
+     {type:'video',label:'Free — GATE Maths by IIT Professors',url:'https://www.youtube.com/playlist?list=PLXjn5V5hZV_hPMiPWbJ3dD4G1Q4NPPQ4l',free:true},
      {type:'web',label:'Free — GATE Overflow (community + PYQs)',url:'https://gateoverflow.in/',free:true},
      {type:'paid',label:'Paid — Made Easy Classroom Course (₹40,000+)',url:'https://www.madeeasyindia.in/',free:false},
      {type:'paid',label:'Paid — Unacademy GATE (₹8,000/mo)',url:'https://unacademy.com/goal/gate',free:false},
@@ -1440,7 +1676,7 @@ const ALL_SKILLS=[
    why:'Every engineering company + PSU expects CAD skills. Autodesk gives free student license.',
    time:'4 weeks',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — AutoCAD Full Tutorial',url:'https://www.youtube.com/watch?v=qGXCsZzCGE4',free:true},
+     {type:'video',label:'Free — AutoCAD Full Tutorial',url:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English',free:true},
      {type:'web',label:'Free — Autodesk Student License (1 year free)',url:'https://www.autodesk.com/education/free-software/autocad',free:true},
      {type:'paid',label:'Paid — Udemy AutoCAD Masterclass (₹599)',url:'https://www.udemy.com/course/autocad-2d-3d/',free:false},
    ]},
@@ -1450,7 +1686,7 @@ const ALL_SKILLS=[
    why:'Health informatics + medical billing — growing hospital admin & insurance career. AAPC cert globally recognized.',
    time:'6 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Medical Coding Introduction',url:'https://www.youtube.com/results?search_query=pharmacology+drug+classes+GPAT+free',free:true},
+     {type:'video',label:'Free — Medical Coding Introduction',url:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English',free:true},
      {type:'web',label:'Free — AAPC Free Medical Coding Resources',url:'https://www.aapc.com/medical-coding/medical-coding.aspx',free:true},
      {type:'paid',label:'Paid — AAPC CPC Certification (₹25,000)',url:'https://www.aapc.com/certification/cpc/',free:false},
    ]},
@@ -1458,7 +1694,7 @@ const ALL_SKILLS=[
    why:'Growing pharma industry need. Regulatory affairs = ₹4–8 LPA pharma jobs.',
    time:'4 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Pharmacovigilance Explained',url:'https://www.youtube.com/results?search_query=pharmacology+drug+classes+GPAT+free',free:true},
+     {type:'video',label:'Free — Pharmacovigilance Explained',url:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English',free:true},
      {type:'web',label:'Free — WHO Pharmacovigilance Training',url:'https://www.who.int/teams/regulation-prequalification/pharmacovigilance',free:true},
      {type:'paid',label:'Paid — Coursera Drug Development (₹1,800/mo)',url:'https://www.coursera.org/learn/drug-development-product-management',free:false},
    ]},
@@ -1468,7 +1704,7 @@ const ALL_SKILLS=[
    why:'CSIR-JRF, DBT, research labs — bioinformatics = essential for molecular biology career.',
    time:'4 weeks',level:'Intermediate',
    resources:[
-     {type:'video',label:'Free — Bioinformatics for Beginners',url:'https://www.youtube.com/results?search_query=bioinformatics+for+beginners+BLAST+NCBI',free:true},
+     {type:'video',label:'Free — Bioinformatics for Beginners',url:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English',free:true},
      {type:'web',label:'Free — EMBL-EBI Training (free online courses)',url:'https://www.ebi.ac.uk/training/',free:true},
      {type:'web',label:'Free — Coursera Bioinformatics (audit free)',url:'https://www.coursera.org/specializations/bioinformatics',free:true},
      {type:'paid',label:'Paid — Coursera Genomic Data Science (₹1,800/mo)',url:'https://www.coursera.org/specializations/genomic-data-science',free:false},
@@ -1479,7 +1715,7 @@ const ALL_SKILLS=[
    why:'A strong LinkedIn gets recruiter DMs. Resume = your first impression. 80% of jobs are through network.',
    time:'1 week',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — LinkedIn Profile Masterclass',url:'https://www.youtube.com/watch?v=BcfGWi8Qywk',free:true},
+     {type:'video',label:'Free — LinkedIn Profile Masterclass',url:'https://www.youtube.com/results?search_query=full+course+free+India+Hindi+English',free:true},
      {type:'web',label:'Free — Canva Resume Builder',url:'https://www.canva.com/resumes/',free:true},
      {type:'web',label:'Free — LinkedIn Learning (1 month free trial)',url:'https://www.linkedin.com/learning/',free:true},
      {type:'paid',label:'Paid — LinkedIn Premium Career (₹1,600/mo)',url:'https://www.linkedin.com/premium/products/',free:false},
@@ -1488,7 +1724,7 @@ const ALL_SKILLS=[
    why:'Side income + job opportunity. Google certifies you free. Freelancing ₹500–3,000/project.',
    time:'4 weeks',level:'Beginner',
    resources:[
-     {type:'video',label:'Free — Digital Marketing Full Course Hindi',url:'https://www.youtube.com/watch?v=wF4lIHFBXN4',free:true},
+     {type:'video',label:'Free — Digital Marketing Full Course Hindi',url:'https://www.youtube.com/results?search_query=Hindi+grammar+full+course+free',free:true},
      {type:'web',label:'Free — Google Digital Garage (free cert)',url:'https://learndigital.withgoogle.com/digitalgarage',free:true},
      {type:'web',label:'Free — HubSpot Academy (free marketing cert)',url:'https://academy.hubspot.com/',free:true},
      {type:'paid',label:'Paid — Udemy Digital Marketing Masterclass (₹599)',url:'https://www.udemy.com/course/digital-marketing-masterclass/',free:false},
@@ -1593,7 +1829,7 @@ const ALL_JOBS=[
   {id:602,title:'Digital Marketing Executive',org:'Startups / Agencies',type:'private',fields:['all'],elig:'now',tags:['Digital Marketing','Startup','Online'],dl:'Rolling',sal:'₹2–4 LPA',desc:'Any student/graduate. Learn SEO, Social Media, Google Ads (free Google certificates). High demand.',url:'https://www.linkedin.com/jobs/digital-marketing-jobs-india',match:['private','mixed']},
   {id:603,title:'Content Writer / Social Media Manager',org:'Media / EdTech / Startups',type:'private',fields:['ba','all'],elig:'now',tags:['Content','Writing','Social Media'],dl:'Rolling',sal:'₹2–3.5 LPA',desc:'Any background. Strong English writing skills. Freelance or full-time. Remote work available.',url:'https://internshala.com/jobs/content-writing-jobs',match:['private','mixed']},
   {id:604,title:'CA Articleship / Foundation',org:'ICAI Member Firms',type:'private',fields:['comm','bcom'],elig:'now',tags:['CA','ICAI','Commerce','Articleship'],dl:'Rolling',sal:'₹2,000–15,000/mo stipend',desc:'After CA Foundation and Intermediate. 3-year articleship training. Pathway to CA qualification.',url:'https://www.icai.org',match:['core','private']},
-  {id:605,title:'Forensic Analyst / Lab Technician',org:'CFSL / State FSL / Private Labs',type:'core',fields:['forensic','science'],elig:'after',tags:['Forensic','Lab','Govt/Private'],dl:'Rolling',sal:'₹3–6 LPA',desc:'BSc Forensic Science or related. CFSL, CBI labs, state forensic labs. Private sector growing.',url:'https://www.google.com/search?q=forensic+analyst+jobs+india+freshers',match:['core','mixed']},
+  {id:605,title:'Forensic Analyst / Lab Technician',org:'CFSL / State FSL / Private Labs',type:'core',fields:['forensic','science'],elig:'after',tags:['Forensic','Lab','Govt/Private'],dl:'Rolling',sal:'₹3–6 LPA',desc:'BSc Forensic Science or related. CFSL, CBI labs, state forensic labs. Private sector growing.',url:'https://www.naukri.com/forensic-analyst-jobs',match:['core','mixed']},
   {id:606,title:'Pharmacist / Medical Rep',org:'Pharma Companies',type:'private',fields:['pharmacy','medical','science'],elig:'after',tags:['Pharma','Medical','Private'],dl:'Rolling',sal:'₹2.5–5 LPA',desc:'B.Pharm or BSc Biology. Medical representative jobs are abundant with base salary + incentives.',url:'https://www.naukri.com/medical-representative-jobs',match:['core','private']},
 
   // ── INTERNSHIPS ──
@@ -1790,11 +2026,20 @@ function toggleTask(id){const log=getTodayLog(),wasDone=log[id];setTaskDone(id,!
 
 function renderTimetable(){
   const sched=getSchedule(),log=getTodayLog();
-  const catColor={college:'#7C6FFF',gym:'#40DDB6',study:'#FFB547','job-prep':'#FF6B6B',free:'#9896B8',sleep:'#5C5A7A','exam-prep':'#FF6B6B','custom-block':'#40DDB6'};
+  const catColor={college:'#6C5FFF',gym:'#F59E0B',study:'#10B981','job-prep':'#8B5CF6',free:'#0EA5E9',sleep:'#64748B','exam-prep':'#EF4444','custom-block':'#0EA5E9'};
   const catEmoji={college:'🏫',gym:'💪',study:'📚','job-prep':'💼',free:'☕',sleep:'😴','exam-prep':'📝','custom-block':'⭐'};
+
+  // Show/hide empty vs exists
+  const hasSchedule = CUSTOM_TASKS && CUSTOM_TASKS.length > 0;
+  const emptyEl = document.getElementById('sched-empty');
+  const existsEl = document.getElementById('sched-exists');
+  if (emptyEl) emptyEl.style.display = hasSchedule ? 'none' : 'block';
+  if (existsEl) existsEl.style.display = hasSchedule ? 'block' : 'none';
+
   const el=document.getElementById('sched-list');
   if(!el) return;
-  el.innerHTML=sched.map(t=>{const col=catColor[t.cat]||'#9896B8';const em=catEmoji[t.cat]||'📌';const isDone=log[t.id];return`<div class="sched-block" onclick="toggleTask('${t.id}')"><div class="sched-accent" style="background:${col};"></div><div class="sched-time">${t.time.split('–')[0].trim()}</div><div class="sched-info"><div class="sched-title" style="${isDone?'text-decoration:line-through;opacity:.5':''}">${em} ${t.label}</div><div class="sched-desc">${t.desc}</div></div><div class="sched-check ${isDone?'done':''}">${isDone?'✓':''}</div></div>`;}).join('');
+  if(!sched.length){el.innerHTML='<div class="empty" style="padding:2rem;text-align:center;"><div style="font-size:32px;margin-bottom:8px;">📅</div><div style="font-size:13px;color:var(--text3);">No tasks yet. Use AI Build to create your schedule!</div></div>';return;}
+  el.innerHTML=sched.map((t,i)=>{const col=catColor[t.cat]||'#6C5FFF';const em=catEmoji[t.cat]||'📌';const isDone=log[t.id];return`<div class="sched-block" onclick="toggleTask('${t.id}')"><div class="sched-accent" style="background:${col};"></div><div class="sched-time">${t.time}</div><div class="sched-info"><div class="sched-title" style="${isDone?'text-decoration:line-through;opacity:.5':''}">${em} ${t.label}</div><div class="sched-desc">${t.desc||''}</div></div><div style="display:flex;gap:6px;align-items:center;"><button onclick="event.stopPropagation();openEditTask(${i})" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:11px;cursor:pointer;color:var(--text2);">✏️</button><div class="sched-check ${isDone?'done':''}">${isDone?'✓':''}</div></div></div>`;}).join('');
 }
 function openEditTask(i){
   const sched=getSchedule(),t=sched[i];
@@ -1923,7 +2168,7 @@ function renderSkills(){
   let filtered=skills;
   if(curKFilt!=='all') filtered=filtered.filter(function(k){return k.cat===curKFilt;});
 
-  const el=document.getElementById('skill-list');
+  const el=document.getElementById('skill-list') || document.getElementById('skills-list');
   if(!el) return;
 
   if(!filtered.length){
@@ -2347,6 +2592,303 @@ function saveRoutine(){
   toast('✓ Schedule saved!');
 }
 
+// ══════════════════════════════════════════════════════
+// AI SCHEDULE BUILDER
+// ══════════════════════════════════════════════════════
+let _ttImageBase64 = null;
+let _ttImageType = null;
+let _aiGeneratedTasks = null;
+
+function handleTTUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    _ttImageBase64 = dataUrl.split(',')[1];
+    _ttImageType = file.type;
+    // Show preview
+    document.getElementById('tt-preview').style.display = 'block';
+    if (file.type.startsWith('image/')) {
+      document.getElementById('tt-preview-img').src = dataUrl;
+      document.getElementById('tt-preview-img').style.display = 'block';
+    } else {
+      document.getElementById('tt-preview-img').style.display = 'none';
+    }
+    document.getElementById('tt-preview-name').textContent = '✅ ' + file.name;
+    document.getElementById('tt-upload-icon').textContent = '✅';
+    document.getElementById('tt-upload-text').textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+function aiSchedNext(step, flag) {
+  [1, 2, 3].forEach(s => {
+    document.getElementById('ai-step-'+s).style.display = s === step ? 'block' : 'none';
+    const dot = document.querySelector('.ai-step[data-step="'+s+'"]');
+    if (dot) dot.style.background = s <= step ? 'var(--acc)' : 'var(--bg4)';
+  });
+  if (step === 3) generateAISchedule();
+}
+
+async function generateAISchedule() {
+  document.getElementById('ai-sched-loading').style.display = 'block';
+  document.getElementById('ai-sched-result').style.display = 'none';
+  document.getElementById('ai-sched-error').style.display = 'none';
+
+  const wake       = document.getElementById('ai-wake').value;
+  const travel     = parseInt(document.getElementById('ai-travel').value) || 0;
+  const collegeT   = document.getElementById('ai-college-time').value;
+  const gym        = document.getElementById('ai-gym').value;
+  const sleep      = document.getElementById('ai-sleep').value;
+  const studyHrs   = document.getElementById('ai-study-hrs').value;
+  const extra      = document.getElementById('ai-extra').value;
+  const isSchool   = P && (P.isSchool || P.degType === 'School');
+  const userName   = P && P.name ? P.name.split(' ')[0] : 'Student';
+  const degree     = P && (P.degreeLabel || P.degree || '');
+
+  const statusEl = document.getElementById('ai-sched-status');
+
+  // Build prompt — include image context if uploaded
+  const hasImage = !!_ttImageBase64;
+  statusEl.textContent = hasImage ? 'Reading timetable image with AI...' : 'Building smart schedule...';
+
+  const prompt = `You are a smart schedule planner for Indian ${isSchool ? 'school' : 'college'} students.
+
+Student: ${userName}, ${degree || (isSchool ? 'School student' : 'College student')}
+${hasImage ? 'I have uploaded a photo of my timetable. Read the timetable from the image carefully — extract each subject, its day, and timing.' : 'No timetable image provided.'}
+
+My daily timings:
+- Wake up: ${wake}
+- Travel to ${isSchool ? 'school' : 'college'} (one way): ${travel} minutes
+- ${isSchool ? 'School' : 'College'} timing: ${collegeT === 'none' ? 'Holiday / no classes today' : collegeT}
+- Gym/Exercise: ${gym === 'none' ? 'None' : gym}
+- Study: ${studyHrs} hours/day
+- Extra activity: ${extra === 'none' ? 'None' : extra}
+- Sleep: ${sleep}
+
+Build a COMPLETE daily schedule that:
+1. Starts from wake-up time
+2. Includes morning routine (freshen up, breakfast)
+3. Includes travel to/from ${isSchool ? 'school' : 'college'} if travel > 0
+4. ${hasImage ? 'Includes EACH CLASS from the timetable as a separate task with the EXACT subject name and time' : 'Includes a single college/school block'}
+5. Includes lunch break
+6. Includes rest/travel back
+7. Includes gym if selected
+8. Includes study session
+9. Includes dinner
+10. Ends with sleep
+
+RESPOND ONLY with valid JSON — no markdown, no explanation:
+{
+  "tasks": [
+    {
+      "id": "unique_id",
+      "label": "Task name",
+      "desc": "Short description",
+      "time": "HH:MM",
+      "cat": "free|college|gym|study|job-prep|sleep",
+      "duration": "30 min"
+    }
+  ],
+  "summary": "One line summary of the schedule",
+  "classesFound": 0
+}
+
+Categories: free=morning/meals/rest, college=all classes/school, gym=exercise, study=revision/homework, job-prep=career/skills, sleep=sleep/rest at night.
+Make task IDs unique (t1, t2, t3...). Include 8-14 tasks total. Times in 24hr HH:MM format.`;
+
+  try {
+    statusEl.textContent = 'AI is reading and building your schedule...';
+
+    let response;
+    // If image uploaded, use vision-capable approach via Pollinations
+    if (hasImage) {
+      // Use text prompt with image description request
+      response = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: prompt },
+                { type: 'image_url', image_url: { url: `data:${_ttImageType};base64,${_ttImageBase64}` } }
+              ]
+            }
+          ],
+          model: 'openai',
+          jsonMode: true
+        })
+      });
+    } else {
+      response = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: prompt }],
+          model: 'openai',
+          jsonMode: true
+        })
+      });
+    }
+
+    let raw = await response.text();
+    raw = raw.replace(/```json|```/g, '').trim();
+    const m = raw.match(/\{[\s\S]*\}/);
+    if (m) raw = m[0];
+
+    let parsed;
+    try { parsed = JSON.parse(raw); } catch(e) { throw new Error('AI returned invalid response. Try again.'); }
+
+    if (!parsed.tasks || !parsed.tasks.length) throw new Error('No tasks generated. Try again.');
+
+    _aiGeneratedTasks = parsed;
+    statusEl.textContent = 'Done!';
+
+    // Show preview
+    showAISchedulePreview(parsed);
+
+  } catch (err) {
+    // Fallback: build schedule from form inputs
+    _aiGeneratedTasks = buildScheduleFromInputs(wake, travel, collegeT, gym, sleep, studyHrs, extra);
+    showAISchedulePreview(_aiGeneratedTasks, 'AI unavailable — built from your inputs instead.');
+  }
+}
+
+function showAISchedulePreview(parsed, note) {
+  document.getElementById('ai-sched-loading').style.display = 'none';
+  document.getElementById('ai-sched-result').style.display = 'block';
+
+  if (note) {
+    document.getElementById('ai-sched-error').style.display = 'block';
+    document.getElementById('ai-sched-error').textContent = '⚠️ ' + note;
+  }
+
+  const tasks = parsed.tasks || [];
+  const CAT_COLORS = { free:'#6C5FFF', college:'#0EA5E9', gym:'#F59E0B', study:'#10B981', 'job-prep':'#8B5CF6', sleep:'#64748B' };
+  const CAT_ICONS  = { free:'🌅', college:'🏫', gym:'💪', study:'📚', 'job-prep':'💼', sleep:'😴' };
+
+  document.getElementById('ai-sched-preview').innerHTML = `
+    ${parsed.summary ? `<div style="font-size:12px;color:var(--text2);margin-bottom:12px;padding:10px;background:var(--bg3);border-radius:var(--rs);">${parsed.summary}</div>` : ''}
+    ${parsed.classesFound > 0 ? `<div style="font-size:11px;color:var(--acc);font-weight:700;margin-bottom:10px;">📷 ${parsed.classesFound} class(es) detected from timetable</div>` : ''}
+    ${tasks.map(t => {
+      const color = CAT_COLORS[t.cat] || '#6C5FFF';
+      const icon = CAT_ICONS[t.cat] || '📌';
+      return `<div style="display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:var(--rs);margin-bottom:6px;background:var(--bg2);border:1px solid var(--border);border-left:3px solid ${color};">
+        <div style="font-size:18px;">${icon}</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;">${t.label}</div>
+          ${t.desc ? `<div style="font-size:11px;color:var(--text3);">${t.desc}</div>` : ''}
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:12px;font-weight:700;color:${color};">${t.time}</div>
+          <div style="font-size:10px;color:var(--text3);">${t.duration||''}</div>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+function buildScheduleFromInputs(wake, travel, collegeT, gym, sleep, studyHrs, extra) {
+  // Helper: add minutes to HH:MM
+  const addMins = (t, m) => {
+    const [h, min] = t.split(':').map(Number);
+    const total = h * 60 + min + m;
+    return String(Math.floor(total/60)%24).padStart(2,'0') + ':' + String(total%60).padStart(2,'0');
+  };
+
+  const tasks = [];
+  let id = 1;
+  const add = (label, desc, time, cat, duration) => tasks.push({ id:'t'+id++, label, desc, time, cat, duration });
+
+  // Morning
+  add('Wake up & Morning routine', 'Freshen up, breakfast, get ready.', wake, 'free', '45 min');
+
+  const travelMin = parseInt(travel) || 0;
+  if (travelMin > 0) {
+    const departTime = addMins(wake, 45);
+    add('Travel to ' + (P&&P.isSchool?'School':'College'), `${travelMin} min commute.`, departTime, 'free', travelMin+' min');
+  }
+
+  // College/School
+  if (collegeT !== 'none') {
+    const [cStart, cEnd] = collegeT.split('-');
+    add((P&&P.isSchool?'School':'College') + ' — Classes', 'Attend all lectures and labs.', cStart, 'college', '');
+    // Lunch break inside
+    const lunchTime = addMins(cStart, 180);
+    add('Lunch break', 'Have lunch, rest.', lunchTime, 'free', '45 min');
+    // Travel back
+    if (travelMin > 0) {
+      add('Travel back home', `${travelMin} min commute.`, cEnd, 'free', travelMin+' min');
+      add('Rest & freshen up', 'Relax after college, light snack.', addMins(cEnd, travelMin), 'free', '30 min');
+    } else {
+      add('Rest after college', 'Relax, light snack.', cEnd, 'free', '30 min');
+    }
+  }
+
+  // Gym
+  if (gym !== 'none') {
+    const gymTimes = { morning: addMins(wake, 0), evening:'18:00', night:'20:00' };
+    add('Gym 💪', 'Workout session.', gymTimes[gym]||'18:00', 'gym', '1 hr');
+  }
+
+  // Dinner
+  add('Dinner', 'Have dinner with family.', '19:30', 'free', '30 min');
+
+  // Study
+  const studyStart = collegeT === 'none' ? '10:00' : '20:30';
+  add('Study session 📚', `${studyHrs} hours focused revision.`, studyStart, 'study', studyHrs+' hr');
+
+  // Extra
+  if (extra === 'coaching') add('Coaching / Tuition', 'Attend coaching class.', '17:00', 'study', '2 hr');
+  if (extra === 'parttime') add('Part-time work', 'Part-time job shift.', '17:00', 'job-prep', '2 hr');
+
+  // Job prep
+  add('Job prep — 30 min', 'Career skills, resume, job search.', addMins(sleep, -60), 'job-prep', '30 min');
+
+  // Sleep
+  add('Sleep 😴', 'Get 7–8 hours of rest.', sleep, 'sleep', '7 hr');
+
+  return { tasks, summary: 'Full daily schedule built from your inputs.', classesFound: 0 };
+}
+
+function saveAISchedule() {
+  if (!_aiGeneratedTasks || !_aiGeneratedTasks.tasks) { toast('No schedule to save!'); return; }
+  CUSTOM_TASKS = _aiGeneratedTasks.tasks.map(t => ({
+    id: t.id || ('t'+Math.random().toString(36).slice(2,7)),
+    label: t.label,
+    desc: t.desc || '',
+    time: t.time || '08:00',
+    cat: t.cat || 'free'
+  }));
+  markTasksAsCustomised();
+  saveAll();
+  closeModal('ai-schedule-modal');
+  renderToday();
+  renderTimetable();
+  updateMotiveWidget();
+  // Show the schedule view
+  document.getElementById('sched-empty').style.display = 'none';
+  document.getElementById('sched-exists').style.display = 'block';
+  toast('✅ AI Schedule saved!');
+  _aiGeneratedTasks = null;
+  _ttImageBase64 = null;
+}
+
+function openAddTask() {
+  // Open task-edit-modal in add mode
+  const modal = document.getElementById('task-edit-modal');
+  if (!modal) return;
+  document.getElementById('te-label').value = '';
+  document.getElementById('te-desc').value = '';
+  document.getElementById('te-time').value = '08:00';
+  if (document.getElementById('te-cat')) document.getElementById('te-cat').value = 'free';
+  document.getElementById('te-del-btn').style.display = 'none';
+  document.getElementById('te-idx').value = '-1';
+  openModal('task-edit-modal');
+}
+
 function saveProfile(){if(!P)return;P.name=document.getElementById('f-name').value.trim();const rawPhone=document.getElementById('f-phone').value.trim();if(rawPhone)P.phone='+91'+rawPhone;P.college=document.getElementById('f-college').value.trim();P.degreeLabel=document.getElementById('f-degree').value.trim()||P.degreeLabel;P.sem=parseInt(document.getElementById('f-sem').value);P.m12=document.getElementById('f-12').value.trim();P.state=document.getElementById('f-state').value;P.lang=document.getElementById('f-lang').value||P.lang||'en';P.goal=document.getElementById('f-goal').value;saveAll();closeModal('edit-modal');renderProfile();renderJobs();renderStudy();renderSkills();renderToday();toast('✓ Profile saved!');applyLanguageSettings();}
 function updateHeader(){
   const subEl2 = document.getElementById('hdr-sub');
@@ -2373,11 +2915,11 @@ function sw(tab,btn){
   if(btn) btn.classList.add('active');
   const sec=document.getElementById('s-'+tab);
   if(sec) sec.classList.add('active');
-  // Re-render on tab switch to ensure fresh content
   if(tab==='today') renderToday();
   else if(tab==='schedule') renderTimetable();
   else if(tab==='study') renderStudy();
-  else if(tab==='learn') renderSkills();
+  else if(tab==='learn') renderLearnTab ? renderLearnTab() : null;
+  else if(tab==='skills') renderSkills();
   else if(tab==='jobs') renderJobs();
   else if(tab==='profile') renderProfile();
 }
@@ -2683,16 +3225,16 @@ function buildSmartPlan(topic, hours, weeks, totalDaysOverride) {
 
   const RESOURCES_MAP = {
     psychology: [{name:'Crash Course Psychology (Free)',type:'YouTube',url:`https://www.youtube.com/playlist?list=PL8dPuuaLjXtOPRKzVLY0jJY-uHOH9KVU6`},{name:'Simply Psychology Notes',type:'Website',url:`https://www.simplypsychology.org`},{name:'Khan Academy Psychology',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`}],
-    python: [{name:'Python Tutorial - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/results?search_query=Python+full+course+free+beginners+freeCodeCamp`},{name:'W3Schools Python',type:'Website',url:`https://www.w3schools.com/python/`},{name:'Python Official Docs',type:'Website',url:`https://docs.python.org/3/tutorial/`}],
-    dsa: [{name:'DSA Full Course - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/results?search_query=DSA+data+structures+algorithms+full+course+free`},{name:'GeeksforGeeks DSA',type:'Website',url:`https://www.geeksforgeeks.org/data-structures/`},{name:'LeetCode Practice',type:'Website',url:`https://leetcode.com/problemset/`}],
-    forensic: [{name:'Forensic Science - YouTube',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'NIST Forensic Resources',type:'Website',url:`https://www.nist.gov/forensics`},{name:'Forensic Science Notes PDF',type:'Website',url:`https://www.google.com/search?q=forensic+science+notes+pdf+free+download`}],
+    python: [{name:'Python Tutorial - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/results?search_query=python+programming+full+course+free`},{name:'W3Schools Python',type:'Website',url:`https://www.w3schools.com/python/`},{name:'Python Official Docs',type:'Website',url:`https://docs.python.org/3/tutorial/`}],
+    dsa: [{name:'DSA Full Course - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O`},{name:'GeeksforGeeks DSA',type:'Website',url:`https://www.geeksforgeeks.org/data-structures/`},{name:'LeetCode Practice',type:'Website',url:`https://leetcode.com/problemset/`}],
+    forensic: [{name:'Forensic Science - YouTube',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'NIST Forensic Resources',type:'Website',url:`https://www.nist.gov/forensics`},{name:'Forensic Science Notes PDF',type:'Website',url:'https://www.sciencedirect.com/journal/forensic-science-international'}],
     ssc: [{name:'SSC CGL Full Course - Adda247',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'Adda247 SSC',type:'Website',url:`https://www.adda247.com/ssc-jobs/`},{name:'SSC Official Site',type:'Website',url:`https://ssc.nic.in`}],
     maths: [{name:'Maths Tricks - Vedic Maths',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'Khan Academy Maths',type:'Website',url:`https://www.khanacademy.org/math`},{name:'GFG Quant Practice',type:'Website',url:`https://www.geeksforgeeks.org/quantitative-aptitude/`}],
     history: [{name:'History of India - YouTube',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'NCERT History Books',type:'Website',url:`https://ncert.nic.in/textbook.php`},{name:'Clear IAS History Notes',type:'Website',url:`https://www.clearias.com/history/`}],
     english: [{name:'English Grammar Full Course',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'Grammarly Blog Grammar Tips',type:'Website',url:`https://www.grammarly.com/blog/category/handbook/`},{name:'British Council Learn English',type:'Website',url:`https://learnenglish.britishcouncil.org`}],
     constable: [{name:'Police Constable Exam Prep',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'GK Today Current Affairs',type:'Website',url:`https://www.gktoday.in`},{name:'Adda247 Police Exams',type:'Website',url:`https://www.adda247.com/jobs-by-category/police-jobs/`}],
     media: [{name:'Media Literacy - YouTube',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'News Literacy Project',type:'Website',url:`https://newslit.org`},{name:'AltNews Fact Check',type:'Website',url:`https://www.altnews.in`}],
-    default: [{name:`${topic} Full Course`,type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:`${topic} Study Notes`,type:'Website',url:`https://www.google.com/search?q=${q}+notes+pdf+free+download`},{name:`${topic} on Wikipedia`,type:'Website',url:`https://en.wikipedia.org/wiki/Special:Search?search=${q}`}]
+    default: [{name:`${topic} Full Course`,type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:`${topic} Study Notes`,type:'Website',url:`https://swayam.gov.in/search?query=${q}`},{name:`${topic} on Wikipedia`,type:'Website',url:`https://en.wikipedia.org/wiki/Special:Search?search=${q}`}]
   };
 
   // ── Match topic to category (expanded) ──
@@ -2797,8 +3339,8 @@ function buildSmartPlan(topic, hours, weeks, totalDaysOverride) {
     weeklyPlan,
     courses: [
       ...resources.map(r => ({name:r.name, provider:r.type, url:r.url, duration:`${wks} weeks`, free:true, description:`Recommended resource for ${topic}`})),
-      {name:`${topic} Practice Questions`, provider:'Website', url:`https://www.google.com/search?q=${q}+practice+questions+MCQ+free`, duration:'Self-paced', free:true, description:`MCQs and practice questions for ${topic}`},
-      {name:`${topic} PDF Notes`, provider:'Website', url:`https://www.google.com/search?q=${q}+notes+pdf+free+download`, duration:'Self-paced', free:true, description:`Free downloadable PDF notes for ${topic}`}
+      {name:`${topic} Practice Questions`, provider:'Website', url:`https://testbook.com/search?q=${q}`, duration:'Self-paced', free:true, description:`MCQs and practice questions for ${topic}`},
+      {name:`${topic} PDF Notes`, provider:'Website', url:`https://swayam.gov.in/search?query=${q}`, duration:'Self-paced', free:true, description:`Free downloadable PDF notes for ${topic}`}
     ]
   };
 }
@@ -2928,7 +3470,7 @@ Rules:
 - weeklyPlan must have exactly ${weeks} week object(s)
 - ${assignRule}
 - Each topic must have 2-3 resources mixing: YouTube video/playlist, NPTEL course, website notes, or textbook
-- Use REAL YouTube search URLs: https://www.youtube.com/results?search_query=KEYWORD
+- Use REAL YouTube URLs: direct video links like https://www.youtube.com/results?search_query=web+development+full+course+free or playlists like https://www.youtube.com/playlist?list=LISTID
 - Use REAL NPTEL URLs: https://nptel.ac.in/courses/ for relevant courses
 - Use Google search for notes: https://www.google.com/search?q=TOPIC+notes+pdf
 - Courses array must have AT LEAST 8 entries mixing: YouTube playlist (free), NPTEL (free), Coursera (some free), Udemy (paid), Khan Academy (free), local Indian platforms like PW/Unacademy (free/paid), PDF notes (free), practice questions
@@ -3430,8 +3972,8 @@ function renderCoursesView() {
     {name:'▶ Physics Wallah — '+topic, provider:'PW (Alakh Pandey)', type:'video', free:true, duration:'Self-paced',
      url:'https://www.youtube.com/@PhysicsWallah/search?query='+q,
      description:'Indias most popular free educator. Best for JEE, NEET, Class 11-12, and competitive exams. Hindi + English.'},
-    {name:'▶ Study With Me — '+topic, provider:'Unacademy YouTube', type:'video', free:true, duration:'Self-paced',
-     url:'https://www.youtube.com/results?search_query=unacademy+'+q,
+    {name:'▶ Unacademy Free — '+topic, provider:'Unacademy YouTube', type:'video', free:true, duration:'Self-paced',
+     url:'https://www.youtube.com/@unacademy/search?query='+q,
      description:'Free Unacademy lectures on YouTube. Best for UPSC, SSC, Banking, State PSC students.'},
 
     // FREE COURSES
@@ -4217,7 +4759,7 @@ function fireNotif(id, title, body){
       tag: id,
       requireInteraction: false
     });
-  }catch(e){ console.log('Notif error:', e); }
+  }catch(e){ /* notif error */ }
 }
 
 function scheduleNotifs(){
@@ -4384,7 +4926,7 @@ if ('serviceWorker' in navigator) {
           await _swRegistration.periodicSync.register('lt-notif-check', {
             minInterval: 60 * 1000 // every minute
           });
-          console.log('[App] Periodic background sync registered');
+          // periodic sync registered
         }
       } catch(e) { /* periodic sync not supported — fall back to SW message */ }
 

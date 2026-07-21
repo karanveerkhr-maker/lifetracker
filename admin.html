@@ -3,20 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Life Tracker — Admin Dashboard</title>
+<title>Life Tracker — Admin</title>
 <style>
 :root{
   --bg:#0F1117;--bg2:#181C2A;--bg3:#222636;--bg4:#2A2F45;
   --text:#EEF0FA;--text2:#8A8FAD;--text3:#3E4260;
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
   --acc:#6C63FF;--acc2:#3ECFB2;
-  --gbg:#0A2A1A;--gt:#5DD49A;
-  --bbg:#0A1A3A;--bt:#7EB3FF;
-  --pbg:#1A1540;--pt:#B0AAFF;
-  --abg:#2A1E00;--at:#FFD060;
+  --gbg:#0A2A1A;--gt:#5DD49A;--bbg:#0A1A3A;--bt:#7EB3FF;
+  --pbg:#1A1540;--pt:#B0AAFF;--abg:#2A1E00;--at:#FFD060;
   --cbg:#2A0A0A;--ct:#FF9090;
   --r:14px;--rs:9px;
   --grad:linear-gradient(135deg,#6C63FF,#3ECFB2);
+  --sh:0 4px 20px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;}
@@ -24,55 +23,56 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 /* LOGIN */
 #login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
 #login-screen.hidden{display:none;}
-.login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:36px 28px;width:100%;max-width:380px;text-align:center;}
-.login-logo{font-size:42px;margin-bottom:12px;}
-.login-h{font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:36px 28px;width:100%;max-width:380px;text-align:center;box-shadow:var(--sh);}
+.login-logo{font-size:48px;margin-bottom:12px;}
+.login-h{font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .login-sub{font-size:13px;color:var(--text2);margin:6px 0 24px;}
 .login-input{width:100%;padding:13px 16px;border:1px solid var(--border2);border-radius:var(--rs);font-size:15px;background:var(--bg3);color:var(--text);font-family:inherit;outline:none;margin-bottom:12px;letter-spacing:3px;}
 .login-input:focus{border-color:var(--acc);}
-.login-btn{width:100%;padding:14px;background:var(--grad);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
-.login-err{font-size:12px;color:var(--ct);margin-top:8px;display:none;}
+.login-btn{width:100%;padding:14px;background:var(--grad);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;}
+.login-err{font-size:12px;color:var(--ct);margin-top:8px;display:none;background:var(--cbg);padding:8px;border-radius:8px;}
 
 /* DASHBOARD */
 #dashboard{display:none;}
 #dashboard.visible{display:block;}
 
 /* TOP BAR */
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
-.topbar-logo{font-size:15px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.topbar-right{display:flex;gap:10px;align-items:center;}
-.tb-btn{padding:7px 14px;border:1px solid var(--border2);border-radius:var(--rs);font-size:12px;cursor:pointer;background:transparent;color:var(--text2);font-family:inherit;font-weight:500;}
-.tb-btn:hover{background:var(--bg3);}
-.tb-btn.active{background:var(--acc);color:#fff;border-color:var(--acc);}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.3);}
+.topbar-logo{font-size:15px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.topbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.tb-btn{padding:7px 14px;border:1px solid var(--border2);border-radius:var(--rs);font-size:12px;cursor:pointer;background:transparent;color:var(--text2);font-family:inherit;font-weight:600;transition:all .15s;}
+.tb-btn:hover{background:var(--bg3);color:var(--text);}
+.tb-btn.danger{color:var(--ct);border-color:var(--cbg);}
+.tb-btn.primary{background:var(--grad);color:#fff;border:none;}
 
-/* MAIN LAYOUT */
-.main{padding:20px 24px;max-width:1200px;margin:0 auto;}
+/* LAYOUT */
+.main{padding:20px 24px;max-width:1300px;margin:0 auto;}
 
-/* STATS ROW */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;}
-.stat-n{font-size:28px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
+.stat-n{font-size:26px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .stat-l{font-size:11px;color:var(--text2);margin-top:3px;text-transform:uppercase;letter-spacing:.06em;}
-.stat-change{font-size:11px;margin-top:5px;}
-.stat-up{color:var(--gt);}
-.stat-dn{color:var(--ct);}
+.stat-chip{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-top:5px;}
 
-/* SEARCH & FILTER */
-.controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+/* CONTROLS */
+.controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
 .search-box{flex:1;min-width:200px;padding:9px 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);font-size:13px;color:var(--text);font-family:inherit;outline:none;}
 .search-box:focus{border-color:var(--acc);}
 .filter-sel{padding:9px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);font-size:12px;color:var(--text2);font-family:inherit;cursor:pointer;outline:none;}
+.filter-sel:focus{border-color:var(--acc);}
 
 /* TABLE */
-.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px;}
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
 .table-head{background:var(--bg3);display:grid;padding:10px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);border-bottom:1px solid var(--border);}
 .table-row{display:grid;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;cursor:pointer;transition:background .1s;}
 .table-row:last-child{border-bottom:none;}
 .table-row:hover{background:var(--bg3);}
-.table-cols{grid-template-columns:1.6fr 1.4fr 1fr .9fr .6fr .7fr .7fr .5fr .7fr 1fr .5fr;}
-.cell-name{font-size:13px;font-weight:600;}
+.table-cols{grid-template-columns:1.8fr 1.4fr .9fr .7fr .6fr .7fr .7fr .6fr .7fr 1fr .4fr;}
+.cell-name{font-size:13px;font-weight:700;}
 .cell-sub{font-size:10px;color:var(--text2);margin-top:2px;}
-.tag{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;display:inline-block;}
+.tag{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;display:inline-block;}
 .tg{background:var(--gbg);color:var(--gt);}
 .tb{background:var(--bbg);color:var(--bt);}
 .tp{background:var(--pbg);color:var(--pt);}
@@ -80,21 +80,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .tc{background:var(--cbg);color:var(--ct);}
 .score-bar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:4px;}
 .score-fill{height:100%;border-radius:3px;}
-.badge-online{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3ECFB2;margin-right:5px;}
-.badge-offline{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--text3);margin-right:5px;}
+.badge-online{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3ECFB2;box-shadow:0 0 6px #3ECFB2;margin-right:4px;}
+.badge-offline{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--text3);margin-right:4px;}
 
-/* USER MODAL */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;}
+/* MODAL */
+.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:200;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
 .modal-bg.open{display:flex;}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:24px;width:100%;max-width:560px;}
-.modal h3{font-size:17px;font-weight:800;margin-bottom:18px;}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:24px;width:100%;max-width:580px;box-shadow:var(--sh);}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:4px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .detail-item{background:var(--bg3);border-radius:var(--rs);padding:12px 14px;}
 .detail-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
-.detail-val{font-size:14px;font-weight:700;}
+.detail-val{font-size:14px;font-weight:700;color:var(--text);}
 .timeline-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;}
 .timeline-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);margin-top:3px;flex-shrink:0;}
-.modal-close{float:right;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:0;}
+.modal-close{float:right;background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;}
 .section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;margin-top:16px;}
 
 /* CHART */
@@ -102,63 +102,71 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .mc-bar{flex:1;border-radius:2px 2px 0 0;background:var(--acc);opacity:.5;min-height:2px;}
 .mc-bar.today{opacity:1;}
 
-/* EMPTY */
+/* EMPTY / LOADING */
 .empty-state{text-align:center;padding:60px 20px;color:var(--text3);}
-.empty-icon{font-size:40px;margin-bottom:12px;}
-.empty-h{font-size:16px;font-weight:600;margin-bottom:6px;}
-.empty-s{font-size:13px;color:var(--text3);}
-
-/* LOADING */
+.empty-icon{font-size:44px;margin-bottom:14px;}
+.empty-h{font-size:16px;font-weight:700;color:var(--text2);margin-bottom:6px;}
+.empty-s{font-size:13px;line-height:1.7;}
 .spinner{border:3px solid var(--border2);border-top:3px solid var(--acc);border-radius:50%;width:28px;height:28px;animation:spin .7s linear infinite;margin:40px auto;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* TABS */
-.tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;}
-.tab-btn{padding:10px 16px;background:none;border:none;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;}
+.tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab-btn{padding:10px 18px;background:none;border:none;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;white-space:nowrap;transition:all .15s;}
 .tab-btn.active{color:var(--acc);border-bottom-color:var(--acc);}
+.tab-btn:hover:not(.active){color:var(--text2);}
 
 /* INSIGHTS */
 .insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
 .insight-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;}
-.insight-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px;}
-.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px;}
-.bar-label{min-width:80px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.insight-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:12px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px;}
+.bar-label{min-width:90px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .bar-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
 .bar-fill-h{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--acc),var(--acc2));}
-.bar-val{min-width:28px;text-align:right;font-weight:600;color:var(--text);}
+.bar-val{min-width:28px;text-align:right;font-weight:700;color:var(--text);}
 
-@media(max-width:700px){
+/* FIREBASE RULES HELPER */
+.rules-box{background:var(--bg3);border-radius:12px;padding:14px;font-family:monospace;font-size:12px;color:var(--at);margin-top:10px;white-space:pre;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
   .table-cols{grid-template-columns:1.5fr 1fr .7fr .7fr;}
   .hide-mob{display:none!important;}
   .insights-grid{grid-template-columns:1fr;}
   .detail-grid{grid-template-columns:1fr;}
-  .main{padding:14px 12px;}
-  .topbar{padding:12px 14px;}
+  .main{padding:12px;}
+  .topbar{padding:10px 14px;}
+  .stats-row{grid-template-columns:repeat(3,1fr);}
 }
 </style>
 </head>
 <body>
 
-<!-- ── LOGIN ── -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">🔐</div>
-    <div class="login-h">Admin Dashboard</div>
-    <div class="login-sub">Life Tracker — Creator Access Only</div>
+    <div class="login-h">Life Tracker Admin</div>
+    <div class="login-sub">Creator access only · All user data</div>
     <input class="login-input" type="password" id="admin-pw" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')tryLogin()">
     <button class="login-btn" onclick="tryLogin()">→ Login</button>
-    <div class="login-err" id="login-err">Wrong password. Try again.</div>
-    <div style="font-size:11px;color:var(--text3);margin-top:18px;">Only the app creator has access to this panel.</div>
+    <div class="login-err" id="login-err"></div>
+    <div style="font-size:11px;color:var(--text3);margin-top:16px;">⚠️ Open from <a href="https://karanveerkhr-maker.github.io/lifetracker/admin.html" style="color:var(--acc2);">GitHub Pages</a> for live data</div>
   </div>
 </div>
 
-<!-- ── DASHBOARD ── -->
+<!-- DASHBOARD -->
 <div id="dashboard">
-  <div id="setup-banner" style="background:#2A1E00;border-bottom:1px solid #FFD060;padding:10px 24px;font-size:12px;color:#FFD060;display:flex;align-items:center;gap:10px;">
-    <span>⚙️</span>
-    <span><b>✅ Connected:</b> Reading from Firebase Realtime Database · Paths: /users + /accounts/byUID · Auto-refreshes every 60s</span>
-    <button onclick="document.getElementById('setup-banner').style.display='none'" style="margin-left:auto;background:none;border:none;color:#FFD060;font-size:16px;cursor:pointer;">✕</button>
+  <!-- Status Banner -->
+  <div id="setup-banner" style="background:#1A1E00;border-bottom:1px solid var(--at);padding:8px 24px;font-size:12px;color:var(--at);display:flex;align-items:center;gap:10px;">
+    <span>⚡</span>
+    <span id="banner-text">Connecting to Firebase...</span>
+    <button onclick="document.getElementById('setup-banner').style.display='none'" style="margin-left:auto;background:none;border:none;color:var(--at);font-size:18px;cursor:pointer;">✕</button>
   </div>
+
+  <!-- Topbar -->
   <div class="topbar">
     <div>
       <div class="topbar-logo">📊 Life Tracker Admin</div>
@@ -167,33 +175,44 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="topbar-right">
       <button class="tb-btn" onclick="refreshData()">⟳ Refresh</button>
       <button class="tb-btn" onclick="exportCSV()">⬇ Export CSV</button>
-      <button class="tb-btn" onclick="logout()" style="color:var(--ct);">Logout</button>
+      <button class="tb-btn" onclick="sendAnnouncement()">📢 Announce</button>
+      <button class="tb-btn danger" onclick="logout()">Logout</button>
     </div>
   </div>
 
   <div class="main">
 
-    <!-- TABS -->
-    <div class="tabs">
-      <button class="tab-btn active" onclick="showTab('users',this)">👥 Users</button>
-      <button class="tab-btn" onclick="showTab('insights',this)">📊 Insights</button>
-      <button class="tab-btn" onclick="showTab('activity',this)">⚡ Recent Activity</button>
+    <!-- STATS ROW -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card"><div class="stat-n" id="stat-total">—</div><div class="stat-l">Total Users</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-college">—</div><div class="stat-l">College Students</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-school">—</div><div class="stat-l">School Students</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-active">—</div><div class="stat-l">Active Today</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-avg">—</div><div class="stat-l">Avg Day Score</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-apps">—</div><div class="stat-l">Job Applications</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-streak">—</div><div class="stat-l">Avg Streak 🔥</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-states">—</div><div class="stat-l">States Covered</div></div>
     </div>
 
-    <!-- STATS -->
-    <div class="stats-row" id="stats-row">
-      <div class="stat-card"><div class="stat-n" id="stat-total">—</div><div class="stat-l">Total users</div></div>
-      <div class="stat-card"><div class="stat-n" id="stat-active">—</div><div class="stat-l">Active today</div></div>
-      <div class="stat-card"><div class="stat-n" id="stat-avg">—</div><div class="stat-l">Avg day score</div></div>
-      <div class="stat-card"><div class="stat-n" id="stat-apps">—</div><div class="stat-l">Total job apps</div></div>
-      <div class="stat-card"><div class="stat-n" id="stat-certs">—</div><div class="stat-l">Certificates earned</div></div>
-      <div class="stat-card"><div class="stat-n" id="stat-streak">—</div><div class="stat-l">Avg streak 🔥</div></div>
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('users',this)">👥 All Users</button>
+      <button class="tab-btn" onclick="showTab('school',this)">🏫 School</button>
+      <button class="tab-btn" onclick="showTab('college',this)">🎓 College</button>
+      <button class="tab-btn" onclick="showTab('credentials',this)">🔐 Credentials</button>
+      <button class="tab-btn" onclick="showTab('insights',this)">📊 Insights</button>
+      <button class="tab-btn" onclick="showTab('activity',this)">⚡ Activity</button>
     </div>
 
     <!-- USERS TAB -->
     <div id="tab-users">
       <div class="controls">
-        <input class="search-box" type="text" id="search" placeholder="🔍  Search by name, degree, college, state..." oninput="renderTable()">
+        <input class="search-box" type="text" id="search" placeholder="🔍 Search name, degree, state, phone..." oninput="renderTable()">
+        <select class="filter-sel" id="filter-type" onchange="renderTable()">
+          <option value="">All types</option>
+          <option value="school">🏫 School</option>
+          <option value="college">🎓 College</option>
+        </select>
         <select class="filter-sel" id="filter-goal" onchange="renderTable()">
           <option value="">All goals</option>
           <option value="govt">Govt job</option>
@@ -203,16 +222,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
           <option value="private">Private sector</option>
           <option value="mixed">Mixed</option>
         </select>
-        <select class="filter-sel" id="filter-field" onchange="renderTable()">
-          <option value="">All fields</option>
-          <option value="forensic">Forensic Science</option>
-          <option value="cs">Computer Science</option>
-          <option value="biotech">Biotechnology</option>
-          <option value="chemistry">Chemistry</option>
-          <option value="economics">Economics</option>
-          <option value="cse">BTech CSE</option>
-          <option value="mech">Mechanical</option>
-          <option value="llb">Law</option>
+        <select class="filter-sel" id="filter-state" onchange="renderTable()">
+          <option value="">All states</option>
+          <option>Punjab</option><option>Haryana</option><option>Delhi (NCT)</option>
+          <option>Uttar Pradesh</option><option>Rajasthan</option><option>Maharashtra</option>
+          <option>Gujarat</option><option>Karnataka</option><option>Tamil Nadu</option>
+          <option>West Bengal</option><option>Madhya Pradesh</option><option>Bihar</option>
+          <option>Kerala</option><option>Telangana</option><option>Andhra Pradesh</option>
         </select>
         <select class="filter-sel" id="filter-score" onchange="renderTable()">
           <option value="">All scores</option>
@@ -228,45 +244,119 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
           <option value="joined">Sort: Joined</option>
         </select>
       </div>
-
       <div class="table-wrap">
         <div class="table-head table-cols">
-          <div>User</div>
-          <div>Degree / College</div>
-          <div class="hide-mob">Phone</div>
-          <div>Goal</div>
-          <div class="hide-mob">Sem</div>
-          <div>Today</div>
-          <div class="hide-mob">Week avg</div>
-          <div class="hide-mob">Streak</div>
-          <div class="hide-mob">Applied</div>
-          <div class="hide-mob">Last seen</div>
-          <div></div>
+          <div>User</div><div>Degree / School</div>
+          <div class="hide-mob">Phone</div><div>State</div>
+          <div class="hide-mob">Type</div><div>Today</div>
+          <div class="hide-mob">Week</div><div class="hide-mob">Streak</div>
+          <div class="hide-mob">Applied</div><div class="hide-mob">Last seen</div><div></div>
         </div>
-        <div id="user-table-body">
-          <div class="spinner"></div>
-        </div>
+        <div id="user-table-body"><div class="spinner"></div></div>
       </div>
-      <div style="font-size:11px;color:var(--text3);text-align:center;" id="table-footer"></div>
+      <div style="font-size:11px;color:var(--text3);text-align:center;padding:4px;" id="table-footer"></div>
+    </div>
+
+    <!-- SCHOOL TAB -->
+    <div id="tab-school" style="display:none;">
+      <div class="controls">
+        <input class="search-box" type="text" id="school-search" placeholder="🔍 Search school students..." oninput="renderSchoolTable()">
+        <select class="filter-sel" id="school-class-filter" onchange="renderSchoolTable()">
+          <option value="">All classes</option>
+          <option value="6">Class 6</option><option value="7">Class 7</option>
+          <option value="8">Class 8</option><option value="9">Class 9</option>
+          <option value="10">Class 10</option><option value="11">Class 11</option>
+          <option value="12">Class 12</option>
+        </select>
+        <select class="filter-sel" id="school-board-filter" onchange="renderSchoolTable()">
+          <option value="">All boards</option>
+          <option value="cbse">CBSE</option><option value="icse">ICSE</option>
+          <option value="state">State Board</option><option value="ib">IB</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <div class="table-head" style="display:grid;grid-template-columns:1.8fr 1fr 1fr .8fr .7fr .7fr .7fr .4fr;padding:10px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);">
+          <div>Student</div><div>Class / Board</div><div>School</div><div>State</div>
+          <div>Today</div><div>Streak</div><div>Last seen</div><div></div>
+        </div>
+        <div id="school-table-body"><div class="empty-state"><div class="empty-icon">🏫</div><div class="empty-h">No school students yet</div></div></div>
+      </div>
+    </div>
+
+    <!-- COLLEGE TAB -->
+    <div id="tab-college" style="display:none;">
+      <div class="controls">
+        <input class="search-box" type="text" id="college-search" placeholder="🔍 Search college students..." oninput="renderCollegeTable()">
+        <select class="filter-sel" id="college-field-filter" onchange="renderCollegeTable()">
+          <option value="">All fields</option>
+          <option value="forensic">Forensic Science</option>
+          <option value="cs">CS / BCA</option><option value="comm">Commerce</option>
+          <option value="ba">Arts / BA</option><option value="btechcs">BTech CS</option>
+          <option value="mech">Mechanical</option><option value="llb">Law</option>
+          <option value="medical">Medical</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <div class="table-head" style="display:grid;grid-template-columns:1.8fr 1.4fr 1fr .7fr .7fr .7fr .8fr 1fr .4fr;padding:10px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);">
+          <div>Student</div><div>Degree / College</div><div>State</div>
+          <div>Sem</div><div>Today</div><div>Streak</div><div>Applied</div><div>Last seen</div><div></div>
+        </div>
+        <div id="college-table-body"><div class="empty-state"><div class="empty-icon">🎓</div><div class="empty-h">No college students yet</div></div></div>
+      </div>
     </div>
 
     <!-- INSIGHTS TAB -->
     <div id="tab-insights" style="display:none;">
-      <div class="insights-grid" id="insights-grid">
-        <div class="insight-card"><div class="insight-title">🎯 Goals breakdown</div><div id="ins-goals"></div></div>
-        <div class="insight-card"><div class="insight-title">🔬 Top fields</div><div id="ins-fields"></div></div>
-        <div class="insight-card"><div class="insight-title">📍 States</div><div id="ins-states"></div></div>
-        <div class="insight-card"><div class="insight-title">🎓 Degree types</div><div id="ins-degrees"></div></div>
-        <div class="insight-card" style="grid-column:1/-1;"><div class="insight-title">📊 Score distribution</div><div id="ins-scores" style="display:flex;gap:8px;align-items:flex-end;height:80px;margin-top:8px;"></div><div id="ins-score-labels" style="display:flex;gap:8px;margin-top:4px;font-size:10px;color:var(--text3);"></div></div>
+      <div class="insights-grid">
+        <div class="insight-card"><div class="insight-title">👤 User Types</div><div id="ins-types"></div></div>
+        <div class="insight-card"><div class="insight-title">🎯 Goals</div><div id="ins-goals"></div></div>
+        <div class="insight-card"><div class="insight-title">📍 Top States</div><div id="ins-states"></div></div>
+        <div class="insight-card"><div class="insight-title">🔬 Top Fields</div><div id="ins-fields"></div></div>
+        <div class="insight-card"><div class="insight-title">🏫 School Classes</div><div id="ins-classes"></div></div>
+        <div class="insight-card"><div class="insight-title">🎓 Degree Types</div><div id="ins-degrees"></div></div>
+        <div class="insight-card"><div class="insight-title">🌐 Languages</div><div id="ins-langs"></div></div>
+        <div class="insight-card"><div class="insight-title">📋 Boards (School)</div><div id="ins-boards"></div></div>
+        <div class="insight-card" style="grid-column:1/-1;">
+          <div class="insight-title">📊 Score Distribution</div>
+          <div id="ins-scores" style="display:flex;gap:8px;align-items:flex-end;height:80px;margin-top:10px;"></div>
+          <div id="ins-score-labels" style="display:flex;gap:8px;margin-top:6px;font-size:10px;color:var(--text3);"></div>
+        </div>
       </div>
     </div>
 
     <!-- ACTIVITY TAB -->
     <div id="tab-activity" style="display:none;">
       <div class="table-wrap">
-        <div style="padding:14px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--border);">Recent user activity (last seen)</div>
+        <div style="padding:14px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:1px solid var(--border);">
+          Recent activity — sorted by last seen
+        </div>
         <div id="activity-list"></div>
       </div>
+    </div>
+
+    <!-- CREDENTIALS TAB -->
+    <div id="tab-credentials" style="display:none;">
+      <div style="background:var(--cbg);border:1px solid var(--ct);border-radius:var(--r);padding:14px 18px;margin-bottom:16px;font-size:13px;color:var(--ct);line-height:1.7;">
+        🔒 <b>Confidential:</b> This section contains user phone numbers, IDs and password hashes. Handle with care. Do not share.
+      </div>
+      <div class="controls">
+        <input class="search-box" type="text" id="cred-search" placeholder="🔍 Search by name or phone..." oninput="renderCredTable()">
+        <button class="tb-btn" onclick="exportCredCSV()">⬇ Export Credentials CSV</button>
+      </div>
+      <div class="table-wrap">
+        <div class="table-head" style="display:grid;grid-template-columns:1.5fr 1.2fr 1fr 1.8fr 1.2fr .5fr;padding:10px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);">
+          <div>Name</div>
+          <div>📱 Phone / Mobile</div>
+          <div>🎓 Type / Class</div>
+          <div>🆔 User ID</div>
+          <div>🔑 Password Hash</div>
+          <div></div>
+        </div>
+        <div id="cred-table-body">
+          <div class="empty-state"><div class="empty-icon">🔐</div><div class="empty-h">No credentials loaded</div><div class="empty-s">Switch to this tab after data loads</div></div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:6px;" id="cred-footer"></div>
     </div>
 
   </div>
@@ -277,8 +367,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="modal">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
       <div>
-        <h3 id="modal-name">User detail</h3>
-        <div style="font-size:12px;color:var(--text2);" id="modal-sub"></div>
+        <h3 id="modal-name">User</h3>
+        <div style="font-size:12px;color:var(--text2);margin-top:3px;" id="modal-sub"></div>
       </div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
@@ -287,385 +377,363 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 
 <script>
-// ══════════════════════════════════════
-// ADMIN PASSWORD — change this!
-// ══════════════════════════════════════
 const ADMIN_PASSWORD = 'admin1234';
+let isLoggedIn = false, allUsers = [];
+let _attempts=0, _locked=false;
 
-let isLoggedIn = false;
-let allUsers = [];
-
-let _loginAttempts=0,_loginLocked=false;
 function tryLogin(){
-  if(_loginLocked){document.getElementById('login-err').textContent='Too many attempts. Wait 30 seconds.';document.getElementById('login-err').style.display='block';return;}
-  const pw = document.getElementById('admin-pw').value;
-  if(pw === ADMIN_PASSWORD){
-    isLoggedIn = true;
-    _loginAttempts=0;
+  if(_locked){showErr('Too many attempts. Wait 30s.');return;}
+  const pw=document.getElementById('admin-pw').value;
+  if(pw===ADMIN_PASSWORD){
+    isLoggedIn=true;_attempts=0;
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('dashboard').classList.add('visible');
     loadData();
   } else {
-    _loginAttempts++;
-    document.getElementById('login-err').textContent=`Wrong password. ${3-_loginAttempts} attempt(s) left.`;
-    document.getElementById('login-err').style.display='block';
+    _attempts++;
+    if(_attempts>=3){_locked=true;showErr('Locked 30s — too many attempts.');setTimeout(()=>{_locked=false;_attempts=0;document.getElementById('login-err').style.display='none';},30000);}
+    else showErr(`Wrong password. ${3-_attempts} attempt(s) left.`);
     document.getElementById('admin-pw').value='';
-    setTimeout(()=>document.getElementById('login-err').style.display='none',2500);
-    if(_loginAttempts>=3){_loginLocked=true;document.getElementById('login-err').textContent='Too many wrong attempts. Locked for 30 seconds.';document.getElementById('login-err').style.display='block';setTimeout(()=>{_loginLocked=false;_loginAttempts=0;document.getElementById('login-err').style.display='none';},30000);}
   }
 }
+function showErr(msg){const e=document.getElementById('login-err');e.textContent=msg;e.style.display='block';setTimeout(()=>e.style.display='none',3000);}
+function logout(){isLoggedIn=false;document.getElementById('dashboard').classList.remove('visible');document.getElementById('login-screen').classList.remove('hidden');document.getElementById('admin-pw').value='';}
 
-function logout(){
-  isLoggedIn=false;
-  document.getElementById('dashboard').classList.remove('visible');
-  document.getElementById('login-screen').classList.remove('hidden');
-  document.getElementById('admin-pw').value='';
-}
-
-// ══════════════════════════════════════
-// DATA LOADING
-// ══════════════════════════════════════
-// ── JSONBIN CONFIG (must match the app) ──
-// Firebase used - no keys needed for public read
-const _FB_UNUSED = '';
-
+// ── LOAD DATA ──
 async function loadData(){
   document.getElementById('user-table-body').innerHTML='<div class="spinner"></div>';
-  document.getElementById('last-refresh-label').textContent='Loading from database...';
-
-  // ── ORIGIN CHECK: warn if not opened from the correct domain ──
-  const origin = window.location.origin;
-  const isLocalFile = window.location.protocol === 'file:';
-  const isGithub = origin.includes('github.io') || origin.includes('karanveerkhr');
-  if(!isLocalFile && !isGithub){
-    document.getElementById('user-table-body').innerHTML=`
-      <div class="empty-state">
-        <div class="empty-icon">⚠️</div>
-        <div class="empty-h">Wrong origin — Firebase will block this</div>
-        <div class="empty-s" style="margin-bottom:16px;">You are viewing this from: <b style="color:var(--at);">${origin}</b></div>
-        <div class="empty-s">To use the admin panel, open it from one of these:</div>
-        <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
-          <a href="https://karanveerkhr-maker.github.io/lifetracker/admin.html"
-             style="display:inline-block;padding:10px 18px;background:var(--grad);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;">
-            🌐 Open on GitHub Pages
-          </a>
-          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Or download and open the file directly in your browser (file://)</div>
-        </div>
-      </div>`;
-    document.getElementById('last-refresh-label').textContent='⚠️ Wrong origin — see instructions below';
+  document.getElementById('last-refresh-label').textContent='Loading...';
+  const origin=window.location.origin;
+  const isLocalFile=window.location.protocol==='file:';
+  const isGithub=origin.includes('github.io')||origin.includes('karanveerkhr');
+  if(!isLocalFile&&!isGithub){
+    showFirebaseError(`You are on: <b>${origin}</b><br>Open admin from <a href="https://karanveerkhr-maker.github.io/lifetracker/admin.html" style="color:var(--acc2);">GitHub Pages</a>`,'Wrong origin');
     return;
   }
-
   try{
-    const FB = 'https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
-
-    const fetchFB = (path) => fetch(FB+path, {
-      method: 'GET',
-      headers: {'Accept': 'application/json'},
-      mode: 'cors'
-    });
-
-    // Fetch all known paths in parallel
-    let rootKeys = null;
-    try{ const r = await fetchFB('/.json?shallow=true'); if(r.ok) rootKeys = await r.json(); }catch(e){}
-
-    const [resUsers, resAccounts] = await Promise.all([
+    const FB='https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
+    const fetchFB=p=>fetch(FB+p,{method:'GET',headers:{'Accept':'application/json'},mode:'cors'});
+    let rootKeys=null;
+    try{const r=await fetchFB('/.json?shallow=true');if(r.ok)rootKeys=await r.json();}catch(e){}
+    const [resUsers,resAccounts,resByPhone]=await Promise.all([
       fetchFB('/users.json'),
       fetchFB('/accounts/byUID.json'),
+      fetchFB('/accounts/byPhone.json')
     ]);
-
-    // ── Check if Firebase rules are blocking us ──
-    if(resUsers.status === 401 || resUsers.status === 403 ||
-       resAccounts.status === 401 || resAccounts.status === 403){
-      document.getElementById('user-table-body').innerHTML=`
-        <div class="empty-state" style="text-align:left;max-width:600px;margin:0 auto;">
-          <div class="empty-icon" style="text-align:center;">🔒</div>
-          <div class="empty-h" style="text-align:center;margin-bottom:16px;">Firebase Rules are blocking reads</div>
-          <div style="background:var(--bg3);border-radius:12px;padding:16px;margin-bottom:16px;">
-            <div style="font-size:12px;font-weight:700;color:var(--at);margin-bottom:10px;">HTTP Status: /users=${resUsers.status} · /accounts/byUID=${resAccounts.status}</div>
-            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">Fix in 30 seconds:</div>
-            <div style="font-size:12px;color:var(--text2);line-height:1.8;">
-              1. Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--acc2);">console.firebase.google.com</a><br>
-              2. Select your project → <b>Realtime Database</b><br>
-              3. Click <b>Rules</b> tab<br>
-              4. Replace rules with:
-            </div>
-            <pre style="background:var(--bg4);border-radius:8px;padding:12px;margin-top:10px;font-size:12px;color:var(--gt);">{
-  "rules": {
-    ".read": true,
-    ".write": true
-  }
-}</pre>
-            <div style="font-size:11px;color:var(--text3);margin-top:8px;">5. Click <b>Publish</b> → then come back and click ⟳ Refresh</div>
-          </div>
-        </div>`;
-      document.getElementById('last-refresh-label').textContent='⚠️ Firebase rules blocking access — see instructions';
-      return;
+    if((resUsers.status===401||resUsers.status===403)&&(resAccounts.status===401||resAccounts.status===403)){
+      showFirebaseRulesError(resUsers.status,resAccounts.status);return;
     }
-
-    // Show status in banner
-    const diagMsg = 'Origin: '+origin+' | DB root: '+(rootKeys?Object.keys(rootKeys).join(', '):'denied/empty')
-      +' | /users: '+resUsers.status+' | /accounts/byUID: '+resAccounts.status;
-    document.getElementById('setup-banner').querySelector('span:nth-child(2)').innerHTML =
-      '<b>✅ Connected:</b> Firebase · '+diagMsg;
-    document.getElementById('setup-banner').style.display='flex';
-
-    const rawUsers    = resUsers.ok    ? await resUsers.json()    : null;
-    const rawAccounts = resAccounts.ok ? await resAccounts.json() : null;
-
-    let usersMap = {};
-
-    // OLD FORMAT: /users/{uid} — flat snapshot stored directly
-    if(rawUsers && typeof rawUsers === 'object'){
-      Object.values(rawUsers).forEach(u=>{
-        if(!u || !u.uid) return;
-        usersMap[u.uid] = {
-          uid: u.uid,
-          name: u.name || 'Unknown',
-          phone: u.phone || '',
-          degree: u.degree || u.degreeLabel || '',
-          field: u.field || '',
-          college: u.college || '',
-          state: u.state || '',
-          sem: u.sem || '',
-          goal: u.goal || '',
-          m12: u.m12 || '',
-          applied: u.applied ?? 0,
-          certs: u.certs ?? 0,
-          todayPct: u.todayPct ?? 0,
-          weekAvg: u.weekAvg ?? 0,
-          streak: u.streak ?? 0,
-          lastSeen: u.lastSeen || '',
-          joinedAt: u.joinedAt || '',
+    document.getElementById('banner-text').innerHTML=`✅ Connected · /users:${resUsers.status} · /accounts/byUID:${resAccounts.status} · /byPhone:${resByPhone.status}`;
+    const rawUsers=resUsers.ok?await resUsers.json():null;
+    const rawAccounts=resAccounts.ok?await resAccounts.json():null;
+    const rawByPhone=resByPhone.ok?await resByPhone.json():null;
+    // Build phone→passHash lookup from byPhone path
+    const phoneMap={};
+    if(rawByPhone&&typeof rawByPhone==='object'){
+      Object.entries(rawByPhone).forEach(([phone,rec])=>{
+        if(rec&&rec.uid) phoneMap[rec.uid]={passHash:rec.passHash||'',phone:phone,binId:rec.binId||''};
+      });
+    }
+    let usersMap={};
+    if(rawUsers&&typeof rawUsers==='object'){
+      Object.entries(rawUsers).forEach(([key,u])=>{
+        if(!u||typeof u!=='object')return;
+        const uid=u.uid||key;
+        if(!uid||uid==='null')return;
+        usersMap[uid]={
+          uid,name:u.name||'Unknown',phone:u.phone||'',
+          degree:u.degree||u.degreeLabel||'',field:u.field||'',
+          college:u.college||'',state:u.state||'',sem:u.sem||'',
+          goal:u.goal||'',m12:u.m12||'',
+          applied:u.applied??0,certs:u.certs??0,
+          todayPct:u.todayPct??0,weekAvg:u.weekAvg??0,streak:u.streak??0,
+          lastSeen:u.lastSeen||'',joinedAt:u.joinedAt||'',
+          isSchool:u.isSchool||false,schoolClass:u.schoolClass||null,
+          board:u.board||'',stream:u.stream||'',lang:u.lang||'en',
         };
       });
     }
-
-    // NEW FORMAT: /accounts/byUID/{uid} = {uid,name,phone,joinedAt,lastSeen,snapshot:{...}}
-    // Merged on top — newer data wins, old data preserved if field is missing
-    if(rawAccounts && typeof rawAccounts === 'object'){
-      Object.values(rawAccounts).forEach(acc=>{
-        if(!acc || !acc.uid) return;
-        const snap = acc.snapshot || {};
-        const existing = usersMap[acc.uid] || {};
-        usersMap[acc.uid] = {
-          uid: acc.uid,
-          name: acc.name || existing.name || 'Unknown',
-          phone: acc.phone || existing.phone || '',
-          degree: snap.degree || snap.degreeLabel || existing.degree || '',
-          field: snap.field || existing.field || '',
-          college: snap.college || existing.college || '',
-          state: snap.state || existing.state || '',
-          sem: snap.sem || existing.sem || '',
-          goal: snap.goal || existing.goal || '',
-          m12: snap.m12 || existing.m12 || '',
-          applied: snap.applied ?? existing.applied ?? 0,
-          certs: snap.certs ?? existing.certs ?? 0,
-          todayPct: snap.todayPct ?? existing.todayPct ?? 0,
-          weekAvg: snap.weekAvg ?? existing.weekAvg ?? 0,
-          streak: snap.streak ?? existing.streak ?? 0,
-          lastSeen: snap.lastSeen || acc.lastSeen || existing.lastSeen || '',
-          joinedAt: acc.joinedAt || existing.joinedAt || '',
+    if(rawAccounts&&typeof rawAccounts==='object'){
+      Object.entries(rawAccounts).forEach(([key,acc])=>{
+        if(!acc||typeof acc!=='object')return;
+        if(!acc.uid)acc.uid=key;
+        const snap=acc.snapshot||{};
+        const ex=usersMap[acc.uid]||{};
+        usersMap[acc.uid]={
+          uid:acc.uid,
+          name:acc.name||ex.name||'Unknown',
+          phone:acc.phone||ex.phone||'',
+          degree:snap.degree||snap.degreeLabel||ex.degree||'',
+          field:snap.field||ex.field||'',
+          college:acc.college||snap.college||ex.college||'',
+          school:acc.school||snap.school||ex.school||'',
+          state:acc.state||snap.state||ex.state||'',
+          sem:snap.sem||acc.sem||ex.sem||'',
+          goal:acc.goal||snap.goal||ex.goal||'',
+          m12:acc.m12||snap.m12||ex.m12||'',
+          applied:snap.applied??ex.applied??0,
+          certs:snap.certs??ex.certs??0,
+          todayPct:snap.todayPct??ex.todayPct??0,
+          weekAvg:snap.weekAvg??ex.weekAvg??0,
+          streak:snap.streak??ex.streak??0,
+          lastSeen:(snap.lastSeen>=(acc.lastSeen||''))?snap.lastSeen:(acc.lastSeen||snap.lastSeen||ex.lastSeen||''),
+          joinedAt:acc.joinedAt||ex.joinedAt||'',
+          isSchool:acc.isSchool||snap.isSchool||ex.isSchool||false,
+          schoolClass:acc.schoolClass||snap.schoolClass||ex.schoolClass||null,
+          board:acc.board||snap.board||ex.board||'',
+          stream:acc.stream||snap.stream||ex.stream||'',
+          lang:acc.lang||snap.lang||ex.lang||'en',
         };
       });
     }
+    // Merge passHash + binId from byPhone into each user
+    Object.keys(usersMap).forEach(uid=>{
+      const ph=phoneMap[uid];
+      if(ph){
+        if(!usersMap[uid].passHash) usersMap[uid].passHash=ph.passHash||'';
+        if(!usersMap[uid].binId)    usersMap[uid].binId=ph.binId||'';
+        if(!usersMap[uid].phone)    usersMap[uid].phone=ph.phone||'';
+      }
+    });
 
     if(!Object.keys(usersMap).length){
-      // Show a detailed dump of raw data to help diagnose
-      const dumpHtml = '<div class="empty-state" style="text-align:left;padding:20px;">'
-        +'<div class="empty-icon" style="text-align:center;">👥</div>'
-        +'<div class="empty-h" style="text-align:center;margin-bottom:16px;">No users found</div>'
-        +'<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Raw /users response:</div>'
-        +'<pre style="font-size:10px;color:var(--at);background:var(--bg3);padding:10px;border-radius:8px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;">'
-        +JSON.stringify(rawUsers,null,2)
-        +'</pre>'
-        +'<div style="font-size:11px;color:var(--text3);margin:8px 0;">Raw /accounts/byUID response:</div>'
-        +'<pre style="font-size:10px;color:var(--acc2);background:var(--bg3);padding:10px;border-radius:8px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;">'
-        +JSON.stringify(rawAccounts,null,2)
-        +'</pre>'
-        +'</div>';
-      document.getElementById('user-table-body').innerHTML=dumpHtml;
+      document.getElementById('user-table-body').innerHTML='<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-h">No users yet</div><div class="empty-s">Users will appear once they register in the app.</div></div>';
       document.getElementById('last-refresh-label').textContent='No users found · '+new Date().toLocaleTimeString('en-IN');
-      allUsers=[];
-      renderStats(); renderInsights(); renderActivity();
-      return;
+      allUsers=[];renderStats();renderInsights();renderActivity();return;
     }
-
-    allUsers = Object.values(usersMap).sort((a,b)=>new Date(b.lastSeen||0)-new Date(a.lastSeen||0));
-    renderStats();
-    renderTable();
-    renderInsights();
-    renderActivity();
-    document.getElementById('last-refresh-label').textContent=
-      'Last refreshed: '+new Date().toLocaleTimeString('en-IN')+' · '+allUsers.length+' user(s) loaded';
+    allUsers=Object.values(usersMap).sort((a,b)=>new Date(b.lastSeen||0)-new Date(a.lastSeen||0));
+    renderStats();renderTable();renderSchoolTable();renderCollegeTable();renderInsights();renderActivity();
+    document.getElementById('last-refresh-label').textContent='Refreshed: '+new Date().toLocaleTimeString('en-IN')+' · '+allUsers.length+' user(s)';
   }catch(e){
-    const isCORS = e.message.includes('fetch') || e.message.includes('network') || e.message.includes('CORS') || e.message.includes('Failed');
-    document.getElementById('user-table-body').innerHTML=
-      '<div class="empty-state" style="text-align:left;max-width:500px;margin:0 auto;">'
-      +'<div class="empty-icon" style="text-align:center;">⚠️</div>'
-      +'<div class="empty-h" style="text-align:center;">'+(isCORS?'Network error — open from GitHub':'Could not load data')+'</div>'
-      +'<div style="background:var(--bg3);border-radius:10px;padding:14px;margin-top:14px;font-size:12px;color:var(--text2);line-height:1.8;">'
-      +'Error: <b style="color:var(--ct);">'+e.message+'</b><br><br>'
-      +(isCORS
-        ?'This usually means:<br>① Firebase Rules are set to <b>false</b> (fix in Firebase Console → Realtime Database → Rules)<br>② OR you opened the file from the wrong place<br><br>Open from: <a href="https://karanveerkhr-maker.github.io/lifetracker/admin.html" style="color:var(--acc2);">karanveerkhr-maker.github.io/lifetracker/admin.html</a>'
-        :'Check your internet connection and try again.'
-       )
-      +'</div></div>';
+    document.getElementById('user-table-body').innerHTML=`<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-h">Error loading data</div><div class="empty-s">${e.message}<br><br>Check Firebase rules — set .read:true</div></div>`;
     document.getElementById('last-refresh-label').textContent='Error: '+e.message;
-    console.error('Admin loadData error:', e);
   }
 }
 
-async function refreshData(){ await loadData(); }
+function showFirebaseError(msg,title){
+  document.getElementById('user-table-body').innerHTML=`<div class="empty-state"><div class="empty-icon">🚫</div><div class="empty-h">${title||'Cannot load data'}</div><div class="empty-s">${msg}</div></div>`;
+}
+function showFirebaseRulesError(s1,s2){
+  document.getElementById('user-table-body').innerHTML=`<div class="empty-state" style="text-align:left;max-width:500px;margin:0 auto;"><div class="empty-icon" style="text-align:center;">🔒</div><div class="empty-h" style="text-align:center;">Firebase Rules blocking reads</div><div style="margin-top:12px;font-size:12px;color:var(--text2);line-height:1.8;">HTTP: /users=${s1} · /accounts/byUID=${s2}<br><br><b>Fix in Firebase Console:</b><br>Realtime Database → Rules → Publish:</div><div class="rules-box">{\n  "rules": {\n    ".read": true,\n    ".write": true\n  }\n}</div></div>`;
+  document.getElementById('last-refresh-label').textContent='⚠️ Firebase rules blocking — fix and refresh';
+}
 
-// ══════════════════════════════════════
-// STATS
-// ══════════════════════════════════════
+async function refreshData(){allUsers=[];await loadData();}
+
+// ── STATS ──
 function renderStats(){
-  const now=new Date(), todayStr=now.toISOString().slice(0,10);
-  const activeToday=allUsers.filter(u=>u.lastSeen&&u.lastSeen.startsWith(todayStr)).length;
-  const avgScore=allUsers.length?Math.round(allUsers.reduce((s,u)=>s+(u.weekAvg||0),0)/allUsers.length):0;
+  const total=allUsers.length;
+  const school=allUsers.filter(u=>u.isSchool).length;
+  const college=total-school;
+  const now=new Date();
+  const active=allUsers.filter(u=>u.lastSeen&&(now-new Date(u.lastSeen))<86400000).length;
+  const avgScore=total?Math.round(allUsers.reduce((s,u)=>s+(u.todayPct||0),0)/total):0;
   const totalApps=allUsers.reduce((s,u)=>s+(u.applied||0),0);
-  const totalCerts=allUsers.reduce((s,u)=>s+(u.certs||0),0);
-  document.getElementById('stat-total').textContent=allUsers.length;
-  document.getElementById('stat-active').textContent=activeToday;
+  const avgStreak=total?Math.round(allUsers.reduce((s,u)=>s+(u.streak||0),0)/total):0;
+  const states=new Set(allUsers.map(u=>u.state).filter(Boolean)).size;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-college').textContent=college;
+  document.getElementById('stat-school').textContent=school;
+  document.getElementById('stat-active').textContent=active;
   document.getElementById('stat-avg').textContent=avgScore+'%';
   document.getElementById('stat-apps').textContent=totalApps;
-  document.getElementById('stat-certs').textContent=totalCerts;
-  const avgStreak=allUsers.length?Math.round(allUsers.reduce((s,u)=>s+(u.streak||0),0)/allUsers.length):0;
-  document.getElementById('stat-streak').textContent=avgStreak+'🔥';
+  document.getElementById('stat-streak').textContent=avgStreak;
+  document.getElementById('stat-states').textContent=states;
 }
 
-// ══════════════════════════════════════
-// USER TABLE
-// ══════════════════════════════════════
+// ── MAIN TABLE ──
+let curFilter={};
 function renderTable(){
-  const search=(document.getElementById('search').value||'').toLowerCase();
-  const goalF=document.getElementById('filter-goal').value;
-  const fieldF=document.getElementById('filter-field').value;
-  const scoreF=document.getElementById('filter-score').value;
-
-  const sortBy=document.getElementById('sort-by')?.value||'lastSeen';
-  const sorted=[...allUsers].sort((a,b)=>{
-    if(sortBy==='weekAvg') return (b.weekAvg||0)-(a.weekAvg||0);
-    if(sortBy==='streak') return (b.streak||0)-(a.streak||0);
-    if(sortBy==='name') return (a.name||'').localeCompare(b.name||'');
-    if(sortBy==='joined') return new Date(b.joinedAt||0)-new Date(a.joinedAt||0);
-    return new Date(b.lastSeen||0)-new Date(a.lastSeen||0);
-  });
-  let filtered=sorted.filter(u=>{
-    if(search&&!`${u.name} ${u.degree} ${u.college} ${u.state} ${u.phone||''}`.toLowerCase().includes(search)) return false;
-    if(goalF&&u.goal!==goalF) return false;
-    if(fieldF&&u.field!==fieldF) return false;
-    if(scoreF==='high'&&(u.weekAvg||0)<70) return false;
-    if(scoreF==='mid'&&((u.weekAvg||0)<40||(u.weekAvg||0)>=70)) return false;
-    if(scoreF==='low'&&(u.weekAvg||0)>=40) return false;
-    return true;
-  });
-
-  document.getElementById('table-footer').textContent=
-    `Showing ${filtered.length} of ${allUsers.length} users`;
-
-  if(!filtered.length){
-    document.getElementById('user-table-body').innerHTML=
-      '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-h">No users match filters</div><div class="empty-s">Try clearing filters above</div></div>';
-    return;
-  }
-
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  const fType=document.getElementById('filter-type').value;
+  const fGoal=document.getElementById('filter-goal').value;
+  const fState=document.getElementById('filter-state').value;
+  const fScore=document.getElementById('filter-score').value;
+  const sortBy=document.getElementById('sort-by').value;
+  let list=[...allUsers];
+  if(q) list=list.filter(u=>(u.name+' '+(u.degree||'')+' '+(u.college||'')+' '+(u.state||'')+' '+(u.phone||'')).toLowerCase().includes(q));
+  if(fType==='school') list=list.filter(u=>u.isSchool);
+  if(fType==='college') list=list.filter(u=>!u.isSchool);
+  if(fGoal) list=list.filter(u=>u.goal===fGoal);
+  if(fState) list=list.filter(u=>u.state===fState);
+  if(fScore==='high') list=list.filter(u=>(u.weekAvg||0)>=70);
+  if(fScore==='mid')  list=list.filter(u=>(u.weekAvg||0)>=40&&(u.weekAvg||0)<70);
+  if(fScore==='low')  list=list.filter(u=>(u.weekAvg||0)<40);
+  if(sortBy==='weekAvg') list.sort((a,b)=>(b.weekAvg||0)-(a.weekAvg||0));
+  else if(sortBy==='streak') list.sort((a,b)=>(b.streak||0)-(a.streak||0));
+  else if(sortBy==='name') list.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  else if(sortBy==='joined') list.sort((a,b)=>new Date(b.joinedAt||0)-new Date(a.joinedAt||0));
+  else list.sort((a,b)=>new Date(b.lastSeen||0)-new Date(a.lastSeen||0));
+  document.getElementById('table-footer').textContent=`Showing ${list.length} of ${allUsers.length} users`;
+  if(!list.length){document.getElementById('user-table-body').innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-h">No users match filters</div></div>';return;}
   const now=new Date();
-  document.getElementById('user-table-body').innerHTML=filtered.map(u=>{
-    const lastSeen=u.lastSeen?new Date(u.lastSeen):null;
-    const minsAgo=lastSeen?Math.floor((now-lastSeen)/60000):null;
-    const isOnline=minsAgo!==null&&minsAgo<60;
-    const lastSeenStr=!lastSeen?'Never':minsAgo<1?'Just now':minsAgo<60?minsAgo+'m ago':minsAgo<1440?Math.floor(minsAgo/60)+'h ago':Math.floor(minsAgo/1440)+'d ago';
-    const scoreColor=u.todayPct>=70?'#3ECFB2':u.todayPct>=40?'#FFD060':'#FF9090';
-    const weekColor=u.weekAvg>=70?'#3ECFB2':u.weekAvg>=40?'#FFD060':'#FF9090';
-    const goalTag={govt:'tb',bank:'tg',core:'tp',higher:'ta',private:'ta',mixed:'tt2'}[u.goal]||'';
-    return`<div class="table-row table-cols" onclick="openUserModal('${u.uid}')">
-      <div>
-        <div class="cell-name"><span class="${isOnline?'badge-online':'badge-offline'}"></span>${u.name||'Anonymous'}</div>
-        <div class="cell-sub">${u.state||'—'}</div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:600;">${u.degree||'—'}</div>
-        <div class="cell-sub">${(u.college||'').slice(0,28)}</div>
-      </div>
-      <div class="hide-mob" style="font-size:12px;font-weight:600;">${u.phone||'—'}</div>
-      <div><span class="tag ${goalTag}" style="font-size:10px;">${goalLabel(u.goal)}</span></div>
-      <div class="hide-mob" style="font-size:13px;font-weight:700;">S${u.sem||'?'}</div>
-      <div>
-        <div style="font-size:13px;font-weight:800;color:${scoreColor};">${u.todayPct||0}%</div>
-        <div class="score-bar"><div class="score-fill" style="width:${u.todayPct||0}%;background:${scoreColor};"></div></div>
-      </div>
-      <div class="hide-mob">
-        <div style="font-size:12px;font-weight:700;color:${weekColor};">${u.weekAvg||0}%</div>
-      </div>
-      <div class="hide-mob" style="font-size:12px;font-weight:600;color:var(--at);">${u.streak||0}🔥</div>
-      <div class="hide-mob" style="font-size:12px;font-weight:600;">${u.applied||0}</div>
-      <div class="hide-mob" style="font-size:11px;color:var(--text2);">${lastSeenStr}</div>
-      <div style="font-size:14px;color:var(--text3);">›</div>
+  document.getElementById('user-table-body').innerHTML=list.map(u=>rowHtml(u,now)).join('');
+}
+
+function rowHtml(u,now){
+  const last=u.lastSeen?new Date(u.lastSeen):null;
+  const mins=last?Math.floor((now-last)/60000):null;
+  const online=mins!==null&&mins<60;
+  const tStr=!last?'—':mins<1?'Now':mins<60?mins+'m':mins<1440?Math.floor(mins/60)+'h':Math.floor(mins/1440)+'d';
+  const sc=u.weekAvg>=70?'var(--gt)':u.weekAvg>=40?'var(--at)':'var(--ct)';
+  const typeTag=u.isSchool
+    ?`<span class="tag tb">Cl.${u.schoolClass||'?'}</span>`
+    :`<span class="tag tp">Sem ${u.sem||'?'}</span>`;
+  const degLabel=u.isSchool?(u.degree||'School'):(u.degree||'—');
+  const placeLabel=u.isSchool?(u.school||u.college||'—'):(u.college||'—');
+  return`<div class="table-row table-cols" onclick="openUserModal('${u.uid}')">
+    <div><span class="${online?'badge-online':'badge-offline'}"></span><div class="cell-name">${u.name||'—'}</div><div class="cell-sub">${u.phone||'—'}</div></div>
+    <div><div class="cell-name" style="font-size:12px;">${degLabel}</div><div class="cell-sub">${placeLabel}</div></div>
+    <div class="hide-mob" style="font-size:12px;color:var(--text2);">${u.phone||'—'}</div>
+    <div style="font-size:11px;color:var(--text2);">${u.state||'—'}</div>
+    <div class="hide-mob">${typeTag}</div>
+    <div>
+      <div style="font-size:13px;font-weight:700;color:${sc};">${u.todayPct||0}%</div>
+      <div class="score-bar"><div class="score-fill" style="width:${u.todayPct||0}%;background:${sc};"></div></div>
+    </div>
+    <div class="hide-mob" style="font-size:12px;font-weight:600;color:${sc};">${u.weekAvg||0}%</div>
+    <div class="hide-mob" style="font-size:12px;font-weight:700;color:var(--at);">${u.streak||0}🔥</div>
+    <div class="hide-mob" style="font-size:12px;font-weight:600;">${u.applied||0}</div>
+    <div class="hide-mob" style="font-size:11px;color:var(--text2);">${tStr}</div>
+    <div style="font-size:16px;color:var(--text3);">›</div>
+  </div>`;
+}
+
+// ── SCHOOL TABLE ──
+function renderSchoolTable(){
+  const q=(document.getElementById('school-search').value||'').toLowerCase();
+  const fClass=document.getElementById('school-class-filter').value;
+  const fBoard=document.getElementById('school-board-filter').value;
+  let list=allUsers.filter(u=>u.isSchool);
+  if(q) list=list.filter(u=>(u.name+' '+(u.state||'')+' '+(u.school||'')).toLowerCase().includes(q));
+  if(fClass) list=list.filter(u=>String(u.schoolClass)===fClass);
+  if(fBoard) list=list.filter(u=>u.board===fBoard);
+  list.sort((a,b)=>new Date(b.lastSeen||0)-new Date(a.lastSeen||0));
+  const el=document.getElementById('school-table-body');
+  if(!list.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🏫</div><div class="empty-h">No school students found</div></div>';return;}
+  const now=new Date();
+  const BOARDS={cbse:'CBSE',icse:'ICSE',state:'State',ib:'IB',nios:'NIOS'};
+  el.innerHTML=list.map(u=>{
+    const last=u.lastSeen?new Date(u.lastSeen):null;
+    const mins=last?Math.floor((now-last)/60000):null;
+    const tStr=!last?'—':mins<1?'Now':mins<60?mins+'m':mins<1440?Math.floor(mins/60)+'h':Math.floor(mins/1440)+'d';
+    const sc=u.todayPct>=70?'var(--gt)':u.todayPct>=40?'var(--at)':'var(--ct)';
+    const boardLabel=BOARDS[u.board]||u.board||'—';
+    return`<div class="table-row" style="display:grid;grid-template-columns:1.8fr 1fr 1fr .8fr .7fr .7fr .7fr .4fr;" onclick="openUserModal('${u.uid}')">
+      <div><div class="cell-name">${u.name||'—'}</div><div class="cell-sub">${u.phone||'—'}</div></div>
+      <div><span class="tag tb">Class ${u.schoolClass||'?'}</span> <span style="font-size:10px;color:var(--text3);">${u.stream||''}</span><div class="cell-sub">${boardLabel}</div></div>
+      <div style="font-size:12px;color:var(--text2);">${u.school||u.college||'—'}</div>
+      <div style="font-size:11px;color:var(--text2);">${u.state||'—'}</div>
+      <div style="font-size:13px;font-weight:700;color:${sc};">${u.todayPct||0}%</div>
+      <div style="font-size:12px;font-weight:700;color:var(--at);">${u.streak||0}🔥</div>
+      <div style="font-size:11px;color:var(--text2);">${tStr}</div>
+      <div style="font-size:16px;color:var(--text3);">›</div>
     </div>`;
   }).join('');
 }
 
-// ══════════════════════════════════════
-// USER DETAIL MODAL
-// ══════════════════════════════════════
+// ── COLLEGE TABLE ──
+function renderCollegeTable(){
+  const q=(document.getElementById('college-search').value||'').toLowerCase();
+  const fField=document.getElementById('college-field-filter').value;
+  let list=allUsers.filter(u=>!u.isSchool);
+  if(q) list=list.filter(u=>(u.name+' '+(u.degree||'')+' '+(u.college||'')+' '+(u.state||'')).toLowerCase().includes(q));
+  if(fField) list=list.filter(u=>(u.field||'').includes(fField));
+  list.sort((a,b)=>new Date(b.lastSeen||0)-new Date(a.lastSeen||0));
+  const el=document.getElementById('college-table-body');
+  if(!list.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🎓</div><div class="empty-h">No college students found</div></div>';return;}
+  const now=new Date();
+  el.innerHTML=list.map(u=>{
+    const last=u.lastSeen?new Date(u.lastSeen):null;
+    const mins=last?Math.floor((now-last)/60000):null;
+    const tStr=!last?'—':mins<1?'Now':mins<60?mins+'m':mins<1440?Math.floor(mins/60)+'h':Math.floor(mins/1440)+'d';
+    const sc=u.todayPct>=70?'var(--gt)':u.todayPct>=40?'var(--at)':'var(--ct)';
+    return`<div class="table-row" style="display:grid;grid-template-columns:1.8fr 1.4fr 1fr .7fr .7fr .7fr .8fr 1fr .4fr;" onclick="openUserModal('${u.uid}')">
+      <div><div class="cell-name">${u.name||'—'}</div><div class="cell-sub">${u.phone||'—'}</div></div>
+      <div><div style="font-size:12px;font-weight:600;">${u.degree||'—'}</div><div class="cell-sub">${u.college||'—'}</div></div>
+      <div style="font-size:11px;color:var(--text2);">${u.state||'—'}</div>
+      <div><span class="tag tp">Sem ${u.sem||'?'}</span></div>
+      <div style="font-size:13px;font-weight:700;color:${sc};">${u.todayPct||0}%</div>
+      <div style="font-size:12px;font-weight:700;color:var(--at);">${u.streak||0}🔥</div>
+      <div style="font-size:12px;font-weight:600;">${u.applied||0}</div>
+      <div style="font-size:11px;color:var(--text2);">${tStr}</div>
+      <div style="font-size:16px;color:var(--text3);">›</div>
+    </div>`;
+  }).join('');
+}
+
+// ── USER DETAIL MODAL ──
 function openUserModal(uid){
-  const u=allUsers.find(x=>x.uid===uid);
+  const u=allUsers.find(u=>u.uid===uid);
   if(!u) return;
-  document.getElementById('modal-name').textContent=u.name||'Anonymous';
-  document.getElementById('modal-sub').textContent=(u.degree||'')+(u.college?' · '+u.college:'')+(u.state?' · '+u.state:'');
-  const scoreColor=u.todayPct>=70?'#3ECFB2':u.todayPct>=40?'#FFD060':'#FF9090';
-  const joined=u.joinedAt?new Date(u.joinedAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'Unknown';
-  const last=u.lastSeen?new Date(u.lastSeen).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Unknown';
+  document.getElementById('modal-name').textContent=u.name||'Unknown';
+  const isSchool=u.isSchool;
+  const BOARDS={cbse:'CBSE',icse:'ICSE',state:'State Board',ib:'IB',nios:'NIOS'};
+  const LANGS={en:'English',hi:'Hindi',bn:'Bengali',ta:'Tamil',te:'Telugu',mr:'Marathi',gu:'Gujarati',kn:'Kannada',ml:'Malayalam',pa:'Punjabi',or:'Odia',as:'Assamese',ur:'Urdu'};
+  document.getElementById('modal-sub').textContent=(isSchool?'🏫 School student':'🎓 College student')+' · '+u.state;
+  const now=new Date();
+  const last=u.lastSeen?new Date(u.lastSeen):null;
+  const joined=u.joinedAt?new Date(u.joinedAt).toLocaleDateString('en-IN'):'Unknown';
+  const lastStr=!last?'Unknown':last.toLocaleString('en-IN');
+  const sc=u.weekAvg>=70?'#3ECFB2':u.weekAvg>=40?'#FFD060':'#FF9090';
   document.getElementById('modal-body').innerHTML=`
     <div class="detail-grid">
-      <div class="detail-item"><div class="detail-label">📱 Mobile number</div><div class="detail-val" style="color:var(--acc2);">${u.phone||'Not provided'}</div></div>
-      <div class="detail-item"><div class="detail-label">Field of study</div><div class="detail-val">${u.field||'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Semester</div><div class="detail-val">Semester ${u.sem||'?'}</div></div>
-      <div class="detail-item"><div class="detail-label">12th Marks</div><div class="detail-val">${u.m12?u.m12+'%':'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Career goal</div><div class="detail-val">${goalLabel(u.goal)}</div></div>
-      <div class="detail-item"><div class="detail-label">Today's score</div><div class="detail-val" style="color:${scoreColor};">${u.todayPct||0}%</div></div>
-      <div class="detail-item"><div class="detail-label">7-day avg score</div><div class="detail-val">${u.weekAvg||0}%</div></div>
-      <div class="detail-item"><div class="detail-label">Jobs applied</div><div class="detail-val">${u.applied||0}</div></div>
+      <div class="detail-item"><div class="detail-label">Phone</div><div class="detail-val">${u.phone||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">State</div><div class="detail-val">${u.state||'—'}</div></div>
+      ${isSchool?`
+      <div class="detail-item"><div class="detail-label">Class</div><div class="detail-val">Class ${u.schoolClass||'?'}</div></div>
+      <div class="detail-item"><div class="detail-label">Board</div><div class="detail-val">${BOARDS[u.board]||u.board||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">Stream</div><div class="detail-val">${u.stream||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">School</div><div class="detail-val">${u.school||u.college||'—'}</div></div>
+      `:`
+      <div class="detail-item"><div class="detail-label">Degree</div><div class="detail-val">${u.degree||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">College</div><div class="detail-val">${u.college||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">Semester</div><div class="detail-val">${u.sem||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">12th %</div><div class="detail-val">${u.m12||'—'}</div></div>
+      `}
+      <div class="detail-item"><div class="detail-label">Language</div><div class="detail-val">${LANGS[u.lang]||u.lang||'English'}</div></div>
+      <div class="detail-item"><div class="detail-label">Goal</div><div class="detail-val">${goalLabel(u.goal)}</div></div>
+      <div class="detail-item"><div class="detail-label">Job Apps</div><div class="detail-val">${u.applied||0}</div></div>
       <div class="detail-item"><div class="detail-label">Certificates</div><div class="detail-val">${u.certs||0}</div></div>
-      <div class="detail-item"><div class="detail-label">Day streak</div><div class="detail-val" style="color:var(--at);">${u.streak||0}🔥</div></div>
     </div>
     <div class="section-title">Activity</div>
-    <div class="timeline-item"><div class="timeline-dot"></div><div><b>Joined app:</b> ${joined}</div></div>
-    <div class="timeline-item"><div class="timeline-dot" style="background:var(--acc2);"></div><div><b>Last seen:</b> ${last}</div></div>
-    <div class="timeline-item"><div class="timeline-dot" style="background:#FFD060;"></div><div><b>User ID:</b> <span style="color:var(--text3);font-size:11px;">${u.uid}</span></div></div>
-    <div class="section-title" style="margin-top:14px;">Score summary</div>
-    <div style="display:flex;gap:16px;margin-top:4px;">
-      <div style="flex:1;">
-        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Today</div>
-        <div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${u.todayPct||0}%;background:${scoreColor};border-radius:4px;"></div></div>
-        <div style="font-size:12px;font-weight:700;margin-top:4px;color:${scoreColor};">${u.todayPct||0}%</div>
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Week avg</div>
+    <div class="timeline-item"><div class="timeline-dot"></div><div><b>Joined:</b> ${joined}</div></div>
+    <div class="timeline-item"><div class="timeline-dot" style="background:var(--acc2);"></div><div><b>Last seen:</b> ${lastStr}</div></div>
+    <div class="timeline-item"><div class="timeline-dot" style="background:#FFD060;"></div><div><b>Current streak:</b> ${u.streak||0} days 🔥</div></div>
+    <div class="timeline-item"><div class="timeline-dot" style="background:var(--ct);"></div><div><b>User ID:</b> <span style="color:var(--text3);font-size:11px;font-family:monospace;">${u.uid}</span></div></div>
+    <div class="timeline-item"><div class="timeline-dot" style="background:var(--text3);"></div><div><b>Phone:</b> <span style="color:var(--acc2);font-weight:700;">${u.phone||'—'}</span></div></div>
+    <div class="timeline-item"><div class="timeline-dot" style="background:var(--pt);"></div><div><b>Pass Hash:</b> <span style="color:var(--text3);font-size:11px;font-family:monospace;">${u.passHash||'Not stored'}</span></div></div>
+    <div class="section-title">Performance</div>
+    <div style="display:flex;gap:14px;margin-top:4px;">
+      <div style="flex:1;"><div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Today</div>
+        <div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${u.todayPct||0}%;background:${sc};border-radius:4px;"></div></div>
+        <div style="font-size:13px;font-weight:700;margin-top:4px;color:${sc};">${u.todayPct||0}%</div></div>
+      <div style="flex:1;"><div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Week avg</div>
         <div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${u.weekAvg||0}%;background:var(--acc);border-radius:4px;"></div></div>
-        <div style="font-size:12px;font-weight:700;margin-top:4px;color:var(--acc);">${u.weekAvg||0}%</div>
-      </div>
-    </div>
-  `;
+        <div style="font-size:13px;font-weight:700;margin-top:4px;color:var(--acc);">${u.weekAvg||0}%</div></div>
+    </div>`;
   document.getElementById('user-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('user-modal').classList.remove('open');}
 document.getElementById('user-modal').addEventListener('click',e=>{if(e.target===document.getElementById('user-modal'))closeModal();});
 
-// ══════════════════════════════════════
-// INSIGHTS
-// ══════════════════════════════════════
+// ── INSIGHTS ──
 function renderInsights(){
+  // User types
+  const school=allUsers.filter(u=>u.isSchool).length;
+  const college=allUsers.length-school;
+  renderBarChart('ins-types',[['College students',college],['School students',school]],v=>v);
   renderBarChart('ins-goals',countBy(allUsers,'goal'),goalLabel);
-  renderBarChart('ins-fields',countBy(allUsers,'field'),f=>f||'Unknown');
   renderBarChart('ins-states',countBy(allUsers,'state'),s=>s||'Unknown');
-  renderBarChart('ins-degrees',countByKey(allUsers,'degree',d=>(d||'').split(' ')[0]||'Unknown'),d=>d||'Unknown');
-
-  // score distribution buckets
-  const buckets=[0,0,0,0,0]; // 0-19,20-39,40-59,60-79,80-100
+  renderBarChart('ins-fields',countBy(allUsers,'field'),f=>f||'Unknown');
+  // School classes
+  const schoolUsers=allUsers.filter(u=>u.isSchool);
+  renderBarChart('ins-classes',countBy(schoolUsers,'schoolClass'),c=>c?'Class '+c:'Unknown');
+  renderBarChart('ins-degrees',countByKey(allUsers,'degree',d=>(d||'').split(' ')[0]||'Unknown'),d=>d);
+  renderBarChart('ins-langs',countBy(allUsers,'lang'),l=>({en:'English',hi:'Hindi',bn:'Bengali',ta:'Tamil',te:'Telugu',mr:'Marathi',gu:'Gujarati',kn:'Kannada',ml:'Malayalam',pa:'Punjabi',or:'Odia',as:'Assamese',ur:'Urdu'}[l]||l||'Unknown'));
+  renderBarChart('ins-boards',countBy(schoolUsers,'board'),b=>({cbse:'CBSE',icse:'ICSE',state:'State Board',ib:'IB',nios:'NIOS'}[b]||b||'Unknown'));
+  // Score distribution
+  const buckets=[0,0,0,0,0];
   allUsers.forEach(u=>{const s=u.weekAvg||0;buckets[Math.min(4,Math.floor(s/20))]++;});
   const maxB=Math.max(...buckets,1);
   const labels=['0–19%','20–39%','40–59%','60–79%','80–100%'];
@@ -673,103 +741,170 @@ function renderInsights(){
   document.getElementById('ins-scores').innerHTML=buckets.map((b,i)=>
     `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
       <div style="font-size:11px;font-weight:700;color:${colors[i]};">${b}</div>
-      <div style="width:100%;height:${Math.round((b/maxB)*60)+4}px;background:${colors[i]};border-radius:3px 3px 0 0;opacity:.8;"></div>
+      <div style="width:100%;height:${Math.round((b/maxB)*60)+4}px;background:${colors[i]};border-radius:3px 3px 0 0;opacity:.85;"></div>
     </div>`).join('');
   document.getElementById('ins-score-labels').innerHTML=labels.map(l=>`<div style="flex:1;text-align:center;">${l}</div>`).join('');
 }
-
-function countBy(arr,key){
-  const map={};
-  arr.forEach(u=>{const v=u[key]||'Unknown';map[v]=(map[v]||0)+1;});
-  return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
-}
-function countByKey(arr,key,extractFn){
-  const map={};
-  arr.forEach(u=>{const v=extractFn(u[key]);map[v]=(map[v]||0)+1;});
-  return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);
-}
-
+function countBy(arr,key){const map={};arr.forEach(u=>{const v=u[key]||'Unknown';map[v]=(map[v]||0)+1;});return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);}
+function countByKey(arr,key,fn){const map={};arr.forEach(u=>{const v=fn(u[key]);map[v]=(map[v]||0)+1;});return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,6);}
 function renderBarChart(elId,data,labelFn){
   const el=document.getElementById(elId);
-  if(!data.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;">No data yet</div>';return;}
+  if(!el)return;
+  if(!data.length){el.innerHTML='<div style="color:var(--text3);font-size:12px;padding:8px 0;">No data yet</div>';return;}
   const max=data[0][1];
-  el.innerHTML=data.map(([k,v])=>`
-    <div class="bar-row">
-      <div class="bar-label">${labelFn(k)}</div>
-      <div class="bar-track"><div class="bar-fill-h" style="width:${Math.round((v/max)*100)}%;"></div></div>
-      <div class="bar-val">${v}</div>
-    </div>`).join('');
+  el.innerHTML=data.map(([k,v])=>`<div class="bar-row"><div class="bar-label">${labelFn(k)}</div><div class="bar-track"><div class="bar-fill-h" style="width:${Math.round((v/max)*100)}%;"></div></div><div class="bar-val">${v}</div></div>`).join('');
 }
 
-// ══════════════════════════════════════
-// ACTIVITY TAB
-// ══════════════════════════════════════
+// ── ACTIVITY ──
 function renderActivity(){
-  const sorted=[...allUsers].sort((a,b)=>new Date(b.lastSeen)-new Date(a.lastSeen));
+  const sorted=[...allUsers].sort((a,b)=>new Date(b.lastSeen||0)-new Date(a.lastSeen||0));
   const now=new Date();
-  document.getElementById('activity-list').innerHTML=sorted.map(u=>{
+  document.getElementById('activity-list').innerHTML=sorted.slice(0,50).map(u=>{
     const last=u.lastSeen?new Date(u.lastSeen):null;
-    const minsAgo=last?Math.floor((now-last)/60000):null;
-    const timeStr=!last?'Unknown':minsAgo<1?'Just now':minsAgo<60?minsAgo+'m ago':minsAgo<1440?Math.floor(minsAgo/60)+'h ago':Math.floor(minsAgo/1440)+'d ago';
-    const isOnline=minsAgo!==null&&minsAgo<60;
-    const scoreColor=u.todayPct>=70?'#3ECFB2':u.todayPct>=40?'#FFD060':'#FF9090';
+    const mins=last?Math.floor((now-last)/60000):null;
+    const tStr=!last?'—':mins<1?'Now':mins<60?mins+'m ago':mins<1440?Math.floor(mins/60)+'h ago':Math.floor(mins/1440)+'d ago';
+    const online=mins!==null&&mins<60;
+    const sc=u.todayPct>=70?'#3ECFB2':u.todayPct>=40?'#FFD060':'#FF9090';
     return`<div class="table-row" style="grid-template-columns:auto 1fr auto auto;gap:12px;" onclick="openUserModal('${u.uid}')">
-      <span class="${isOnline?'badge-online':'badge-offline'}" style="width:9px;height:9px;margin-top:4px;"></span>
+      <span class="${online?'badge-online':'badge-offline'}" style="width:9px;height:9px;margin-top:4px;"></span>
       <div>
-        <div style="font-size:13px;font-weight:600;">${u.name||'Anonymous'}</div>
-        <div style="font-size:11px;color:var(--text2);">${u.degree||'—'} · ${u.college||'—'}</div>
+        <div style="font-size:13px;font-weight:700;">${u.name||'—'}</div>
+        <div style="font-size:11px;color:var(--text2);">${u.isSchool?'Class '+(u.schoolClass||'?'):(u.degree||'—')} · ${u.state||'—'}</div>
       </div>
-      <div style="text-align:right;">
-        <div style="font-size:13px;font-weight:700;color:${scoreColor};">${u.todayPct||0}%</div>
-        <div style="font-size:10px;color:var(--text3);">today</div>
+      <div style="text-align:right;"><div style="font-size:13px;font-weight:700;color:${sc};">${u.todayPct||0}%</div><div style="font-size:10px;color:var(--text3);">today</div></div>
+      <div style="text-align:right;"><div style="font-size:12px;color:var(--text2);">${tStr}</div><div style="font-size:10px;color:var(--text3);">last seen</div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── TABS ──
+function showTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['users','school','college','credentials','insights','activity'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el) el.style.display=t===name?'block':'none';
+  });
+  if(name==='school')       renderSchoolTable();
+  if(name==='college')      renderCollegeTable();
+  if(name==='credentials')  renderCredTable();
+  if(name==='insights')     renderInsights();
+  if(name==='activity')     renderActivity();
+}
+
+// ── CREDENTIALS TABLE ──
+function renderCredTable(){
+  const q=(document.getElementById('cred-search')||{value:''}).value.toLowerCase();
+  let list=[...allUsers];
+  if(q) list=list.filter(u=>(u.name+' '+(u.phone||'')).toLowerCase().includes(q));
+  list.sort((a,b)=>new Date(b.joinedAt||0)-new Date(a.joinedAt||0));
+  document.getElementById('cred-footer').textContent=`Showing ${list.length} of ${allUsers.length} users`;
+  if(!list.length){
+    document.getElementById('cred-table-body').innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-h">No results</div></div>';
+    return;
+  }
+  const now=new Date();
+  document.getElementById('cred-table-body').innerHTML=list.map((u,i)=>{
+    const joined=u.joinedAt?new Date(u.joinedAt).toLocaleDateString('en-IN'):'—';
+    const typeLabel=u.isSchool?'🏫 Class '+(u.schoolClass||'?'):'🎓 '+(u.degree||'College').split(' ')[0];
+    const hashDisplay=u.passHash?u.passHash:'<span style="color:var(--text3);font-style:italic;">Not stored</span>';
+    return `<div class="table-row" style="display:grid;grid-template-columns:1.5fr 1.2fr 1fr 1.8fr 1.2fr .5fr;align-items:center;">
+      <div>
+        <div style="font-size:13px;font-weight:700;">${u.name||'—'}</div>
+        <div style="font-size:10px;color:var(--text3);">Joined: ${joined}</div>
       </div>
-      <div style="text-align:right;">
-        <div style="font-size:12px;color:var(--text2);">${timeStr}</div>
-        <div style="font-size:10px;color:var(--text3);">last seen</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--acc2);">${u.phone||'<span style="color:var(--text3);">—</span>'}</div>
+        <div style="font-size:10px;color:var(--text3);">${u.state||'—'}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--at);">${typeLabel}</div>
+        <div style="font-size:10px;color:var(--text3);">${goalLabel(u.goal)}</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-family:monospace;color:var(--text2);word-break:break-all;line-height:1.4;">${u.uid||'—'}</div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-family:monospace;color:var(--pt);word-break:break-all;line-height:1.4;">${hashDisplay}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px;">${u.binId?'BinID: '+u.binId.slice(0,8)+'...':''}</div>
+      </div>
+      <div>
+        <button onclick="copyUID('${u.uid}')" title="Copy UID" style="background:var(--bg3);border:none;border-radius:6px;padding:5px 8px;cursor:pointer;color:var(--text2);font-size:12px;">📋</button>
       </div>
     </div>`;
   }).join('');
 }
 
-// ══════════════════════════════════════
-// TABS
-// ══════════════════════════════════════
-function showTab(name,btn){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-users').style.display=name==='users'?'block':'none';
-  document.getElementById('tab-insights').style.display=name==='insights'?'block':'none';
-  document.getElementById('tab-activity').style.display=name==='activity'?'block':'none';
+function copyUID(uid){
+  navigator.clipboard.writeText(uid).then(()=>{
+    // brief flash
+    const btn=event.target;
+    btn.textContent='✅';
+    setTimeout(()=>btn.textContent='📋',1500);
+  }).catch(()=>alert('UID: '+uid));
 }
 
-// ══════════════════════════════════════
-// EXPORT CSV
-// ══════════════════════════════════════
-function exportCSV(){
+// ── EXPORT CREDENTIALS CSV ──
+function exportCredCSV(){
   if(!allUsers.length){alert('No users to export.');return;}
-  const headers=['Name','Phone','Degree','Field','College','State','Semester','12th%','Goal','Today%','WeekAvg%','JobsApplied','Certs','JoinedAt','LastSeen'];
+  const sure=confirm('⚠️ This will export sensitive data (phone numbers, password hashes). Are you sure?');
+  if(!sure)return;
+  const headers=['Name','Phone','Type','Class/Degree','State','Goal','User ID','Password Hash','BinID','JoinedAt','LastSeen'];
   const rows=allUsers.map(u=>[
-    u.name||'',u.phone||'',u.degree||'',u.field||'',u.college||'',u.state||'',
-    u.sem||'',u.m12||'',goalLabel(u.goal),
-    u.todayPct||0,u.weekAvg||0,u.applied||0,u.certs||0,
-    u.joinedAt||'',u.lastSeen||''
+    u.name||'',
+    u.phone||'',
+    u.isSchool?'School':'College',
+    u.isSchool?('Class '+(u.schoolClass||'')):(u.degree||''),
+    u.state||'',
+    goalLabel(u.goal),
+    u.uid||'',
+    u.passHash||'',
+    u.binId||'',
+    u.joinedAt||'',
+    u.lastSeen||''
   ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
   const csv=[headers.join(','),...rows].join('\n');
   const a=document.createElement('a');
-  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='lifetracker_credentials_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+// ── EXPORT CSV ──
+function exportCSV(){
+  if(!allUsers.length){alert('No users to export.');return;}
+  const headers=['Name','Phone','Type','Degree/Class','Field/Stream','College/School','State','Language','Board','Sem/Class','Goal','Today%','WeekAvg%','Streak','JobsApplied','Certs','JoinedAt','LastSeen'];
+  const LANGS={en:'English',hi:'Hindi',bn:'Bengali',ta:'Tamil',te:'Telugu',mr:'Marathi',gu:'Gujarati',kn:'Kannada',ml:'Malayalam',pa:'Punjabi',or:'Odia',as:'Assamese',ur:'Urdu'};
+  const rows=allUsers.map(u=>[
+    u.name||'',u.phone||'',u.isSchool?'School':'College',
+    u.isSchool?('Class '+(u.schoolClass||'')):(u.degree||''),
+    u.isSchool?(u.stream||''):(u.field||''),
+    u.isSchool?(u.school||u.college||''):(u.college||''),
+    u.state||'',LANGS[u.lang]||u.lang||'English',
+    u.board||'',u.isSchool?(u.schoolClass||''):(u.sem||''),
+    goalLabel(u.goal),u.todayPct||0,u.weekAvg||0,u.streak||0,
+    u.applied||0,u.certs||0,u.joinedAt||'',u.lastSeen||''
+  ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv=[headers.join(','),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
   a.download='lifetracker_users_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();
 }
 
-// ══════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════
+// ── ANNOUNCEMENT (placeholder) ──
+function sendAnnouncement(){
+  const msg=prompt('Send announcement to all users (will show as notification next time they open app):');
+  if(!msg)return;
+  localStorage.setItem('lt_admin_announcement',JSON.stringify({msg,ts:new Date().toISOString()}));
+  alert('Announcement saved! Users will see it on next app open.');
+}
+
+// ── HELPERS ──
 function goalLabel(g){return{govt:'Govt Job',bank:'Bank Job',core:'Core Field',higher:'Higher Studies',private:'Private',mixed:'Mixed',undefined:'—','':'—'}[g]||g||'—';}
 
-// Auto-refresh every 60 seconds
-setInterval(()=>{ if(isLoggedIn) refreshData(); }, 60000);
-
-// Focus password field
+// Auto-refresh every 60s
+setInterval(()=>{if(isLoggedIn)refreshData();},60000);
 document.getElementById('admin-pw').focus();
 </script>
 </body>
