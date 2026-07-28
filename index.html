@@ -1507,6 +1507,22 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 // STORAGE
 let P=null,CERTS=[],APPLIED=[],TASK_LOG={},WEEK_LOG={};
 
+// ── USER IP (for admin visibility only - best-effort, never blocks the app) ──
+let _userIP = (function(){ try{ return localStorage.getItem('lt_last_ip')||''; }catch(e){ return ''; } })();
+async function getUserIP(){
+  try{
+    const ctrl=new AbortController();
+    const tid=setTimeout(()=>ctrl.abort(),5000);
+    const r=await fetch('https://api.ipify.org?format=json',{signal:ctrl.signal});
+    clearTimeout(tid);
+    if(r.ok){
+      const d=await r.json();
+      if(d&&d.ip){ _userIP=d.ip; try{ localStorage.setItem('lt_last_ip',d.ip); }catch(e){} }
+    }
+  }catch(e){ /* offline or blocked - keep last-known cached IP */ }
+}
+getUserIP(); // fire-and-forget on load, resolves well before most saveAll() calls
+
 // CUSTOM TASKS  -  fully editable schedule
 // Each task: {id, label, desc, time:'HH:MM', cat, sort}
 let CUSTOM_TASKS=null; // null = not yet initialised
@@ -1562,15 +1578,22 @@ async function saveAll(){
         degree:P.degreeLabel||P.degree||'',
         field:P.field||'',
         college:P.college||'',
+        school:P.school||'',
         state:P.state||'',
         sem:P.sem||3,
         goal:P.goal||'',
         m12:P.m12||'',
+        isSchool:!!P.isSchool,
+        schoolClass:P.schoolClass||null,
+        board:P.board||'',
+        stream:P.stream||'',
+        lang:P.lang||'en',
         applied:(APPLIED||[]).length,
         certs:(CERTS||[]).length,
         todayPct,
         weekAvg,
         streak,
+        ip:_userIP||'',
         lastSeen:new Date().toISOString(),
         joinedAt:P._joinedAt||new Date().toISOString(),
         appVersion:'v8'
@@ -3803,8 +3826,8 @@ let learnPlan = null;
 let learnFileText = '';
 
 function setLearnMode(mode, btn) {
-  document.querySelectorAll('#learn-mode-tabs .fp').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
   document.getElementById('lm-paste').style.display = mode === 'paste' ? 'block' : 'none';
   document.getElementById('lm-file').style.display = mode === 'file' ? 'block' : 'none';
 }
@@ -3832,7 +3855,7 @@ function handleLearnFile(input) {
 }
 
 function quickTopic(topic) {
-  setLearnMode('paste', document.querySelector('#learn-mode-tabs .fp'));
+  setLearnMode('paste', document.getElementById('lm-paste-btn'));
   document.getElementById('learn-text').value = topic;
   toast('✏️ Topic set! Tap Generate.');
 }
@@ -5602,9 +5625,12 @@ async function saveUserDataToCloud(){
         let streak=parseInt(localStorage.getItem('lt_streak')||'0');
         accounts.byUID[currentUID].snapshot={
           degree:P.degreeLabel||'',field:P.field||'',college:P.college||'',
+          school:P.school||'',
           state:P.state||'',sem:P.sem||3,goal:P.goal||'',
+          isSchool:!!P.isSchool,schoolClass:P.schoolClass||null,
+          board:P.board||'',stream:P.stream||'',lang:P.lang||'en',
           applied:(APPLIED||[]).length,certs:(CERTS||[]).length,
-          todayPct,weekAvg,streak,lastSeen:new Date().toISOString()
+          todayPct,weekAvg,streak,ip:_userIP||'',lastSeen:new Date().toISOString()
         };
         writeAccounts(accounts); // background, no await
       }
@@ -6347,7 +6373,7 @@ function notifSupported() {
   return typeof Notification !== 'undefined';
 }
 function notifPerm() {
-  return notifSupported() ? notifPerm() : 'unsupported';
+  return notifSupported() ? Notification.permission : 'unsupported';
 }
 
 function updateNotifStatusUI() {

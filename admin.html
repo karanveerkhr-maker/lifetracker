@@ -192,6 +192,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="stat-card"><div class="stat-n" id="stat-apps">—</div><div class="stat-l">Job Applications</div></div>
       <div class="stat-card"><div class="stat-n" id="stat-streak">—</div><div class="stat-l">Avg Streak 🔥</div></div>
       <div class="stat-card"><div class="stat-n" id="stat-states">—</div><div class="stat-l">States Covered</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-ips">—</div><div class="stat-l">Unique IPs</div></div>
     </div>
 
     <!-- TABS -->
@@ -344,12 +345,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
         <button class="tb-btn" onclick="exportCredCSV()">⬇ Export Credentials CSV</button>
       </div>
       <div class="table-wrap">
-        <div class="table-head" style="display:grid;grid-template-columns:1.5fr 1.2fr 1fr 1.8fr 1.2fr .5fr;padding:10px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);">
+        <div class="table-head" style="display:grid;grid-template-columns:1.4fr 1.1fr .9fr 1.5fr 1fr .9fr .5fr;padding:10px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);">
           <div>Name</div>
           <div>📱 Phone / Mobile</div>
           <div>🎓 Type / Class</div>
           <div>🆔 User ID</div>
           <div>🔑 Password Hash</div>
+          <div>🌐 IP Address</div>
           <div></div>
         </div>
         <div id="cred-table-body">
@@ -443,13 +445,14 @@ async function loadData(){
         usersMap[uid]={
           uid,name:u.name||'Unknown',phone:u.phone||'',
           degree:u.degree||u.degreeLabel||'',field:u.field||'',
-          college:u.college||'',state:u.state||'',sem:u.sem||'',
+          college:u.college||'',school:u.school||'',state:u.state||'',sem:u.sem||'',
           goal:u.goal||'',m12:u.m12||'',
           applied:u.applied??0,certs:u.certs??0,
           todayPct:u.todayPct??0,weekAvg:u.weekAvg??0,streak:u.streak??0,
           lastSeen:u.lastSeen||'',joinedAt:u.joinedAt||'',
           isSchool:u.isSchool||false,schoolClass:u.schoolClass||null,
           board:u.board||'',stream:u.stream||'',lang:u.lang||'en',
+          ip:u.ip||'',
         };
       });
     }
@@ -483,6 +486,7 @@ async function loadData(){
           board:acc.board||snap.board||ex.board||'',
           stream:acc.stream||snap.stream||ex.stream||'',
           lang:acc.lang||snap.lang||ex.lang||'en',
+          ip:snap.ip||acc.ip||ex.ip||'',
         };
       });
     }
@@ -531,6 +535,9 @@ function renderStats(){
   const totalApps=allUsers.reduce((s,u)=>s+(u.applied||0),0);
   const avgStreak=total?Math.round(allUsers.reduce((s,u)=>s+(u.streak||0),0)/total):0;
   const states=new Set(allUsers.map(u=>u.state).filter(Boolean)).size;
+  const ipCounts={};
+  allUsers.forEach(u=>{if(u.ip)ipCounts[u.ip]=(ipCounts[u.ip]||0)+1;});
+  const uniqueIPs=Object.keys(ipCounts).length;
   document.getElementById('stat-total').textContent=total;
   document.getElementById('stat-college').textContent=college;
   document.getElementById('stat-school').textContent=school;
@@ -539,6 +546,7 @@ function renderStats(){
   document.getElementById('stat-apps').textContent=totalApps;
   document.getElementById('stat-streak').textContent=avgStreak;
   document.getElementById('stat-states').textContent=states;
+  document.getElementById('stat-ips').textContent=uniqueIPs;
 }
 
 // ── MAIN TABLE ──
@@ -702,6 +710,7 @@ function openUserModal(uid){
     <div class="timeline-item"><div class="timeline-dot" style="background:#FFD060;"></div><div><b>Current streak:</b> ${u.streak||0} days 🔥</div></div>
     <div class="timeline-item"><div class="timeline-dot" style="background:var(--ct);"></div><div><b>User ID:</b> <span style="color:var(--text3);font-size:11px;font-family:monospace;">${u.uid}</span></div></div>
     <div class="timeline-item"><div class="timeline-dot" style="background:var(--text3);"></div><div><b>Phone:</b> <span style="color:var(--acc2);font-weight:700;">${u.phone||'—'}</span></div></div>
+    <div class="timeline-item"><div class="timeline-dot" style="background:var(--bt);"></div><div><b>IP Address:</b> <span style="color:var(--bt);font-weight:700;font-family:monospace;">${u.ip||'Unknown'}</span></div></div>
     <div class="timeline-item"><div class="timeline-dot" style="background:var(--pt);"></div><div><b>Pass Hash:</b> <span style="color:var(--text3);font-size:11px;font-family:monospace;">${u.passHash||'Not stored'}</span></div></div>
     <div class="section-title">Performance</div>
     <div style="display:flex;gap:14px;margin-top:4px;">
@@ -796,7 +805,7 @@ function showTab(name,btn){
 function renderCredTable(){
   const q=(document.getElementById('cred-search')||{value:''}).value.toLowerCase();
   let list=[...allUsers];
-  if(q) list=list.filter(u=>(u.name+' '+(u.phone||'')).toLowerCase().includes(q));
+  if(q) list=list.filter(u=>(u.name+' '+(u.phone||'')+' '+(u.ip||'')).toLowerCase().includes(q));
   list.sort((a,b)=>new Date(b.joinedAt||0)-new Date(a.joinedAt||0));
   document.getElementById('cred-footer').textContent=`Showing ${list.length} of ${allUsers.length} users`;
   if(!list.length){
@@ -804,11 +813,17 @@ function renderCredTable(){
     return;
   }
   const now=new Date();
+  const ipCounts={};
+  allUsers.forEach(u=>{if(u.ip)ipCounts[u.ip]=(ipCounts[u.ip]||0)+1;});
   document.getElementById('cred-table-body').innerHTML=list.map((u,i)=>{
     const joined=u.joinedAt?new Date(u.joinedAt).toLocaleDateString('en-IN'):'—';
     const typeLabel=u.isSchool?'🏫 Class '+(u.schoolClass||'?'):'🎓 '+(u.degree||'College').split(' ')[0];
     const hashDisplay=u.passHash?u.passHash:'<span style="color:var(--text3);font-style:italic;">Not stored</span>';
-    return `<div class="table-row" style="display:grid;grid-template-columns:1.5fr 1.2fr 1fr 1.8fr 1.2fr .5fr;align-items:center;">
+    const shared=u.ip&&ipCounts[u.ip]>1;
+    const ipDisplay=u.ip
+      ?`<span style="font-family:monospace;color:${shared?'var(--ct)':'var(--bt)'};">${u.ip}</span>${shared?`<div style="font-size:9px;color:var(--ct);margin-top:2px;">⚠ shared by ${ipCounts[u.ip]} users</div>`:''}`
+      :'<span style="color:var(--text3);font-style:italic;">Unknown</span>';
+    return `<div class="table-row" style="display:grid;grid-template-columns:1.4fr 1.1fr .9fr 1.5fr 1fr .9fr .5fr;align-items:center;">
       <div>
         <div style="font-size:13px;font-weight:700;">${u.name||'—'}</div>
         <div style="font-size:10px;color:var(--text3);">Joined: ${joined}</div>
@@ -827,6 +842,9 @@ function renderCredTable(){
       <div>
         <div style="font-size:10px;font-family:monospace;color:var(--pt);word-break:break-all;line-height:1.4;">${hashDisplay}</div>
         <div style="font-size:9px;color:var(--text3);margin-top:2px;">${u.binId?'BinID: '+u.binId.slice(0,8)+'...':''}</div>
+      </div>
+      <div style="font-size:11px;">
+        ${ipDisplay}
       </div>
       <div>
         <button onclick="copyUID('${u.uid}')" title="Copy UID" style="background:var(--bg3);border:none;border-radius:6px;padding:5px 8px;cursor:pointer;color:var(--text2);font-size:12px;">📋</button>
@@ -849,7 +867,7 @@ function exportCredCSV(){
   if(!allUsers.length){alert('No users to export.');return;}
   const sure=confirm('⚠️ This will export sensitive data (phone numbers, password hashes). Are you sure?');
   if(!sure)return;
-  const headers=['Name','Phone','Type','Class/Degree','State','Goal','User ID','Password Hash','BinID','JoinedAt','LastSeen'];
+  const headers=['Name','Phone','Type','Class/Degree','State','Goal','User ID','Password Hash','BinID','IP Address','JoinedAt','LastSeen'];
   const rows=allUsers.map(u=>[
     u.name||'',
     u.phone||'',
@@ -860,6 +878,7 @@ function exportCredCSV(){
     u.uid||'',
     u.passHash||'',
     u.binId||'',
+    u.ip||'',
     u.joinedAt||'',
     u.lastSeen||''
   ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
@@ -873,7 +892,7 @@ function exportCredCSV(){
 // ── EXPORT CSV ──
 function exportCSV(){
   if(!allUsers.length){alert('No users to export.');return;}
-  const headers=['Name','Phone','Type','Degree/Class','Field/Stream','College/School','State','Language','Board','Sem/Class','Goal','Today%','WeekAvg%','Streak','JobsApplied','Certs','JoinedAt','LastSeen'];
+  const headers=['Name','Phone','Type','Degree/Class','Field/Stream','College/School','State','Language','Board','Sem/Class','Goal','Today%','WeekAvg%','Streak','JobsApplied','Certs','IP Address','JoinedAt','LastSeen'];
   const LANGS={en:'English',hi:'Hindi',bn:'Bengali',ta:'Tamil',te:'Telugu',mr:'Marathi',gu:'Gujarati',kn:'Kannada',ml:'Malayalam',pa:'Punjabi',or:'Odia',as:'Assamese',ur:'Urdu'};
   const rows=allUsers.map(u=>[
     u.name||'',u.phone||'',u.isSchool?'School':'College',
@@ -883,7 +902,7 @@ function exportCSV(){
     u.state||'',LANGS[u.lang]||u.lang||'English',
     u.board||'',u.isSchool?(u.schoolClass||''):(u.sem||''),
     goalLabel(u.goal),u.todayPct||0,u.weekAvg||0,u.streak||0,
-    u.applied||0,u.certs||0,u.joinedAt||'',u.lastSeen||''
+    u.applied||0,u.certs||0,u.ip||'',u.joinedAt||'',u.lastSeen||''
   ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
   const csv=[headers.join(','),...rows].join('\n');
   const a=document.createElement('a');
