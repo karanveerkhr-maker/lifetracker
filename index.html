@@ -22,6 +22,12 @@
   --grad2:linear-gradient(135deg,#FF5252,#FF9800);
   --grad3:linear-gradient(135deg,#6C5FFF 0%,#9C6FFF 100%);
   --sh:0 4px 24px rgba(108,95,255,0.12);
+  --gbg:rgba(0,191,116,.12);--gt:#0D8A4F;
+  --bbg:rgba(41,121,255,.12);--bt:#1F5FD1;
+  --abg:rgba(255,152,0,.14);--at:#B5690A;
+  --pbg:rgba(108,95,255,.12);--pt:#5A4FE0;
+  --cbg:rgba(255,82,82,.12);--ct:#D93D3D;
+  --tbg:rgba(0,191,166,.12);--tt:#00897B;
   --r:16px;--rs:10px;--rm:20px;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bot:env(safe-area-inset-bottom,0px);
@@ -3280,9 +3286,10 @@ function saveRoutine(){
   const el_c = document.getElementById('r-college');
   const el_g = document.getElementById('r-gym');
   const el_s = document.getElementById('r-study');
-  if(el_c) R.college = el_c.value;
-  if(el_g) R.gym = el_g.value;
-  if(el_s) R.study = el_s.value;
+  if(!P.routine) P.routine = {};
+  if(el_c) P.routine.college = el_c.value;
+  if(el_g) P.routine.gym = el_g.value;
+  if(el_s) P.routine.study = el_s.value;
   saveAll();
   closeModal('routine-modal');
   renderToday();
@@ -3300,14 +3307,12 @@ let _aiGeneratedTasks = null;
 function handleTTUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const dataUrl = e.target.result;
+
+  const showPreview = (dataUrl, mimeType, isImage) => {
     _ttImageBase64 = dataUrl.split(',')[1];
-    _ttImageType = file.type;
-    // Show preview
+    _ttImageType = mimeType;
     document.getElementById('tt-preview').style.display = 'block';
-    if (file.type.startsWith('image/')) {
+    if (isImage) {
       document.getElementById('tt-preview-img').src = dataUrl;
       document.getElementById('tt-preview-img').style.display = 'block';
     } else {
@@ -3316,6 +3321,39 @@ function handleTTUpload(input) {
     document.getElementById('tt-preview-name').textContent = '✅ ' + file.name;
     document.getElementById('tt-upload-icon').textContent = '✅';
     document.getElementById('tt-upload-text').textContent = file.name;
+  };
+
+  if (!file.type.startsWith('image/')) {
+    // Non-image upload (e.g. PDF) - just read as-is, nothing to resize.
+    const reader = new FileReader();
+    reader.onload = (e) => showPreview(e.target.result, file.type, false);
+    reader.readAsDataURL(file);
+    return;
+  }
+
+  // Downscale/compress camera photos before sending - raw phone photos can be
+  // several MB, which as base64 becomes a huge, slow payload that the vision
+  // API often mishandles or times out on, which is a common cause of it
+  // "reading" the timetable incorrectly.
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX_DIM = 1600;
+      let w = img.width, h = img.height;
+      if (w > MAX_DIM || h > MAX_DIM) {
+        if (w >= h) { h = Math.round(h * (MAX_DIM / w)); w = MAX_DIM; }
+        else { w = Math.round(w * (MAX_DIM / h)); h = MAX_DIM; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      showPreview(resizedDataUrl, 'image/jpeg', true);
+    };
+    img.onerror = () => showPreview(e.target.result, file.type, true); // fall back to original if decode fails
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -3348,13 +3386,15 @@ async function generateAISchedule() {
   const statusEl = document.getElementById('ai-sched-status');
 
   // Build prompt  -  include image context if uploaded
-  const hasImage = !!_ttImageBase64;
+  const hasImage = !!_ttImageBase64 && !!_ttImageType && _ttImageType.startsWith('image/');
+  const hasNonImageFile = !!_ttImageBase64 && !hasImage; // e.g. a PDF was uploaded - can't be read as a photo
   statusEl.textContent = hasImage ? 'Reading timetable image with AI...' : 'Building smart schedule...';
+  const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
 
   const prompt = `You are a smart schedule planner for Indian ${isSchool ? 'school' : 'college'} students.
 
 Student: ${userName}, ${degree || (isSchool ? 'School student' : 'College student')}
-${hasImage ? 'I have uploaded a photo of my timetable. Read the timetable from the image carefully  -  extract each subject, its day, and timing.' : 'No timetable image provided.'}
+${hasImage ? `I have uploaded a photo of my timetable. It is likely a weekly grid with a different set of subjects for each day. Today is ${dayName} - carefully find the ${dayName} row/column ONLY and read off exactly the subjects and times listed for ${dayName}. Do not mix in classes from other days. If ${dayName} has no classes shown (e.g. a holiday or free day), say so in the summary and just build the non-class parts of the day (study, gym, meals, sleep).` : hasNonImageFile ? 'I uploaded a PDF of my timetable, not a photo - you cannot see its contents, so mention in the summary that PDF timetables cannot be read yet and only a photo/image works, and build a schedule from my daily timings below instead.' : 'No timetable image provided.'}
 
 My daily timings:
 - Wake up: ${wake}
@@ -3369,7 +3409,7 @@ Build a COMPLETE daily schedule that:
 1. Starts from wake-up time
 2. Includes morning routine (freshen up, breakfast)
 3. Includes travel to/from ${isSchool ? 'school' : 'college'} if travel > 0
-4. ${hasImage ? 'Includes EACH CLASS from the timetable as a separate task with the EXACT subject name and time' : 'Includes a single college/school block'}
+4. ${hasImage ? `Includes EACH CLASS scheduled for ${dayName} ONLY (not other days) as a separate task, with the EXACT subject name and time as shown in the image` : 'Includes a single college/school block'}
 5. Includes lunch break
 6. Includes rest/travel back
 7. Includes gym if selected
@@ -3400,10 +3440,11 @@ Make task IDs unique (t1, t2, t3...). Include 8-14 tasks total. Times in 24hr HH
     statusEl.textContent = 'AI is reading and building your schedule...';
 
     let response;
-    // If image uploaded, use vision-capable approach via Pollinations
+    // Vision (image_url content) is only supported on the /openai path, not the bare
+    // root endpoint - the root endpoint silently drops the image, which is why the
+    // schedule wasn't reflecting the uploaded timetable photo.
     if (hasImage) {
-      // Use text prompt with image description request
-      response = await fetch('https://text.pollinations.ai/', {
+      response = await fetch('https://text.pollinations.ai/openai', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -3416,23 +3457,33 @@ Make task IDs unique (t1, t2, t3...). Include 8-14 tasks total. Times in 24hr HH
               ]
             }
           ],
-          model: 'openai',
-          jsonMode: true
+          model: 'openai-large', // stronger vision model - better at reading dense timetable grids
+          max_tokens: 2000
         })
       });
     } else {
-      response = await fetch('https://text.pollinations.ai/', {
+      response = await fetch('https://text.pollinations.ai/openai', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           messages: [{ role: 'user', content: prompt }],
           model: 'openai',
-          jsonMode: true
+          max_tokens: 2000
         })
       });
     }
 
-    let raw = await response.text();
+    if (!response.ok) throw new Error('AI service returned status ' + response.status);
+
+    const rawBody = await response.text();
+    // The /openai endpoint wraps the reply in {choices:[{message:{content}}]}
+    // - unwrap it, but fall back to treating the body as plain text if it isn't wrapped.
+    let raw = rawBody;
+    try {
+      const wrapped = JSON.parse(rawBody);
+      if (wrapped?.choices?.[0]?.message?.content) raw = wrapped.choices[0].message.content;
+    } catch(e) { /* not wrapped JSON - use rawBody as-is */ }
+
     raw = raw.replace(/```json|```/g, '').trim();
     const m = raw.match(/\{[\s\S]*\}/);
     if (m) raw = m[0];
@@ -3686,7 +3737,7 @@ function sw(tab,btn){
   if(tab==='today') renderToday();
   else if(tab==='schedule') renderTimetable();
   else if(tab==='study') renderStudy();
-  else if(tab==='learn') renderLearnTab ? renderLearnTab() : null;
+  else if(tab==='learn') updateLearnTabForUser();
   else if(tab==='skills') renderSkills();
   else if(tab==='jobs') renderJobs();
   else if(tab==='profile') renderProfile();
@@ -4961,6 +5012,13 @@ const PAYMENT_METHODS = [
 // ── PREMIUM STATE ──
 let isPremium = false;
 
+function generateReferralCode(){
+  if(P && P.referralCode) return P.referralCode;
+  const base = (P && P.name ? P.name.replace(/[^a-zA-Z]/g,'').toUpperCase().slice(0,4) : 'FS');
+  const code = (base||'FS') + Math.floor(1000 + Math.random()*9000);
+  if(P) { P.referralCode = code; saveAll(); }
+  return code;
+}
 function renderReferral(){
   const code = generateReferralCode();
   const el = document.getElementById('referral-code');
