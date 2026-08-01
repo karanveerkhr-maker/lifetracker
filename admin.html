@@ -176,6 +176,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <button class="tb-btn" onclick="refreshData()">⟳ Refresh</button>
       <button class="tb-btn" onclick="exportCSV()">⬇ Export CSV</button>
       <button class="tb-btn" onclick="sendAnnouncement()">📢 Announce</button>
+      <button class="tb-btn danger" onclick="openWipeModal()" style="background:rgba(255,82,82,.12);color:var(--ct);">🗑️ Wipe All Data</button>
       <button class="tb-btn danger" onclick="logout()">Logout</button>
     </div>
   </div>
@@ -193,6 +194,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       <div class="stat-card"><div class="stat-n" id="stat-streak">—</div><div class="stat-l">Avg Streak 🔥</div></div>
       <div class="stat-card"><div class="stat-n" id="stat-states">—</div><div class="stat-l">States Covered</div></div>
       <div class="stat-card"><div class="stat-n" id="stat-ips">—</div><div class="stat-l">Unique IPs</div></div>
+      <div class="stat-card"><div class="stat-n" id="stat-dups" style="color:var(--ct);">—</div><div class="stat-l">⚠ Duplicate Accounts</div></div>
     </div>
 
     <!-- TABS -->
@@ -378,9 +380,51 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
 </div>
 
+<div class="modal-bg" id="wipe-modal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+      <div>
+        <h3 style="color:var(--ct);">🗑️ Wipe All User Data</h3>
+        <div style="font-size:12px;color:var(--text2);margin-top:3px;">This is permanent and cannot be undone.</div>
+      </div>
+      <button class="modal-close" onclick="closeWipeModal()">✕</button>
+    </div>
+    <div style="background:rgba(255,82,82,.08);border:1px solid var(--ct);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.6;">
+      This will permanently delete <b id="wipe-user-count">—</b> user account(s) and all their data:
+      <ul style="margin:8px 0 0 18px;padding:0;">
+        <li>Every user's profile, schedule, progress, and job/skill tracking (<code>/userData</code>)</li>
+        <li>Every synced admin record (<code>/users</code>)</li>
+        <li>Every login credential - phone numbers and password hashes (<code>/accounts</code>)</li>
+      </ul>
+      <div style="margin-top:8px;">Everyone using the app will be logged out and will need to register again from scratch.</div>
+    </div>
+    <div class="ls-field">
+      <label>Type <b>DELETE ALL DATA</b> to confirm</label>
+      <input id="wipe-confirm-text" type="text" placeholder="DELETE ALL DATA" style="width:100%;padding:11px 14px;border:1.5px solid var(--ct);border-radius:10px;font-size:14px;background:var(--bg3);color:var(--text);font-family:inherit;outline:none;" oninput="const ok=this.value==='DELETE ALL DATA';const b=document.getElementById('wipe-confirm-btn');b.disabled=!ok;b.style.opacity=ok?'1':'.5';b.style.cursor=ok?'pointer':'not-allowed';">
+    </div>
+    <button id="wipe-confirm-btn" disabled onclick="wipeAllData()" style="width:100%;margin-top:14px;padding:13px;background:var(--ct);border:none;color:#fff;border-radius:10px;font-weight:700;font-size:14px;cursor:not-allowed;opacity:.5;transition:opacity .15s;">🗑️ Permanently Delete Everything</button>
+  </div>
+</div>
+
 <script>
 const ADMIN_PASSWORD = 'admin1234';
-let isLoggedIn = false, allUsers = [];
+let isLoggedIn = false, allUsers = [], dupPhoneGroups = {};
+const FB='https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
+// Normalize a phone number for duplicate-detection purposes: strip everything but
+// digits, then keep just the last 10 (handles '9914228283', '+919914228283',
+// '919914228283' all resolving to the same underlying number).
+function normalizePhone(phone){
+  const digits=(phone||'').replace(/[^0-9]/g,'');
+  return digits.slice(-10);
+}
+function computeDupGroups(){
+  dupPhoneGroups={};
+  allUsers.forEach(u=>{
+    const key=normalizePhone(u.phone);
+    if(!key) return;
+    (dupPhoneGroups[key]=dupPhoneGroups[key]||[]).push(u.uid);
+  });
+}
 let _attempts=0, _locked=false;
 
 function tryLogin(){
@@ -413,7 +457,6 @@ async function loadData(){
     return;
   }
   try{
-    const FB='https://lifetracker-bed44-default-rtdb.asia-southeast1.firebasedatabase.app';
     const fetchFB=p=>fetch(FB+p,{method:'GET',headers:{'Accept':'application/json'},mode:'cors'});
     let rootKeys=null;
     try{const r=await fetchFB('/.json?shallow=true');if(r.ok)rootKeys=await r.json();}catch(e){}
@@ -445,7 +488,7 @@ async function loadData(){
         usersMap[uid]={
           uid,name:u.name||'Unknown',phone:u.phone||'',
           degree:u.degree||u.degreeLabel||'',field:u.field||'',
-          college:u.college||'',school:u.school||'',state:u.state||'',sem:u.sem||'',
+          college:u.college||'',school:u.school||'',state:u.state||'',sem:u.sem||'',maxSem:u.maxSem||'',
           goal:u.goal||'',m12:u.m12||'',
           applied:u.applied??0,certs:u.certs??0,
           todayPct:u.todayPct??0,weekAvg:u.weekAvg??0,streak:u.streak??0,
@@ -472,6 +515,7 @@ async function loadData(){
           school:acc.school||snap.school||ex.school||'',
           state:acc.state||snap.state||ex.state||'',
           sem:snap.sem||acc.sem||ex.sem||'',
+          maxSem:snap.maxSem||acc.maxSem||ex.maxSem||'',
           goal:acc.goal||snap.goal||ex.goal||'',
           m12:acc.m12||snap.m12||ex.m12||'',
           applied:snap.applied??ex.applied??0,
@@ -506,6 +550,7 @@ async function loadData(){
       allUsers=[];renderStats();renderInsights();renderActivity();return;
     }
     allUsers=Object.values(usersMap).sort((a,b)=>new Date(b.lastSeen||0)-new Date(a.lastSeen||0));
+    computeDupGroups();
     renderStats();renderTable();renderSchoolTable();renderCollegeTable();renderInsights();renderActivity();
     document.getElementById('last-refresh-label').textContent='Refreshed: '+new Date().toLocaleTimeString('en-IN')+' · '+allUsers.length+' user(s)';
   }catch(e){
@@ -547,6 +592,8 @@ function renderStats(){
   document.getElementById('stat-streak').textContent=avgStreak;
   document.getElementById('stat-states').textContent=states;
   document.getElementById('stat-ips').textContent=uniqueIPs;
+  const dupExtra=Object.values(dupPhoneGroups).reduce((sum,g)=>sum+(g.length>1?g.length-1:0),0);
+  document.getElementById('stat-dups').textContent=dupExtra;
 }
 
 // ── MAIN TABLE ──
@@ -586,11 +633,13 @@ function rowHtml(u,now){
   const sc=u.weekAvg>=70?'var(--gt)':u.weekAvg>=40?'var(--at)':'var(--ct)';
   const typeTag=u.isSchool
     ?`<span class="tag tb">Cl.${u.schoolClass||'?'}</span>`
-    :`<span class="tag tp">Sem ${u.sem||'?'}</span>`;
+    :`<span class="tag tp">Sem ${u.sem||'?'}${u.maxSem?'/'+u.maxSem:''}</span>`;
   const degLabel=u.isSchool?(u.degree||'School'):(u.degree||'—');
   const placeLabel=u.isSchool?(u.school||u.college||'—'):(u.college||'—');
+  const dupGroup=dupPhoneGroups[normalizePhone(u.phone)]||[];
+  const isDup=dupGroup.length>1;
   return`<div class="table-row table-cols" onclick="openUserModal('${u.uid}')">
-    <div><span class="${online?'badge-online':'badge-offline'}"></span><div class="cell-name">${u.name||'—'}</div><div class="cell-sub">${u.phone||'—'}</div></div>
+    <div><span class="${online?'badge-online':'badge-offline'}"></span><div class="cell-name">${u.name||'—'}${isDup?` <span title="${dupGroup.length} accounts share this phone number" style="color:var(--ct);font-size:10px;font-weight:700;">⚠ ×${dupGroup.length}</span>`:''}</div><div class="cell-sub">${u.phone||'—'}</div></div>
     <div><div class="cell-name" style="font-size:12px;">${degLabel}</div><div class="cell-sub">${placeLabel}</div></div>
     <div class="hide-mob" style="font-size:12px;color:var(--text2);">${u.phone||'—'}</div>
     <div style="font-size:11px;color:var(--text2);">${u.state||'—'}</div>
@@ -660,7 +709,7 @@ function renderCollegeTable(){
       <div><div class="cell-name">${u.name||'—'}</div><div class="cell-sub">${u.phone||'—'}</div></div>
       <div><div style="font-size:12px;font-weight:600;">${u.degree||'—'}</div><div class="cell-sub">${u.college||'—'}</div></div>
       <div style="font-size:11px;color:var(--text2);">${u.state||'—'}</div>
-      <div><span class="tag tp">Sem ${u.sem||'?'}</span></div>
+      <div><span class="tag tp">Sem ${u.sem||'?'}${u.maxSem?'/'+u.maxSem:''}</span></div>
       <div style="font-size:13px;font-weight:700;color:${sc};">${u.todayPct||0}%</div>
       <div style="font-size:12px;font-weight:700;color:var(--at);">${u.streak||0}🔥</div>
       <div style="font-size:12px;font-weight:600;">${u.applied||0}</div>
@@ -670,10 +719,85 @@ function renderCollegeTable(){
   }).join('');
 }
 
+function openWipeModal(){
+  document.getElementById('wipe-user-count').textContent = allUsers.length;
+  document.getElementById('wipe-confirm-text').value = '';
+  document.getElementById('wipe-confirm-btn').disabled = true;
+  document.getElementById('wipe-confirm-btn').style.opacity = '.5';
+  document.getElementById('wipe-modal').classList.add('open');
+}
+function closeWipeModal(){
+  document.getElementById('wipe-modal').classList.remove('open');
+}
+async function wipeAllData(){
+  if(document.getElementById('wipe-confirm-text').value !== 'DELETE ALL DATA') return;
+  const count = allUsers.length;
+  const doubleCheck = confirm(`Final check: this will permanently delete ALL ${count} user accounts and cannot be undone. Continue?`);
+  if(!doubleCheck) return;
+
+  const btn = document.getElementById('wipe-confirm-btn');
+  btn.disabled = true;
+  btn.textContent = 'Deleting...';
+  try{
+    const paths = ['userData', 'users', 'accounts'];
+    for(const path of paths){
+      const r = await fetch(FB+'/'+path+'.json', {method:'DELETE'});
+      if(!r.ok) throw new Error('Failed to delete /'+path+' (status '+r.status+')');
+    }
+    allUsers = [];
+    dupPhoneGroups = {};
+    closeWipeModal();
+    renderStats(); renderTable(); renderSchoolTable(); renderCollegeTable(); renderInsights(); renderActivity();
+    if(document.getElementById('cred-table-body')) renderCredTable();
+    alert('✅ All user data has been wiped. The database is now empty.');
+  }catch(e){
+    alert('❌ Wipe failed partway through: '+e.message+'\n\nPlease check the Firebase console directly to confirm what was and was not deleted.');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = '🗑️ Permanently Delete Everything';
+  }
+}
+
+async function deleteUserAccount(uid){
+  const u=allUsers.find(x=>x.uid===uid);
+  if(!u) return;
+  const typed=prompt(`This will permanently delete "${u.name||'this account'}" (UID: ${uid}).\n\nThis cannot be undone. Type the account's name to confirm:`);
+  if(typed===null) return;
+  if(typed.trim().toLowerCase()!==(u.name||'').trim().toLowerCase()){
+    alert('Name did not match - deletion cancelled.');
+    return;
+  }
+  try{
+    await fetch(FB+'/users/'+uid+'.json',{method:'DELETE'});
+    await fetch(FB+'/accounts/byUID/'+uid+'.json',{method:'DELETE'});
+    // Only clear the phone pointer if it still points at THIS uid - if a sibling
+    // account is the current/valid one for this phone, leave its pointer intact.
+    if(u.phone){
+      const phoneKey=u.phone.replace(/[^0-9]/g,'');
+      try{
+        const r=await fetch(FB+'/accounts/byPhone/'+phoneKey+'.json');
+        const cur=await r.json();
+        if(cur && cur.uid===uid){
+          await fetch(FB+'/accounts/byPhone/'+phoneKey+'.json',{method:'DELETE'});
+        }
+      }catch(e){ /* non-fatal - byUID/users deletion already succeeded */ }
+    }
+    allUsers=allUsers.filter(x=>x.uid!==uid);
+    computeDupGroups();
+    closeModal();
+    renderStats();renderTable();renderSchoolTable();renderCollegeTable();renderInsights();renderActivity();
+    if(document.getElementById('tab-credentials').style.display==='block') renderCredTable();
+    alert('Account deleted.');
+  }catch(e){
+    alert('Failed to delete: '+e.message);
+  }
+}
+
 // ── USER DETAIL MODAL ──
 function openUserModal(uid){
   const u=allUsers.find(u=>u.uid===uid);
   if(!u) return;
+  const dupSiblings=(dupPhoneGroups[normalizePhone(u.phone)]||[]).filter(id=>id!==uid).map(id=>allUsers.find(x=>x.uid===id)).filter(Boolean);
   document.getElementById('modal-name').textContent=u.name||'Unknown';
   const isSchool=u.isSchool;
   const BOARDS={cbse:'CBSE',icse:'ICSE',state:'State Board',ib:'IB',nios:'NIOS'};
@@ -696,7 +820,7 @@ function openUserModal(uid){
       `:`
       <div class="detail-item"><div class="detail-label">Degree</div><div class="detail-val">${u.degree||'—'}</div></div>
       <div class="detail-item"><div class="detail-label">College</div><div class="detail-val">${u.college||'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Semester</div><div class="detail-val">${u.sem||'—'}</div></div>
+      <div class="detail-item"><div class="detail-label">Semester</div><div class="detail-val">${u.sem||'—'}${u.maxSem?' of '+u.maxSem:''}</div></div>
       <div class="detail-item"><div class="detail-label">12th %</div><div class="detail-val">${u.m12||'—'}</div></div>
       `}
       <div class="detail-item"><div class="detail-label">Language</div><div class="detail-val">${LANGS[u.lang]||u.lang||'English'}</div></div>
@@ -720,7 +844,18 @@ function openUserModal(uid){
       <div style="flex:1;"><div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Week avg</div>
         <div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${u.weekAvg||0}%;background:var(--acc);border-radius:4px;"></div></div>
         <div style="font-size:13px;font-weight:700;margin-top:4px;color:var(--acc);">${u.weekAvg||0}%</div></div>
-    </div>`;
+    </div>
+    ${dupSiblings.length?`
+    <div class="section-title" style="color:var(--ct);">⚠ Possible Duplicate Accounts</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">${dupSiblings.length} other account(s) share this phone number - likely the same person registered more than once.</div>
+    ${dupSiblings.map(su=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg3);border-radius:8px;margin-bottom:6px;cursor:pointer;" onclick="openUserModal('${su.uid}')">
+      <div><div style="font-size:12px;font-weight:600;">${su.name||'—'}</div><div style="font-size:10px;color:var(--text3);">Joined ${su.joinedAt?new Date(su.joinedAt).toLocaleString('en-IN'):'Unknown'} · UID: ${su.uid.slice(0,10)}...</div></div>
+      <span style="font-size:14px;color:var(--text3);">›</span>
+    </div>`).join('')}
+    `:''}
+    <div class="section-title" style="color:var(--ct);">Danger Zone</div>
+    <button onclick="event.stopPropagation();deleteUserAccount('${u.uid}')" style="width:100%;padding:11px;background:rgba(255,82,82,.1);border:1px solid var(--ct);color:var(--ct);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;">🗑️ Delete This Account</button>
+    <div style="font-size:10px;color:var(--text3);margin-top:6px;text-align:center;">Use this to remove confirmed duplicate/ghost accounts. This cannot be undone.</div>`;
   document.getElementById('user-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('user-modal').classList.remove('open');}
@@ -820,12 +955,14 @@ function renderCredTable(){
     const typeLabel=u.isSchool?'🏫 Class '+(u.schoolClass||'?'):'🎓 '+(u.degree||'College').split(' ')[0];
     const hashDisplay=u.passHash?u.passHash:'<span style="color:var(--text3);font-style:italic;">Not stored</span>';
     const shared=u.ip&&ipCounts[u.ip]>1;
+    const dupGroup=dupPhoneGroups[normalizePhone(u.phone)]||[];
+    const isDup=dupGroup.length>1;
     const ipDisplay=u.ip
       ?`<span style="font-family:monospace;color:${shared?'var(--ct)':'var(--bt)'};">${u.ip}</span>${shared?`<div style="font-size:9px;color:var(--ct);margin-top:2px;">⚠ shared by ${ipCounts[u.ip]} users</div>`:''}`
       :'<span style="color:var(--text3);font-style:italic;">Unknown</span>';
     return `<div class="table-row" style="display:grid;grid-template-columns:1.4fr 1.1fr .9fr 1.5fr 1fr .9fr .5fr;align-items:center;">
       <div>
-        <div style="font-size:13px;font-weight:700;">${u.name||'—'}</div>
+        <div style="font-size:13px;font-weight:700;">${u.name||'—'}${isDup?` <span title="${dupGroup.length} accounts share this phone number" style="color:var(--ct);font-size:10px;font-weight:700;">⚠ ×${dupGroup.length}</span>`:''}</div>
         <div style="font-size:10px;color:var(--text3);">Joined: ${joined}</div>
       </div>
       <div>
@@ -892,7 +1029,7 @@ function exportCredCSV(){
 // ── EXPORT CSV ──
 function exportCSV(){
   if(!allUsers.length){alert('No users to export.');return;}
-  const headers=['Name','Phone','Type','Degree/Class','Field/Stream','College/School','State','Language','Board','Sem/Class','Goal','Today%','WeekAvg%','Streak','JobsApplied','Certs','IP Address','JoinedAt','LastSeen'];
+  const headers=['Name','Phone','Type','Degree/Class','Field/Stream','College/School','State','Language','Board','Sem/Class','Total Sem','Goal','Today%','WeekAvg%','Streak','JobsApplied','Certs','IP Address','JoinedAt','LastSeen'];
   const LANGS={en:'English',hi:'Hindi',bn:'Bengali',ta:'Tamil',te:'Telugu',mr:'Marathi',gu:'Gujarati',kn:'Kannada',ml:'Malayalam',pa:'Punjabi',or:'Odia',as:'Assamese',ur:'Urdu'};
   const rows=allUsers.map(u=>[
     u.name||'',u.phone||'',u.isSchool?'School':'College',
@@ -901,6 +1038,7 @@ function exportCSV(){
     u.isSchool?(u.school||u.college||''):(u.college||''),
     u.state||'',LANGS[u.lang]||u.lang||'English',
     u.board||'',u.isSchool?(u.schoolClass||''):(u.sem||''),
+    u.isSchool?'':(u.maxSem||''),
     goalLabel(u.goal),u.todayPct||0,u.weekAvg||0,u.streak||0,
     u.applied||0,u.certs||0,u.ip||'',u.joinedAt||'',u.lastSeen||''
   ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));

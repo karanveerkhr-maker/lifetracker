@@ -77,7 +77,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 /* ── ONBOARDING ── */
 #onboarding{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);z-index:800;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 #onboarding.show{display:block;}
-.ob-step{display:none;min-height:100vh;padding:calc(var(--safe-top)+20px) 20px 40px;flex-direction:column;}
+.ob-step{display:none;min-height:100vh;padding:calc(var(--safe-top) + 20px) 20px 40px;flex-direction:column;}
 .ob-step.active{display:flex;}
 .ob-prog-bar{display:flex;gap:5px;margin-bottom:28px;}
 .ob-prog-seg{height:3px;flex:1;border-radius:2px;background:var(--bg4);}
@@ -108,7 +108,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 #app.hidden{display:none;}
 
 /* ── TOP HEADER ── */
-.hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:calc(var(--safe-top)+12px) 16px 12px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:calc(var(--safe-top) + 12px) 16px 12px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .hdr-left h1{font-size:16px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 .hdr-left p{font-size:11px;color:var(--text2);margin-top:1px;}
 .hdr-right{display:flex;align-items:center;gap:10px;}
@@ -118,10 +118,10 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .hdr-notif-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--acc3);border-radius:50%;border:1.5px solid var(--bg2);}
 
 /* ── CONTENT ── */
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overflow-x:hidden;padding:12px 14px calc(var(--safe-bot)+72px);}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overflow-x:hidden;padding:12px 14px calc(var(--safe-bot) + 72px);}
 
 /* ── BOTTOM NAV ── */
-.nav{position:fixed;bottom:0;left:0;width:100%;background:var(--bg2);border-top:1px solid var(--border);box-shadow:0 -2px 12px rgba(0,0,0,.08);display:flex;padding:6px 0 calc(var(--safe-bot)+6px);z-index:100;-webkit-backdrop-filter:blur();backdrop-filter:blur(20px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.nav{position:fixed;bottom:0;left:0;width:100%;background:var(--bg2);border-top:1px solid var(--border);box-shadow:0 -2px 12px rgba(0,0,0,.08);display:flex;padding:6px 0 calc(var(--safe-bot) + 6px);z-index:100;-webkit-backdrop-filter:blur();backdrop-filter:blur(20px);overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .nb{flex:0 0 calc(100%/6);min-width:52px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;cursor:pointer;background:none;border:none;color:var(--text3);font-size:9px;font-weight:600;font-family:inherit;position:relative;transition:color .2s;}
 .nb.active{color:var(--acc);}
 .nb-icon{font-size:20px;line-height:1;}
@@ -281,7 +281,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 /* ── MODAL ── */
 .modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:300;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur();backdrop-filter:blur(4px);}
 .modal-bg.open{display:flex;}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r) var(--r) 0 0;padding:20px 16px calc(var(--safe-bot)+20px);width:100%;max-height:88vh;overflow-y:auto;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r) var(--r) 0 0;padding:20px 16px calc(var(--safe-bot) + 20px);width:100%;max-height:88vh;overflow-y:auto;}
 .modal h3{font-size:16px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
 .modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:0;}
 .field{margin-bottom:12px;}
@@ -292,7 +292,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .modal-btns{display:flex;gap:8px;margin-top:8px;}
 
 /* ── TOAST ── */
-#toast{position:fixed;bottom:calc(var(--safe-bot)+80px);left:50%;transform:translateX(-50%);background:#1A1A2E;border:none;color:#fff;padding:10px 18px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:999;box-shadow:var(--sh);}
+#toast{position:fixed;bottom:calc(var(--safe-bot) + 80px);left:50%;transform:translateX(-50%);background:#1A1A2E;border:none;color:#fff;padding:10px 18px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:999;box-shadow:var(--sh);}
 #toast.show{opacity:1;}
 
 /* ── EMPTY STATE ── */
@@ -451,7 +451,22 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
             <option value="6">6th Sem</option>
             <option value="7">7th Sem</option>
             <option value="8">8th Sem</option>
+            <option value="9">9th Sem</option>
+            <option value="10">10th Sem</option>
+            <option value="11">11th Sem</option>
+            <option value="12">12th Sem</option>
           </select>
+        </div>
+        <div class="ls-field" id="reg-totalsem-wrap">
+          <label>Total Semesters in this Course</label>
+          <select id="reg-total-sem" style="width:100%;padding:11px 14px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg3);color:var(--text);font-family:inherit;outline:none;">
+            <option value="4">4 (2-year course)</option>
+            <option value="6" selected>6 (3-year course)</option>
+            <option value="8">8 (4-year course)</option>
+            <option value="10">10 (5-year course)</option>
+            <option value="12">12 (6-year course)</option>
+          </select>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">We'll auto-advance your semester over time based on this - change it any time in your profile.</div>
         </div>
         <div class="ls-field">
           <label>College / University / School Name</label>
@@ -514,7 +529,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
         </div>
 
         <div class="ls-err" id="r-err2" style="margin-top:10px;"></div>
-        <button class="ls-btn" style="margin-top:14px;" onclick="doRegister()">Create Account →</button>
+        <button class="ls-btn" id="reg-btn" style="margin-top:14px;" onclick="doRegister()">Create Account →</button>
       </div>
 
       <!-- Step 3: Credentials -->
@@ -581,13 +596,23 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     <div class="ob-sub" id="ob3-sub">We'll show current topics and unlock future content as you progress.</div>
     <div id="ob3-school" style="display:none;font-size:13px;color:var(--text2);background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rs);padding:12px 14px;margin-top:20px;">We'll ask for your class, stream & board on the next step.</div>
     <div id="ob3-college">
+      <div class="ob-field" style="margin-top:20px;"><label>Total semesters in this course</label>
+        <select id="ob-total-sem" onchange="updateObSemOptions()">
+          <option value="4">4 (2-year course)</option>
+          <option value="6" selected>6 (3-year course)</option>
+          <option value="8">8 (4-year course)</option>
+          <option value="10">10 (5-year course)</option>
+          <option value="12">12 (6-year course)</option>
+        </select>
+      </div>
       <div class="ob-field" style="margin-top:20px;"><label>Year</label>
         <select id="ob-year"><option value="1">1st Year</option><option value="2">2nd Year</option><option value="3">3rd Year</option><option value="4">4th Year (Final)</option></select>
       </div>
-      <div class="ob-field"><label>Semester</label>
+      <div class="ob-field"><label>Current Semester</label>
         <select id="ob-sem"><option value="1">Semester 1</option><option value="2">Semester 2</option><option value="3" selected>Semester 3</option><option value="4">Semester 4</option><option value="5">Semester 5</option><option value="6">Semester 6</option><option value="7">Semester 7</option><option value="8">Semester 8</option></select>
       </div>
     </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:6px;">We'll auto-advance your semester over time from here - you can change it later in your profile.</div>
     <button class="ob-btn" onclick="goOb(4)">Continue →</button>
     <button class="ob-back" onclick="goOb(2)">← Back</button>
   </div>
@@ -909,11 +934,11 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 
       <!-- Schedule exists view -->
       <div id="sched-exists" style="display:none;">
-        <div id="sched-list"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
           <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="openModal('ai-schedule-modal')">🤖 Rebuild with AI</button>
           <button class="btn btn-ghost" style="flex:1;justify-content:center;" onclick="openModal('task-edit-modal');openAddTask()">+ Add Task</button>
         </div>
+        <div id="sched-list"></div>
       </div>
 
       <!-- Empty / first time view -->
@@ -1204,7 +1229,16 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     </div>
     <div class="field"><label>College / School</label><input id="f-college" type="text"></div>
     <div class="field"><label>Degree & Field</label><input id="f-degree" type="text"></div>
-    <div class="field"><label>Semester</label>
+    <div class="field"><label>Total Semesters in Course</label>
+      <select id="f-total-sem" onchange="updateFSemOptions()">
+        <option value="4">4 (2-year course)</option>
+        <option value="6">6 (3-year course)</option>
+        <option value="8">8 (4-year course)</option>
+        <option value="10">10 (5-year course)</option>
+        <option value="12">12 (6-year course)</option>
+      </select>
+    </div>
+    <div class="field"><label>Current Semester</label>
       <select id="f-sem"><option value="1">Sem 1</option><option value="2">Sem 2</option><option value="3">Sem 3</option><option value="4">Sem 4</option><option value="5">Sem 5</option><option value="6">Sem 6</option><option value="7">Sem 7</option><option value="8">Sem 8</option></select>
     </div>
     <div class="field"><label>12th Marks %</label><input id="f-12" type="text"></div>
@@ -1523,6 +1557,28 @@ async function getUserIP(){
 }
 getUserIP(); // fire-and-forget on load, resolves well before most saveAll() calls
 
+// ── AI SCHEDULE BUILDER: Pollinations API key ──
+// Pollinations now requires a free API key for AI text/vision requests (the old
+// anonymous access was retired). Get one in ~30 seconds:
+//   1. Go to https://enter.pollinations.ai and sign in with GitHub (free)
+//   2. Create a key -> type "Publishable" (pk_...) -> allow models: openai, openai-large
+//   3. Paste the pk_... key below
+// Without a key, the AI schedule builder will always fall back to the basic
+// (non-AI) schedule built from your form inputs.
+const POLLINATIONS_KEY = ''; // e.g. 'pk_xxxxxxxxxxxxxxxxxxxxxxxx'
+
+// ── Typical total-semester count per course (used to auto-suggest, always user-editable) ──
+const TOTAL_SEM_DEFAULTS = {
+  // 2-year postgraduate courses
+  MSc:4, MA:4, MCom:4, MBA:4, MTech:4, MCA:4, LLM:4, MFA:4, MEd:4, MSW:4, MArch:4,
+  // 3-year undergraduate courses
+  BSc:6, BA:6, BCom:6, BCA:6, BHM:6, BEd:6, BPEd:6, BSW:6, Diploma:6, LLB:6,
+  // 4-year undergraduate courses
+  BTech:8, BDes:8, BAgriculture:8,
+  // 5-year integrated/professional courses
+  Medical:10, BArch:10, BVSc:10,
+};
+
 // CUSTOM TASKS  -  fully editable schedule
 // Each task: {id, label, desc, time:'HH:MM', cat, sort}
 let CUSTOM_TASKS=null; // null = not yet initialised
@@ -1581,6 +1637,7 @@ async function saveAll(){
         school:P.school||'',
         state:P.state||'',
         sem:P.sem||3,
+        maxSem:P.maxSem||6,
         goal:P.goal||'',
         m12:P.m12||'',
         isSchool:!!P.isSchool,
@@ -1952,6 +2009,10 @@ function selDegType(type,el){
   if(document.getElementById('ob4-school-fields')) document.getElementById('ob4-school-fields').style.display='none';
   if(document.getElementById('ob4-college-fields')) document.getElementById('ob4-college-fields').style.display='block';
   if(document.getElementById('ob-school-label')) document.getElementById('ob-school-label').textContent='College / University';
+  if(TOTAL_SEM_DEFAULTS[type] && document.getElementById('ob-total-sem')){
+    document.getElementById('ob-total-sem').value = String(TOTAL_SEM_DEFAULTS[type]);
+    updateObSemOptions();
+  }
   const fields=FIELDS_BY_DEGREE[type]||[];
   const grid=document.getElementById('ob2-options');
   grid.innerHTML=fields.map(f=>
@@ -1964,6 +2025,15 @@ function selDegType(type,el){
 }
 function ob2Click(val,el){ selField(val,el); }
 function selField(val,el){obField=val;document.querySelectorAll('#ob2-options .ob-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');setTimeout(()=>goOb(3),250);}
+function updateObSemOptions(){
+  const total = parseInt(document.getElementById('ob-total-sem').value) || 6;
+  const semSel = document.getElementById('ob-sem');
+  if(!semSel) return;
+  const curVal = Math.min(parseInt(semSel.value)||1, total);
+  let opts = '';
+  for(let i=1;i<=total;i++) opts += `<option value="${i}"${i===curVal?' selected':''}>Semester ${i}</option>`;
+  semSel.innerHTML = opts;
+}
 function goOb(n){document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));const step=document.getElementById('ob'+n);step.classList.add('active');document.getElementById('onboarding').scrollTo({top:0,behavior:'smooth'});}
 
 // Event delegation for ob1  -  works in all sandboxed environments
@@ -2016,7 +2086,8 @@ function finishOnboarding(){
   } else {
     const sem   = parseInt(document.getElementById('ob-sem').value);
     const year  = parseInt(document.getElementById('ob-year').value);
-    const maxSem= (obDegType==='BTech'||obDegType==='Medical'||obDegType==='Law')?8:6;
+    const totalSemEl = document.getElementById('ob-total-sem');
+    const maxSem= totalSemEl ? (parseInt(totalSemEl.value)||6) : ((obDegType==='BTech'||obDegType==='Medical'||obDegType==='Law')?8:6);
     const fields= FIELDS_BY_DEGREE[obDegType]||[];
     const fobj  = fields.find(f=>f.val===obField)||{label:obField};
     P={name,degType:obDegType,field:obField,fieldLabel:fobj.label,
@@ -2025,7 +2096,7 @@ function finishOnboarding(){
        state:document.getElementById('ob-state').value,
        lang:document.getElementById('ob-lang').value||'en',
        m12:document.getElementById('ob-m12').value||'',
-       sem,year,maxSem,goal:document.getElementById('ob-goal').value,
+       sem,year,maxSem,semAnchorDate:new Date().toISOString(),goal:document.getElementById('ob-goal').value,
        phone:'+91'+phone,setupDone:true,isSchool:false,
        previousDegrees: prevDegrees,
        _uid:'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
@@ -3459,17 +3530,24 @@ RESPOND ONLY with valid JSON  -  no markdown, no explanation:
 Categories: free=morning/meals/rest, college=all classes/school, gym=exercise, study=revision/homework, job-prep=career/skills, sleep=sleep/rest at night.
 Make task IDs unique (t1, t2, t3...). Include 8-14 tasks total. Times in 24hr HH:MM format.`;
 
+  let lastErrorReason = '';
   try {
     statusEl.textContent = 'AI is reading and building your schedule...';
 
+    if (!POLLINATIONS_KEY) {
+      throw new Error('NO_API_KEY');
+    }
+
+    const authHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + POLLINATIONS_KEY
+    };
+
     let response;
-    // Vision (image_url content) is only supported on the /openai path, not the bare
-    // root endpoint - the root endpoint silently drops the image, which is why the
-    // schedule wasn't reflecting the uploaded timetable photo.
     if (hasImage) {
-      response = await fetch('https://text.pollinations.ai/openai', {
+      response = await fetch('https://gen.pollinations.ai/v1/chat/completions', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: authHeaders,
         body: JSON.stringify({
           messages: [
             {
@@ -3485,9 +3563,9 @@ Make task IDs unique (t1, t2, t3...). Include 8-14 tasks total. Times in 24hr HH
         })
       });
     } else {
-      response = await fetch('https://text.pollinations.ai/openai', {
+      response = await fetch('https://gen.pollinations.ai/v1/chat/completions', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: authHeaders,
         body: JSON.stringify({
           messages: [{ role: 'user', content: prompt }],
           model: 'openai',
@@ -3496,10 +3574,15 @@ Make task IDs unique (t1, t2, t3...). Include 8-14 tasks total. Times in 24hr HH
       });
     }
 
-    if (!response.ok) throw new Error('AI service returned status ' + response.status);
+    if (!response.ok) {
+      const errBody = await response.text().catch(()=> '');
+      console.error('[AI Schedule] Pollinations request failed:', response.status, errBody);
+      if (response.status === 401) throw new Error('BAD_API_KEY');
+      throw new Error('AI service returned status ' + response.status);
+    }
 
     const rawBody = await response.text();
-    // The /openai endpoint wraps the reply in {choices:[{message:{content}}]}
+    // The /v1/chat/completions endpoint wraps the reply in {choices:[{message:{content}}]}
     // - unwrap it, but fall back to treating the body as plain text if it isn't wrapped.
     let raw = rawBody;
     try {
@@ -3523,9 +3606,17 @@ Make task IDs unique (t1, t2, t3...). Include 8-14 tasks total. Times in 24hr HH
     showAISchedulePreview(parsed);
 
   } catch (err) {
+    console.error('[AI Schedule] Falling back to offline builder:', err);
+    if (err.message === 'NO_API_KEY') {
+      lastErrorReason = 'No AI API key set up yet  -  built from your inputs instead. (See POLLINATIONS_KEY comment in the code to enable AI reading.)';
+    } else if (err.message === 'BAD_API_KEY') {
+      lastErrorReason = 'AI API key was rejected  -  built from your inputs instead. Check the key at enter.pollinations.ai.';
+    } else {
+      lastErrorReason = 'AI unavailable  -  built from your inputs instead.';
+    }
     // Fallback: build schedule from form inputs
     _aiGeneratedTasks = buildScheduleFromInputs(wake, travel, collegeT, gym, sleep, studyHrs, extra);
-    showAISchedulePreview(_aiGeneratedTasks, 'AI unavailable  -  built from your inputs instead.');
+    showAISchedulePreview(_aiGeneratedTasks, lastErrorReason);
   }
 }
 
@@ -3578,17 +3669,23 @@ function buildScheduleFromInputs(wake, travel, collegeT, gym, sleep, studyHrs, e
   add('Wake up & Morning routine', 'Freshen up, breakfast, get ready.', wake, 'free', '45 min');
 
   const travelMin = parseInt(travel) || 0;
+  const hasCollege = collegeT !== 'none';
+  let cStart, cEnd;
+  if (hasCollege) [cStart, cEnd] = collegeT.split('-');
+
   if (travelMin > 0) {
-    const departTime = addMins(wake, 45);
+    // Depart in time to arrive right as college/school starts, instead of a fixed offset from wake-up
+    const departTime = hasCollege ? addMins(cStart, -travelMin) : addMins(wake, 45);
     add('Travel to ' + (P&&P.isSchool?'School':'College'), `${travelMin} min commute.`, departTime, 'free', travelMin+' min');
   }
 
   // College/School
-  if (collegeT !== 'none') {
-    const [cStart, cEnd] = collegeT.split('-');
+  if (hasCollege) {
     add((P&&P.isSchool?'School':'College') + '  -  Classes', 'Attend all lectures and labs.', cStart, 'college', '');
-    // Lunch break inside
-    const lunchTime = addMins(cStart, 180);
+    // Lunch break  -  placed at the midpoint of the actual college day, not a fixed 3hr guess
+    const [sh,sm]=cStart.split(':').map(Number), [eh,em]=cEnd.split(':').map(Number);
+    const midMins = (sh*60+sm) + Math.round(((eh*60+em)-(sh*60+sm))/2);
+    const lunchTime = String(Math.floor(midMins/60)%24).padStart(2,'0')+':'+String(midMins%60).padStart(2,'0');
     add('Lunch break', 'Have lunch, rest.', lunchTime, 'free', '45 min');
     // Travel back
     if (travelMin > 0) {
@@ -3661,6 +3758,15 @@ function openAddTask() {
   openModal('task-edit-modal');
 }
 
+function updateFSemOptions(){
+  const total = parseInt(document.getElementById('f-total-sem').value) || 6;
+  const semSel = document.getElementById('f-sem');
+  if(!semSel) return;
+  const curVal = Math.min(parseInt(semSel.value)||1, total);
+  let opts = '';
+  for(let i=1;i<=total;i++) opts += `<option value="${i}"${i===curVal?' selected':''}>Sem ${i}</option>`;
+  semSel.innerHTML = opts;
+}
 function saveProfile(){
   if(!P) return;
   P.name=document.getElementById('f-name').value.trim();
@@ -3668,7 +3774,15 @@ function saveProfile(){
   if(rawPhone) P.phone='+91'+rawPhone;
   P.college=document.getElementById('f-college').value.trim();
   P.degreeLabel=document.getElementById('f-degree').value.trim()||P.degreeLabel;
-  P.sem=parseInt(document.getElementById('f-sem').value);
+  const newMaxSem = document.getElementById('f-total-sem') ? (parseInt(document.getElementById('f-total-sem').value)||6) : (P.maxSem||6);
+  const newSem = parseInt(document.getElementById('f-sem').value);
+  if(newSem !== P.sem || newMaxSem !== P.maxSem){
+    // User manually corrected their semester/course length - reset the auto-advance
+    // anchor to now so future advances count forward from this accurate point.
+    P.semAnchorDate = new Date().toISOString();
+  }
+  P.sem = newSem;
+  P.maxSem = newMaxSem;
   P.m12=document.getElementById('f-12').value.trim();
   P.state=document.getElementById('f-state').value;
   if(document.getElementById('f-lang')) P.lang=document.getElementById('f-lang').value||P.lang||'en';
@@ -3704,6 +3818,10 @@ function openModal(id){
     document.getElementById('f-phone').value=(P.phone||'').replace('+91','');
     document.getElementById('f-college').value=P.college||'';
     document.getElementById('f-degree').value=P.degreeLabel||'';
+    if(document.getElementById('f-total-sem')){
+      document.getElementById('f-total-sem').value=String(P.maxSem||6);
+      updateFSemOptions();
+    }
     document.getElementById('f-sem').value=P.sem;
     document.getElementById('f-12').value=P.m12||'';
     document.getElementById('f-state').value=P.state||'Punjab';
@@ -3799,10 +3917,36 @@ function updateGreeting(){
   }
 }
 
+// ── AUTO-ADVANCE SEMESTER ──
+// Indian academic calendar runs on two semester windows per year: roughly
+// Jan-Jun (even semesters) and Jul-Dec (odd semesters). This computes how many
+// of those windows have passed since the last known-accurate (date, semester)
+// anchor point, and advances P.sem accordingly - capped at the course's total
+// semester count (P.maxSem), which is now asked at signup instead of guessed.
+function semPeriodIndex(d){
+  return d.getFullYear()*2 + (d.getMonth()<6 ? 0 : 1); // Jan-Jun=0, Jul-Dec=1 within each year
+}
+function autoAdvanceSemester(){
+  if(!P || P.isSchool || !P.maxSem) return;
+  if(!P.semAnchorDate) P.semAnchorDate = P._joinedAt || new Date().toISOString();
+  const anchor = new Date(P.semAnchorDate);
+  const now = new Date();
+  if(isNaN(anchor.getTime())) { P.semAnchorDate = now.toISOString(); return; }
+  const elapsed = semPeriodIndex(now) - semPeriodIndex(anchor);
+  if(elapsed <= 0) return; // no semester boundary crossed yet
+  const newSem = Math.min(P.maxSem, (P.sem||1) + elapsed);
+  if(newSem !== P.sem){
+    P.sem = newSem;
+    P.semAnchorDate = now.toISOString(); // reset anchor to avoid double-counting next time
+    saveAll();
+  }
+}
+
 function startApp(){
   document.getElementById('onboarding').classList.remove('show');
   document.getElementById('app').classList.remove('hidden');
   if(!CUSTOM_TASKS||!CUSTOM_TASKS.length) CUSTOM_TASKS=defaultTasks();
+  autoAdvanceSemester();
   updateHeader();
   renderToday();
   renderTimetable();
@@ -4326,6 +4470,11 @@ Rules:
     let parsed = null;
 
     // ── PRIMARY: Anthropic API ──
+    // NOTE: this only succeeds inside Claude.ai's own artifact preview (which proxies
+    // auth automatically for you). In this app's real deployment (GitHub Pages) there's
+    // no key attached, so this will always fail and fall through to the tiers below -
+    // that's expected and handled by the try/catch. Do not add a real sk-... key here,
+    // it would be publicly exposed to anyone who views the page source.
     try {
       const ctrl = new AbortController();
       const tid  = setTimeout(() => ctrl.abort(), 30000);
@@ -4355,27 +4504,39 @@ Rules:
 
     // ── FALLBACK: Pollinations free AI ──
     if (!parsed || !parsed.topics?.length) {
+      if (!POLLINATIONS_KEY) {
+        console.warn('[Learn Plan] Skipping Pollinations fallback: no POLLINATIONS_KEY set.');
+      } else {
       statusEl.textContent = 'Trying backup AI...';
       try {
         const ctrl2 = new AbortController();
         const tid2  = setTimeout(() => ctrl2.abort(), 20000);
-        const res2  = await fetch('https://text.pollinations.ai/', {
+        const res2  = await fetch('https://gen.pollinations.ai/v1/chat/completions', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + POLLINATIONS_KEY },
           signal: ctrl2.signal,
           body: JSON.stringify({
             messages: [{ role: 'user', content: prompt }],
             model: 'openai',
-            jsonMode: true
+            max_tokens: 3000
           })
         });
         clearTimeout(tid2);
         if (res2.ok) {
-          const raw2 = (await res2.text()).replace(/```json|```/g,'').trim();
-          const m2   = raw2.match(/\{[\s\S]*\}/);
+          const rawBody2 = await res2.text();
+          let raw2 = rawBody2;
+          try {
+            const wrapped2 = JSON.parse(rawBody2);
+            if (wrapped2?.choices?.[0]?.message?.content) raw2 = wrapped2.choices[0].message.content;
+          } catch(e) { /* not wrapped - use as-is */ }
+          raw2 = raw2.replace(/```json|```/g,'').trim();
+          const m2 = raw2.match(/\{[\s\S]*\}/);
           if (m2) { try { parsed = JSON.parse(m2[0]); } catch(e) {} }
+        } else {
+          console.warn('[Learn Plan] Pollinations status:', res2.status, await res2.text().catch(()=>''));
         }
       } catch(e) { console.warn('Pollinations failed:', e.message); }
+      }
     }
 
     // ── OFFLINE FALLBACK: buildSmartPlan ──
@@ -5334,6 +5495,16 @@ function updateRegDegreeDetails() {
       document.getElementById('reg-field-wrap').style.display = 'none';
     }
   }
+
+  // Auto-suggest total semesters for this course (user can still change it)
+  const totalSemWrap = document.getElementById('reg-totalsem-wrap');
+  const totalSemSel = document.getElementById('reg-total-sem');
+  if(_regEduLevel === 'school' || _regEduLevel === 'competitive') {
+    totalSemWrap.style.display = 'none';
+  } else {
+    totalSemWrap.style.display = 'block';
+    if(TOTAL_SEM_DEFAULTS[degVal]) totalSemSel.value = String(TOTAL_SEM_DEFAULTS[degVal]);
+  }
 }
 
 function regAddPrevDeg() {
@@ -5378,7 +5549,16 @@ function showRegErr(msg) {
   toast(msg);
 }
 
+function validateRegPhone(){
+  const val = document.getElementById('r-phone').value;
+  const ok = /^[6-9][0-9]{9}$/.test(val);
+  const okEl = document.getElementById('r-phone-ok');
+  if(okEl) okEl.style.display = ok ? 'block' : 'none';
+}
+
+let _regInFlight = false;
 async function doRegister(){
+  if(_regInFlight) return; // guard against double-tap / slow-network double-submit creating duplicate accounts
   const name = document.getElementById('r-name').value.trim();
   const phone = document.getElementById('r-phone').value.trim();
   const pass = document.getElementById('r-pass').value;
@@ -5395,8 +5575,14 @@ async function doRegister(){
   const curDegree = document.getElementById('reg-cur-degree').value;
   const curField = document.getElementById('reg-cur-field').value;
   const curSem = document.getElementById('reg-cur-sem').value;
+  const totalSemEl = document.getElementById('reg-total-sem');
+  const totalSem = (totalSemEl && totalSemEl.closest('.ls-field').style.display !== 'none') ? parseInt(totalSemEl.value) : 6;
   const college = document.getElementById('reg-college').value.trim();
   if(!curDegree){ showRegErr('Please select your current degree'); return; }
+
+  _regInFlight = true;
+  const regBtn = document.getElementById('reg-btn');
+  if(regBtn) regBtn.disabled = true;
 
   // Build degreeLabel
   const degreeLabels = {
@@ -5412,74 +5598,77 @@ async function doRegister(){
 
   showSpinner('r-spinner', true);
 
-  let accounts = await readAccounts() || {byPhone:{}, byUID:{}};
-  if(!accounts.byPhone) accounts.byPhone = {};
-  if(!accounts.byUID) accounts.byUID = {};
+  try {
+    let accounts = await readAccounts() || {byPhone:{}, byUID:{}};
+    if(!accounts.byPhone) accounts.byPhone = {};
+    if(!accounts.byUID) accounts.byUID = {};
 
-  if(accounts.byPhone[phone]){
+    if(accounts.byPhone[phone]){
+      showSpinner('r-spinner', false);
+      showRegErr('This mobile number is already registered. Please login.');
+      return;
+    }
+
+    const uid = generateUID();
+    const passHash = hashPass(pass);
+    const now = new Date().toISOString();
+
+    // Build snapshot with education data
+    const snapshot = {
+      name, phone,
+      degType: curDegree,
+      degreeLabel,
+      field: curField || '',
+      fieldLabel: curField || '',
+      sem: parseInt(curSem) || 1,
+      maxSem: totalSem || 6,
+      semAnchorDate: now,
+      college: college || '',
+      eduLevel: _regEduLevel,
+      isSchool,
+      previousDegrees: _regPrevDegrees || [],
+      createdAt: now
+    };
+
+    await fbSet('userData/'+uid, {
+      userData: {P:null, CERTS:[], APPLIED:[], TASK_LOG:{}, WEEK_LOG:{}, CUSTOM_TASKS:null},
+      meta: {uid, name, phone, snapshot, createdAt:now}
+    });
+
+    accounts.byPhone[phone] = {uid, passHash, name, joinedAt:now, lastSeen:now,
+      degType:curDegree, degreeLabel, field:curField||'', college, eduLevel:_regEduLevel,
+      isSchool, previousDegrees:_regPrevDegrees||[], snapshot};
+    accounts.byUID[uid] = accounts.byPhone[phone];
+
+    const ok = await writeAccounts(accounts);
     showSpinner('r-spinner', false);
-    showRegErr('This mobile number is already registered. Please login.');
-    return;
-  }
 
-  const uid = generateUID();
-  const passHash = hashPass(pass);
-  const now = new Date().toISOString();
+    if(!ok){ showRegErr('Network error. Please try again.'); return; }
 
-  // Build snapshot with education data
-  const snapshot = {
-    name, phone,
-    degType: curDegree,
-    degreeLabel,
-    field: curField || '',
-    fieldLabel: curField || '',
-    sem: parseInt(curSem) || 1,
-    college: college || '',
-    eduLevel: _regEduLevel,
-    isSchool,
-    previousDegrees: _regPrevDegrees || [],
-    createdAt: now
-  };
+    localStorage.setItem('auth_uid', uid);
+    localStorage.setItem('auth_binId', uid);
+    localStorage.setItem('auth_hash', passHash);
+    localStorage.setItem('auth_name', name);
+    localStorage.setItem('auth_phone', phone);
+    currentUID = uid;
+    currentUserBinID = uid;
 
-  await fbSet('userData/'+uid, {
-    userData: {P:null, CERTS:[], APPLIED:[], TASK_LOG:{}, WEEK_LOG:{}, CUSTOM_TASKS:null},
-    meta: {uid, name, phone, snapshot, createdAt:now}
-  });
+    // Show credentials
+    document.getElementById('r-show-uid').textContent = uid;
+    document.getElementById('r-show-phone').textContent = '+91 ' + phone;
+    document.getElementById('r-show-pass').textContent = pass;
+    document.getElementById('reg-step-2').style.display = 'none';
+    document.getElementById('r-cred-box').style.display = 'block';
 
-  accounts.byPhone[phone] = {uid, passHash, name, joinedAt:now, lastSeen:now,
-    degType:curDegree, degreeLabel, field:curField||'', college, eduLevel:_regEduLevel,
-    isSchool, previousDegrees:_regPrevDegrees||[], snapshot};
-  accounts.byUID[uid] = accounts.byPhone[phone];
+    sendWelcomeSMS(phone, name, uid, pass);
 
-  const ok = await writeAccounts(accounts);
-  showSpinner('r-spinner', false);
-
-  if(!ok){ showRegErr('Network error. Please try again.'); return; }
-
-  localStorage.setItem('auth_uid', uid);
-  localStorage.setItem('auth_binId', uid);
-  localStorage.setItem('auth_hash', passHash);
-  localStorage.setItem('auth_name', name);
-  localStorage.setItem('auth_phone', phone);
-  currentUID = uid;
-  currentUserBinID = uid;
-
-  // Show credentials
-  document.getElementById('r-show-uid').textContent = uid;
-  document.getElementById('r-show-phone').textContent = '+91 ' + phone;
-  document.getElementById('r-show-pass').textContent = pass;
-  document.getElementById('reg-step-2').style.display = 'none';
-  document.getElementById('r-cred-box').style.display = 'block';
-
-  sendWelcomeSMS(phone, name, uid, pass);
-
-  // Pre-fill onboarding name + degree
-  setTimeout(() => {
-    const el = document.getElementById('ob-name');
-    if(el) el.value = name;
-    // Pre-select degree type in onboarding
-    if(curDegree && typeof selDegType === 'function') {
-      const degTypeMap = {BSc:'BSc', BA:'BA', BCom:'BCom', BTech:'BTech', BCA:'BCA', BHM:'BHM', BDes:'BDes', LLB:'Law', Medical:'Medical', BArch:'BArch', BEd:'BEd', BPEd:'BPEd', BSW:'BSW', BAgriculture:'BAgriculture', BVSc:'BVSc', Diploma:'Diploma', MSc:'MSc', MBA:'MBA', MTech:'MTech', PhD_Science:'PhD', competitive:'Competitive', school:'School'};
+    // Pre-fill onboarding name + degree
+    setTimeout(() => {
+      const el = document.getElementById('ob-name');
+      if(el) el.value = name;
+      // Pre-select degree type in onboarding
+      if(curDegree && typeof selDegType === 'function') {
+        const degTypeMap = {BSc:'BSc', BA:'BA', BCom:'BCom', BTech:'BTech', BCA:'BCA', BHM:'BHM', BDes:'BDes', LLB:'Law', Medical:'Medical', BArch:'BArch', BEd:'BEd', BPEd:'BPEd', BSW:'BSW', BAgriculture:'BAgriculture', BVSc:'BVSc', Diploma:'Diploma', MSc:'MSc', MBA:'MBA', MTech:'MTech', PhD_Science:'PhD', competitive:'Competitive', school:'School'};
       const mapped = degTypeMap[curDegree] || (isSchool ? 'School' : curDegree);
       selDegType(mapped, null);
     }
@@ -5490,6 +5679,10 @@ async function doRegister(){
       togglePrevEdu(true);
     }
   }, 100);
+  } finally {
+    _regInFlight = false;
+    if(regBtn) regBtn.disabled = false;
+  }
 }
 
 async function proceedAfterRegister(){
@@ -5626,7 +5819,7 @@ async function saveUserDataToCloud(){
         accounts.byUID[currentUID].snapshot={
           degree:P.degreeLabel||'',field:P.field||'',college:P.college||'',
           school:P.school||'',
-          state:P.state||'',sem:P.sem||3,goal:P.goal||'',
+          state:P.state||'',sem:P.sem||3,maxSem:P.maxSem||6,goal:P.goal||'',
           isSchool:!!P.isSchool,schoolClass:P.schoolClass||null,
           board:P.board||'',stream:P.stream||'',lang:P.lang||'en',
           applied:(APPLIED||[]).length,certs:(CERTS||[]).length,
