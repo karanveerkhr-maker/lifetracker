@@ -770,6 +770,7 @@ async function deleteUserAccount(uid){
   try{
     await fetch(FB+'/users/'+uid+'.json',{method:'DELETE'});
     await fetch(FB+'/accounts/byUID/'+uid+'.json',{method:'DELETE'});
+    await fetch(FB+'/userData/'+uid+'.json',{method:'DELETE'}); // previously left orphaned
     // Only clear the phone pointer if it still points at THIS uid - if a sibling
     // account is the current/valid one for this phone, leave its pointer intact.
     if(u.phone){
@@ -1049,12 +1050,18 @@ function exportCSV(){
   a.click();
 }
 
-// ── ANNOUNCEMENT (placeholder) ──
-function sendAnnouncement(){
-  const msg=prompt('Send announcement to all users (will show as notification next time they open app):');
+// ── ANNOUNCEMENT ──
+async function sendAnnouncement(){
+  const msg=prompt('Send announcement to all users (will show as a banner next time they open the app):');
   if(!msg)return;
-  localStorage.setItem('lt_admin_announcement',JSON.stringify({msg,ts:new Date().toISOString()}));
-  alert('Announcement saved! Users will see it on next app open.');
+  const ts=new Date().toISOString();
+  try{
+    const r=await fetch(FB+'/announcement.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg,ts})});
+    if(r.ok){ alert('✅ Announcement sent! Users will see it next time they open the app.'); }
+    else{ alert('❌ Failed to send (HTTP '+r.status+'). Check Firebase rules/connection and try again.'); }
+  }catch(e){
+    alert('❌ Failed to send: '+e.message);
+  }
 }
 
 // ── HELPERS ──

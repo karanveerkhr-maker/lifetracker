@@ -624,11 +624,11 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     <div class="ob-sub">A few last details to personalise your dashboard.</div>
 
     <!-- Common fields -->
-    <div class="ob-field" style="margin-top:20px;">
+    <div class="ob-field" id="ob-name-field" style="margin-top:20px;">
       <label>Your name</label>
       <input id="ob-name" type="text" placeholder="e.g. Priya Sharma" autocomplete="given-name">
     </div>
-    <div class="ob-field">
+    <div class="ob-field" id="ob-phone-field">
       <label>📱 Mobile number</label>
       <div style="display:flex;gap:8px;">
         <div style="padding:13px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);background:var(--bg3);font-size:14px;font-weight:700;color:var(--text2);white-space:nowrap;">+91</div>
@@ -637,6 +637,9 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       </div>
       <div id="phone-err" style="display:none;font-size:11px;color:var(--ct);margin-top:4px;">Please enter a valid 10-digit mobile number</div>
       <div id="phone-ok" style="display:none;font-size:11px;color:var(--acc2);margin-top:4px;">✓ Looks good</div>
+    </div>
+    <div class="ob-field" id="ob-already-known" style="display:none;margin-top:20px;padding:12px 14px;background:var(--bg3);border-radius:var(--rs);border:1px solid var(--border);font-size:13px;color:var(--text2);">
+      ✓ Using the name, number, degree and college from your registration - no need to re-enter them.
     </div>
 
     <!-- School-only fields (shown dynamically) -->
@@ -829,7 +832,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     <div class="hdr-right">
       <div class="hdr-streak" id="hdr-streak">🔥 0</div>
       <div class="hdr-notif" id="hdr-notif" onclick="typeof openNotifModal==='function'?openNotifModal():toast('Notifications: enable in Settings')" style="cursor:pointer;"><span>🔔</span><div class="hdr-notif-dot" id="notif-dot" style="display:none;"></div></div>
-      <div class="hdr-avatar" id="hdr-avatar" onclick="sw('profile',document.querySelectorAll('.nb')[5])">U</div>
+      <div class="hdr-avatar" id="hdr-avatar" onclick="sw('profile',document.querySelectorAll('.nb')[7])">U</div>
     </div>
   </div>
 
@@ -1184,7 +1187,45 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     </div>
 
     <!-- ═══ STATS ═══ -->
-    
+    <div id="s-stats" class="sec">
+      <div class="stitle">📊 Your Stats</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div class="widget" style="text-align:center;padding:14px 8px;">
+          <div style="font-size:22px;font-weight:800;color:var(--acc);" id="stat-streak">0</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">🔥 Day streak</div>
+        </div>
+        <div class="widget" style="text-align:center;padding:14px 8px;">
+          <div style="font-size:22px;font-weight:800;color:var(--acc);" id="stat-today">0/0</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">✅ Today</div>
+        </div>
+        <div class="widget" style="text-align:center;padding:14px 8px;">
+          <div style="font-size:22px;font-weight:800;color:var(--acc);" id="stat-week-pct">0%</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">📅 This week</div>
+        </div>
+      </div>
+
+      <div class="widget" style="margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Last 7 days</div>
+        <div style="position:relative;height:180px;">
+          <canvas id="weeklyChart"></canvas>
+        </div>
+      </div>
+
+      <div class="widget" style="margin-bottom:14px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Time by category</div>
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+          <div style="position:relative;height:150px;width:150px;flex-shrink:0;">
+            <canvas id="categoryChart"></canvas>
+          </div>
+          <div id="cat-legend" style="flex:1;min-width:120px;font-size:12px;"></div>
+        </div>
+      </div>
+
+      <div class="widget" id="stats-insights" style="font-size:12px;line-height:2;color:var(--text2);">
+        Complete tasks to see your insights!
+      </div>
+    </div>
 
   </div>
 
@@ -1208,6 +1249,9 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     </button>
     <button class="nb" onclick="sw('skills',this)">
       <div class="nb-icon">⭐</div><div>Skills</div><div class="nb-dot"></div>
+    </button>
+    <button class="nb" onclick="sw('stats',this)">
+      <div class="nb-icon">📊</div><div>Stats</div><div class="nb-dot"></div>
     </button>
     <button class="nb" onclick="sw('profile',this)">
       <div class="nb-icon">👤</div><div>Me</div><div class="nb-dot"></div>
@@ -1504,6 +1548,15 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
   </div>
 </div>
 
+<!-- ANNOUNCEMENT MODAL (shown when admin sends a broadcast message) -->
+<div class="modal-bg" id="announcement-modal">
+  <div class="modal">
+    <h3>📢 Announcement<button class="modal-close" onclick="closeModal('announcement-modal')">✕</button></h3>
+    <div id="announcement-text" style="padding:12px;border-radius:10px;font-size:14px;line-height:1.6;margin-bottom:14px;background:var(--bg3);white-space:pre-wrap;"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="closeModal('announcement-modal')">Got it</button>
+  </div>
+</div>
+
 <!-- NOTIFICATION MODAL -->
 <div class="modal-bg" id="notif-modal">
   <div class="modal">
@@ -1528,6 +1581,9 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       </div>
       <div style="margin-top:12px;font-size:11px;color:var(--text3);line-height:1.7;background:var(--bg3);padding:10px;border-radius:10px;">
         💡 <b>Tip:</b> Keep the app installed on your home screen for best notification delivery. Notifications fire even when the app is closed.
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.7;background:var(--bg3);padding:10px;border-radius:10px;">
+        ⏰ <b>Want a real phone alarm instead?</b> Go to the Timetable tab and tap the ⏰ next to any task — on Android it opens your Clock app pre-filled with that time. (iOS doesn't allow this, so use Smart Notifications above there.)
       </div>
     </div>
   </div>
@@ -1615,9 +1671,10 @@ async function saveAll(){
     localStorage.setItem('CTASKS2',JSON.stringify(CUSTOM_TASKS));
     markTasksAsCustomised();
   }catch(e){}
-  // ── ADMIN SYNC via JSONBin ──
+  // ── ADMIN SYNC via Firebase (skip guests - they have no real account and were
+  //    previously creating a brand new /users entry every single guest session) ──
   try{
-    if(P&&P.setupDone&&P._uid){
+    if(P&&P.setupDone&&P._uid&&!String(P._uid).startsWith('GUEST_')){
       const uid=P._uid;
       const sched=CUSTOM_TASKS||[];
       const tlog=TASK_LOG[todayKey]||{};
@@ -2081,7 +2138,7 @@ function finishOnboarding(){
        goal:(document.getElementById('ob-goal')||{value:'higher'}).value||'higher',
        phone:'+91'+phone,setupDone:true,isSchool:true,
        previousDegrees: prevDegrees,
-       _uid:'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+       _uid:currentUID||'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
        _joinedAt:new Date().toISOString()};
   } else {
     const sem   = parseInt(document.getElementById('ob-sem').value);
@@ -2099,7 +2156,7 @@ function finishOnboarding(){
        sem,year,maxSem,semAnchorDate:new Date().toISOString(),goal:document.getElementById('ob-goal').value,
        phone:'+91'+phone,setupDone:true,isSchool:false,
        previousDegrees: prevDegrees,
-       _uid:'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+       _uid:currentUID||'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
        _joinedAt:new Date().toISOString()};
   }
   saveAll();startApp();
@@ -2797,8 +2854,37 @@ function renderTimetable(){
   const el=document.getElementById('sched-list');
   if(!el) return;
   if(!sched.length){el.innerHTML='<div class="empty" style="padding:2rem;text-align:center;"><div style="font-size:32px;margin-bottom:8px;">📅</div><div style="font-size:13px;color:var(--text3);">No tasks yet. Use AI Build to create your schedule!</div></div>';return;}
-  el.innerHTML=sched.map((t,i)=>{const col=catColor[t.cat]||'#6C5FFF';const em=catEmoji[t.cat]||'📌';const isDone=log[t.id];return`<div class="sched-block" onclick="toggleTask('${t.id}')"><div class="sched-accent" style="background:${col};"></div><div class="sched-time">${t.time}</div><div class="sched-info"><div class="sched-title" style="${isDone?'text-decoration:line-through;opacity:.5':''}">${em} ${t.label}</div><div class="sched-desc">${t.desc||''}</div></div><div style="display:flex;gap:6px;align-items:center;"><button onclick="event.stopPropagation();openEditTask(${i})" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:11px;cursor:pointer;color:var(--text2);">✏️</button><div class="sched-check ${isDone?'done':''}">${isDone?'✓':''}</div></div></div>`;}).join('');
+  el.innerHTML=sched.map((t,i)=>{const col=catColor[t.cat]||'#6C5FFF';const em=catEmoji[t.cat]||'📌';const isDone=log[t.id];return`<div class="sched-block" onclick="toggleTask('${t.id}')"><div class="sched-accent" style="background:${col};"></div><div class="sched-time">${t.time}</div><div class="sched-info"><div class="sched-title" style="${isDone?'text-decoration:line-through;opacity:.5':''}">${em} ${t.label}</div><div class="sched-desc">${t.desc||''}</div></div><div style="display:flex;gap:6px;align-items:center;"><button onclick="event.stopPropagation();setTaskAlarm('${t.id}')" title="Set phone alarm" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:11px;cursor:pointer;color:var(--text2);">⏰</button><button onclick="event.stopPropagation();openEditTask(${i})" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:11px;cursor:pointer;color:var(--text2);">✏️</button><div class="sched-check ${isDone?'done':''}">${isDone?'✓':''}</div></div></div>`;}).join('');
 }
+// ── Set a native phone alarm for a task time ──
+// Android (Chrome/Samsung Internet) can hand off to the Clock app via an
+// intent link, pre-filled with the time + label, no extra app needed.
+// iOS Safari has no equivalent web API for this, so we fall back to
+// pointing the user at in-app Smart Notifications instead.
+function setTaskAlarm(taskId){
+  const sched = getSchedule();
+  const t = sched.find(x=>x.id===taskId);
+  if(!t){ toast('Task not found'); return; }
+  const [h,m] = (t.time||'08:00').split(':').map(Number);
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  if(isAndroid){
+    const label = encodeURIComponent(t.label||'Life Tracker reminder');
+    const intentUri = 'intent:#Intent;action=android.intent.action.SET_ALARM;'
+      + 'i.android.intent.extra.alarm.HOUR=' + h + ';'
+      + 'i.android.intent.extra.alarm.MINUTES=' + (m||0) + ';'
+      + 'S.android.intent.extra.alarm.MESSAGE=' + label + ';'
+      + 'B.android.intent.extra.alarm.SKIP_UI=false;end';
+    window.location.href = intentUri;
+  } else {
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    if(isIOS){
+      toast('⏰ iOS doesn\'t let apps set alarms directly. Enable Smart Notifications instead (bell icon) — they fire right on schedule.');
+    } else {
+      toast('⏰ Native alarms only work on Android phones. On desktop, enable Smart Notifications (bell icon) instead.');
+    }
+  }
+}
+
 function openEditTask(i){
   const sched=getSchedule(),t=sched[i];
   // find real index in CUSTOM_TASKS
@@ -3960,6 +4046,7 @@ function startApp(){
     if(typeof applyLanguageSettings==='function') applyLanguageSettings();
     if(typeof checkJobFollowUps==='function') checkJobFollowUps();
     reinitNotifs();
+    checkAnnouncement();
   }, 600);
 }
 
@@ -5609,7 +5696,9 @@ async function doRegister(){
       return;
     }
 
-    const uid = generateUID();
+    let uid = generateUID();
+    let _uidTries = 0;
+    while(accounts.byUID[uid] && _uidTries < 20){ uid = generateUID(); _uidTries++; } // avoid overwriting an existing account on rare collision
     const passHash = hashPass(pass);
     const now = new Date().toISOString();
 
@@ -5666,6 +5755,28 @@ async function doRegister(){
     setTimeout(() => {
       const el = document.getElementById('ob-name');
       if(el) el.value = name;
+      const phoneEl = document.getElementById('ob-phone');
+      if(phoneEl) phoneEl.value = phone;
+      const collegeEl = document.getElementById('ob-college');
+      if(collegeEl) collegeEl.value = college;
+      // Hide the name/phone/college questions entirely since we already have
+      // them from registration - previously these were asked again here.
+      const nameField = document.getElementById('ob-name-field');
+      const phoneField = document.getElementById('ob-phone-field');
+      const knownNote = document.getElementById('ob-already-known');
+      if(nameField) nameField.style.display = 'none';
+      if(phoneField) phoneField.style.display = 'none';
+      if(knownNote) knownNote.style.display = 'block';
+      // Pre-fill semester/year so step 3 doesn't ask again either
+      const totalSemEl2 = document.getElementById('ob-total-sem');
+      if(totalSemEl2 && totalSem){
+        totalSemEl2.value = String(totalSem);
+        if(typeof updateObSemOptions === 'function') updateObSemOptions();
+      }
+      const obSemEl = document.getElementById('ob-sem');
+      if(obSemEl && curSem) obSemEl.value = String(curSem);
+      const obYearEl = document.getElementById('ob-year');
+      if(obYearEl && curSem) obYearEl.value = String(Math.min(4, Math.max(1, Math.ceil(parseInt(curSem)/2))));
       // Pre-select degree type in onboarding
       if(curDegree && typeof selDegType === 'function') {
         const degTypeMap = {BSc:'BSc', BA:'BA', BCom:'BCom', BTech:'BTech', BCA:'BCA', BHM:'BHM', BDes:'BDes', LLB:'Law', Medical:'Medical', BArch:'BArch', BEd:'BEd', BPEd:'BPEd', BSW:'BSW', BAgriculture:'BAgriculture', BVSc:'BVSc', Diploma:'Diploma', MSc:'MSc', MBA:'MBA', MTech:'MTech', PhD_Science:'PhD', competitive:'Competitive', school:'School'};
@@ -5731,11 +5842,16 @@ async function doLogin(){
   }
 
   // Login success
+  // NOTE: this app stores each user's data at userData/{uid} in Firebase -
+  // there is no separate "bin id"; account.binId was never actually set at
+  // registration, so on a fresh device this was always undefined and
+  // loadUserDataFromCloud() silently bailed out, making it look like all
+  // your data had vanished. Use the real uid instead.
   currentUID=account.uid;
-  currentUserBinID=account.binId;
+  currentUserBinID=account.uid;
 
   localStorage.setItem('auth_uid',account.uid);
-  localStorage.setItem('auth_binId',account.binId);
+  localStorage.setItem('auth_binId',account.uid);
   localStorage.setItem('auth_hash',passHash);
   localStorage.setItem('auth_name',account.name);
   localStorage.setItem('auth_phone',phone);
@@ -6004,12 +6120,34 @@ setInterval(()=>{ if(currentUID&&!currentUID.startsWith('GUEST_')) saveUserDataT
 // ══════════════════════════════════
 // NOTIFICATIONS
 // ══════════════════════════════════
+// ── Admin broadcast announcements (sent from admin.html "Announce" button) ──
+async function checkAnnouncement(){
+  try{
+    const a = await fbGet('announcement');
+    if(!a || !a.msg || !a.ts) return;
+    const lastSeen = localStorage.getItem('lt_last_announcement_ts');
+    if(a.ts === lastSeen) return; // already shown this one
+    localStorage.setItem('lt_last_announcement_ts', a.ts);
+    const el = document.getElementById('announcement-text');
+    if(el) el.textContent = a.msg;
+    openModal('announcement-modal');
+    if(localStorage.getItem('lt_notif_enabled') && notifPerm()==='granted'){
+      fireNotif('admin-announcement', '📢 Announcement', a.msg);
+    }
+  }catch(e){ /* announcement check is best-effort, never block app startup */ }
+}
+
 function reinitNotifs(){
+  // NOTE: this used to run its own generic, hardcoded-time notification
+  // schedule (8am "College time!", 7pm "Gym time!" etc) independent of the
+  // user's real timetable, and it auto-requested browser permission without
+  // going through the "Enable Smart Notifications" button. That caused
+  // duplicate/irrelevant notifications. It now just refreshes the real
+  // timetable-based schedule, and only if the user already opted in.
   if(!('Notification' in window)) return;
-  if(notifPerm() === 'default'){
-    Notification.requestPermission();
-  }
-  scheduleNotifs();
+  if(!localStorage.getItem('lt_notif_enabled')) return; // respect opt-in, no silent permission prompt
+  if(notifPerm() !== 'granted') return;
+  scheduleAllNotifs();
 }
 
 function fireNotif(id, title, body){
@@ -6023,55 +6161,6 @@ function fireNotif(id, title, body){
       requireInteraction: false
     });
   }catch(e){ /* notif error */ }
-}
-
-function scheduleNotifs(){
-  // Clear old timers
-  if(window._notifTimers) window._notifTimers.forEach(t=>clearTimeout(t));
-  window._notifTimers = [];
-  if(!notifSupported() || notifPerm() !== 'granted') return;
-  
-  const now = new Date();
-  const todayMs = now.setHours(0,0,0,0);
-  
-  const notifTimes = [
-    { h:8,  m:0,  title:'College time!',       body:'Classes starting - get moving!' },
-    { h:13, m:0,  title:'Afternoon check-in',  body:'Half the day done. Keep going!' },
-    { h:19, m:0,  title:'Gym time!',            body:'Do not skip today workout.' },
-    { h:21, m:0,  title:'Study session!',       body:'Time for your evening study block.' },
-    { h:23, m:0,  title:'Wind down',            body:'Great day! Plan for tomorrow.' },
-  ];
-
-  const nowFull = new Date();
-  notifTimes.forEach(function(n){
-    const fireAt = new Date();
-    fireAt.setHours(n.h, n.m, 0, 0);
-    const diff = fireAt - nowFull;
-    if(diff > 0 && diff < 24*60*60*1000){
-      const t = setTimeout(function(){
-        fireNotif('sched-'+n.h, n.title, n.body);
-      }, diff);
-      window._notifTimers.push(t);
-    }
-  });
-}
-
-function requestNotifPermission(){
-  if(!('Notification' in window)){
-    toast('Notifications not supported on this browser');
-    return;
-  }
-  Notification.requestPermission().then(function(p){
-    if(p === 'granted'){
-      toast('✓ Notifications enabled!');
-      scheduleNotifs();
-      // Show notif dot in header
-      const dot = document.getElementById('notif-dot');
-      if(dot) dot.style.display = 'block';
-    } else {
-      toast('Notifications blocked. Enable in browser settings.');
-    }
-  });
 }
 
 initAuth();
