@@ -832,7 +832,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     <div class="hdr-right">
       <div class="hdr-streak" id="hdr-streak">🔥 0</div>
       <div class="hdr-notif" id="hdr-notif" onclick="typeof openNotifModal==='function'?openNotifModal():toast('Notifications: enable in Settings')" style="cursor:pointer;"><span>🔔</span><div class="hdr-notif-dot" id="notif-dot" style="display:none;"></div></div>
-      <div class="hdr-avatar" id="hdr-avatar" onclick="sw('profile',document.querySelectorAll('.nb')[7])">U</div>
+      <div class="hdr-avatar" id="hdr-avatar" onclick="sw('profile',document.querySelectorAll('.nb')[6])">U</div>
     </div>
   </div>
 
@@ -1187,45 +1187,6 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     </div>
 
     <!-- ═══ STATS ═══ -->
-    <div id="s-stats" class="sec">
-      <div class="stitle">📊 Your Stats</div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
-        <div class="widget" style="text-align:center;padding:14px 8px;">
-          <div style="font-size:22px;font-weight:800;color:var(--acc);" id="stat-streak">0</div>
-          <div style="font-size:11px;color:var(--text2);margin-top:2px;">🔥 Day streak</div>
-        </div>
-        <div class="widget" style="text-align:center;padding:14px 8px;">
-          <div style="font-size:22px;font-weight:800;color:var(--acc);" id="stat-today">0/0</div>
-          <div style="font-size:11px;color:var(--text2);margin-top:2px;">✅ Today</div>
-        </div>
-        <div class="widget" style="text-align:center;padding:14px 8px;">
-          <div style="font-size:22px;font-weight:800;color:var(--acc);" id="stat-week-pct">0%</div>
-          <div style="font-size:11px;color:var(--text2);margin-top:2px;">📅 This week</div>
-        </div>
-      </div>
-
-      <div class="widget" style="margin-bottom:14px;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Last 7 days</div>
-        <div style="position:relative;height:180px;">
-          <canvas id="weeklyChart"></canvas>
-        </div>
-      </div>
-
-      <div class="widget" style="margin-bottom:14px;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Time by category</div>
-        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-          <div style="position:relative;height:150px;width:150px;flex-shrink:0;">
-            <canvas id="categoryChart"></canvas>
-          </div>
-          <div id="cat-legend" style="flex:1;min-width:120px;font-size:12px;"></div>
-        </div>
-      </div>
-
-      <div class="widget" id="stats-insights" style="font-size:12px;line-height:2;color:var(--text2);">
-        Complete tasks to see your insights!
-      </div>
-    </div>
 
   </div>
 
@@ -1249,9 +1210,6 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     </button>
     <button class="nb" onclick="sw('skills',this)">
       <div class="nb-icon">⭐</div><div>Skills</div><div class="nb-dot"></div>
-    </button>
-    <button class="nb" onclick="sw('stats',this)">
-      <div class="nb-icon">📊</div><div>Stats</div><div class="nb-dot"></div>
     </button>
     <button class="nb" onclick="sw('profile',this)">
       <div class="nb-icon">👤</div><div>Me</div><div class="nb-dot"></div>
@@ -2239,11 +2197,11 @@ const ALL_TOPICS=[
   {id:'sch7',fields:['school_arts'],cat:'School  -  Arts',title:'Indian History  -  NCERT Class 12',desc:'Partition, nationalism, world wars. CBSE board + NDA, CLAT, UPSC foundation.',priority:'high',resources:[{t:'YouTube: History Class 12 NCERT',u:'https://www.youtube.com/playlist?list=PLF5jDKhBM7HbivlPJNJREZTvOL2-nm9bO'},{t:'NCERT Class 12 History',u:'https://ncert.nic.in/textbook.php?lhis1=0-9'}]},
   {id:'sch8',fields:['school_arts'],cat:'School  -  Arts',title:'Political Science  -  Indian Constitution',desc:'Preamble, FRs, DPSPs, Parliament. CBSE 11-12. Foundation for UPSC/State PSC prep.',priority:'high',resources:[{t:'YouTube: Pol Science Class 11 NCERT',u:'https://www.youtube.com/playlist?list=PLgmkNzdxjE7P6VJBonBhLhJw1QFLD_FG3'},{t:'NCERT Political Science',u:'https://ncert.nic.in/textbook.php?ieps1=0-10'}]},
   {id:'sch9',fields:['school_gen','school_9_10'],cat:'School  -  General',title:'Science  -  NCERT Class 8-10 Concepts',desc:'Light, electricity, chemical reactions, heredity. Board exams + Olympiad + Navodaya.',priority:'high',resources:[{t:'Khan Academy India (Free)',u:'https://khanacademy.org'},{t:'YouTube: CBSE Class 10 Science',u:'https://www.youtube.com/playlist?list=PLVLoWQFkZbhXLn1J5S9-E2eLKGCwZB_JL'},{t:'NCERT Science Class 10',u:'https://ncert.nic.in/textbook.php?jesc1=0-16'}]},
-  {id:'sch10',fields:['school_olymp','school_sci','school_gen'],cat:'School  -  Olympiad',title:'Olympiad Preparation (NSO/IMO/NTSE)',desc:'Higher-order thinking problems, reasoning, advanced topics. SOF, NTSE Stage 1 prep.',priority:'high',resources:[{t:'SOF Previous Papers (Free)',u:'https://www.sofworld.org/sample-papers'},{t:'YouTube: NTSE preparation strategy',u:'https://www.youtube.com/@StudyIQ'}]},
+  {id:'sch10',fields:['school_olymp','school_sci','school_gen'],cat:'School  -  Olympiad',title:'Olympiad Preparation (NSO/IMO/NTSE)',desc:'Higher-order thinking problems, reasoning, advanced topics. SOF, NTSE Stage 1 prep.',priority:'high',resources:[{t:'SOF Previous Papers (Free)',u:'https://www.sofworld.org/sample-papers'},{t:'YouTube: NTSE preparation strategy',u:'https://www.youtube.com/results?search_query=NTSE+preparation+strategy+free'}]},
 
   {id:'gk1',fields:['all'],cat:'GK / Current Affairs',title:'Current Affairs  -  This Month',desc:'National appointments, awards, sports, international summits. 10-15 marks in every exam.',priority:'high',resources:[{t:'GKToday Daily Current Affairs (Free)',u:'https://www.gktoday.in/current-affairs/'},{t:'YouTube: StudyIQ Daily CA',u:'https://www.youtube.com/@StudyIQ'},{t:'Testbook Daily GK Quiz',u:'https://testbook.com/current-affairs-quiz'}]},
   {id:'gk2',fields:['all'],cat:'Static GK',title:'Static GK  -  India & World',desc:'Countries/capitals, National parks, rivers, first in India, constitutional articles.',priority:'high',resources:[{t:'IndiaBix GK (Free practice)',u:'https://www.indiabix.com/general-knowledge/questions-and-answers/'},{t:'GKToday Static GK',u:'https://www.gktoday.in/general-knowledge/'}]},
-  {id:'r1',fields:['all'],cat:'Reasoning',title:'Reasoning  -  Coding, Series, Blood Relations',desc:'Coding-decoding, number series, blood relations, directions. 20-30 marks in SSC/IBPS/state exams.',priority:'high',resources:[{t:'IndiaBix Reasoning (Free)',u:'https://www.indiabix.com/logical-reasoning/questions-and-answers/'},{t:'YouTube: Reasoning tricks in Hindi',u:'https://www.youtube.com/@StudyIQ'},{t:'Testbook Reasoning Quiz',u:'https://testbook.com/reasoning-questions'}]},
+  {id:'r1',fields:['all'],cat:'Reasoning',title:'Reasoning  -  Coding, Series, Blood Relations',desc:'Coding-decoding, number series, blood relations, directions. 20-30 marks in SSC/IBPS/state exams.',priority:'high',resources:[{t:'IndiaBix Reasoning (Free)',u:'https://www.indiabix.com/logical-reasoning/questions-and-answers/'},{t:'YouTube: Reasoning tricks in Hindi',u:'https://www.youtube.com/results?search_query=reasoning+tricks+hindi+SSC+IBPS'},{t:'Testbook Reasoning Quiz',u:'https://testbook.com/reasoning-questions'}]},
   {id:'r2',fields:['all'],cat:'Reasoning',title:'Syllogisms & Analogies',desc:'Venn diagram method. 10 guaranteed marks across SSC, IBPS, State PSC.',priority:'high',resources:[{t:'IndiaBix Syllogism (Free)',u:'https://www.indiabix.com/verbal-reasoning/syllogism/'},{t:'YouTube: Syllogism tricks',u:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course'}]},
   {id:'b1',fields:['all'],cat:'Quant / Maths',title:'Number System & Simplification',desc:'BODMAS, squares, cubes, percentages. Most common in IBPS, SSC, state exams.',priority:'high',resources:[{t:'IndiaBix Aptitude (Free)',u:'https://www.indiabix.com/aptitude/questions-and-answers/'},{t:'YouTube: Quant shortcuts Hindi',u:'https://www.youtube.com/results?search_query=SSC+UPSC+preparation+free+complete+course'},{t:'Testbook Quant Quiz',u:'https://testbook.com/quantitative-aptitude-questions'}]},
 
@@ -3361,8 +3319,27 @@ function renderLearnSuggested(){
   }).join('');
 }
 
+function renderLearnQuickPicks(){
+  const el = document.getElementById('learn-quickpicks');
+  if(!el) return;
+  const isSchool = P && P.isSchool;
+  const goal = (P && P.goal) || '';
+  let picks = [];
+  if(isSchool){
+    picks = ['NCERT revision','Board exam prep','Olympiad practice','Sample papers'];
+  } else if(goal === 'govt' || goal === 'bank'){
+    picks = ['Current affairs this month','Reasoning shortcuts','Quant tricks','Previous year papers'];
+  } else {
+    picks = ['Resume & interview prep','Placement DSA','Communication skills','Latest industry trends'];
+  }
+  el.innerHTML = picks.map(p =>
+    `<button class="ftab" style="font-size:11px;padding:6px 10px;" onclick="quickTopic('${p.replace(/'/g,"\\'")}')">${p}</button>`
+  ).join('');
+}
+
 function updateLearnTabForUser(){
   renderLearnSuggested();
+  renderLearnQuickPicks();
 }
 
 function applyLanguageSettings(){
@@ -4297,17 +4274,17 @@ function buildSmartPlan(topic, hours, weeks, totalDaysOverride) {
   };
 
   const RESOURCES_MAP = {
-    psychology: [{name:'Crash Course Psychology (Free)',type:'YouTube',url:`https://www.youtube.com/playlist?list=PL8dPuuaLjXtOPRKzVLY0jJY-uHOH9KVU6`},{name:'Simply Psychology Notes',type:'Website',url:`https://www.simplypsychology.org`},{name:'Khan Academy Psychology',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`}],
+    psychology: [{name:'Crash Course Psychology (Free)',type:'YouTube',url:`https://www.youtube.com/playlist?list=PL8dPuuaLjXtOPRKzVLY0jJY-uHOH9KVU6`},{name:'Simply Psychology Notes',type:'Website',url:`https://www.simplypsychology.org`},{name:'Psychology full course videos',type:'YouTube',url:`https://www.youtube.com/results?search_query=psychology+full+course+free`}],
     python: [{name:'Python Tutorial - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/results?search_query=python+programming+full+course+free`},{name:'W3Schools Python',type:'Website',url:`https://www.w3schools.com/python/`},{name:'Python Official Docs',type:'Website',url:`https://docs.python.org/3/tutorial/`}],
     dsa: [{name:'DSA Full Course - freeCodeCamp',type:'YouTube',url:`https://www.youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O`},{name:'GeeksforGeeks DSA',type:'Website',url:`https://www.geeksforgeeks.org/data-structures/`},{name:'LeetCode Practice',type:'Website',url:`https://leetcode.com/problemset/`}],
-    forensic: [{name:'Forensic Science - YouTube',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'NIST Forensic Resources',type:'Website',url:`https://www.nist.gov/forensics`},{name:'Forensic Science Notes PDF',type:'Website',url:'https://www.sciencedirect.com/journal/forensic-science-international'}],
-    ssc: [{name:'SSC CGL Full Course - Adda247',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'Adda247 SSC',type:'Website',url:`https://www.adda247.com/ssc-jobs/`},{name:'SSC Official Site',type:'Website',url:`https://ssc.nic.in`}],
-    maths: [{name:'Maths Tricks - Vedic Maths',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'Khan Academy Maths',type:'Website',url:`https://www.khanacademy.org/math`},{name:'GFG Quant Practice',type:'Website',url:`https://www.geeksforgeeks.org/quantitative-aptitude/`}],
-    history: [{name:'History of India - YouTube',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'NCERT History Books',type:'Website',url:`https://ncert.nic.in/textbook.php`},{name:'Clear IAS History Notes',type:'Website',url:`https://www.clearias.com/history/`}],
-    english: [{name:'English Grammar Full Course',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'Grammarly Blog Grammar Tips',type:'Website',url:`https://www.grammarly.com/blog/category/handbook/`},{name:'British Council Learn English',type:'Website',url:`https://learnenglish.britishcouncil.org`}],
-    constable: [{name:'Police Constable Exam Prep',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'GK Today Current Affairs',type:'Website',url:`https://www.gktoday.in`},{name:'Adda247 Police Exams',type:'Website',url:`https://www.adda247.com/jobs-by-category/police-jobs/`}],
-    media: [{name:'Media Literacy - YouTube',type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:'News Literacy Project',type:'Website',url:`https://newslit.org`},{name:'AltNews Fact Check',type:'Website',url:`https://www.altnews.in`}],
-    default: [{name:`${topic} Full Course`,type:'YouTube',url:`https://www.youtube.com/@StudyIQ`},{name:`${topic} Study Notes`,type:'Website',url:`https://swayam.gov.in/search?query=${q}`},{name:`${topic} on Wikipedia`,type:'Website',url:`https://en.wikipedia.org/wiki/Special:Search?search=${q}`}]
+    forensic: [{name:'Forensic Science lecture videos',type:'YouTube',url:`https://www.youtube.com/results?search_query=forensic+science+lectures+free+course`},{name:'NIST Forensic Resources',type:'Website',url:`https://www.nist.gov/forensics`},{name:'Forensic Science Notes PDF',type:'Website',url:'https://www.sciencedirect.com/journal/forensic-science-international'}],
+    ssc: [{name:'SSC CGL full course videos',type:'YouTube',url:`https://www.youtube.com/results?search_query=ssc+cgl+full+course+free`},{name:'Adda247 SSC',type:'Website',url:`https://www.adda247.com/ssc-jobs/`},{name:'SSC Official Site',type:'Website',url:`https://ssc.nic.in`}],
+    maths: [{name:'Maths tricks & shortcuts videos',type:'YouTube',url:`https://www.youtube.com/results?search_query=maths+tricks+vedic+maths+competitive+exams`},{name:'Khan Academy Maths',type:'Website',url:`https://www.khanacademy.org/math`},{name:'GFG Quant Practice',type:'Website',url:`https://www.geeksforgeeks.org/quantitative-aptitude/`}],
+    history: [{name:'History of India videos',type:'YouTube',url:`https://www.youtube.com/results?search_query=history+of+india+full+course+free`},{name:'NCERT History Books',type:'Website',url:`https://ncert.nic.in/textbook.php`},{name:'Clear IAS History Notes',type:'Website',url:`https://www.clearias.com/history/`}],
+    english: [{name:'English grammar full course videos',type:'YouTube',url:`https://www.youtube.com/results?search_query=english+grammar+full+course+free`},{name:'Grammarly Blog Grammar Tips',type:'Website',url:`https://www.grammarly.com/blog/category/handbook/`},{name:'British Council Learn English',type:'Website',url:`https://learnenglish.britishcouncil.org`}],
+    constable: [{name:'Police constable exam prep videos',type:'YouTube',url:`https://www.youtube.com/results?search_query=police+constable+exam+preparation+free`},{name:'GK Today Current Affairs',type:'Website',url:`https://www.gktoday.in`},{name:'Adda247 Police Exams',type:'Website',url:`https://www.adda247.com/jobs-by-category/police-jobs/`}],
+    media: [{name:'Media literacy & journalism videos',type:'YouTube',url:`https://www.youtube.com/results?search_query=media+literacy+journalism+full+course+free`},{name:'News Literacy Project',type:'Website',url:`https://newslit.org`},{name:'AltNews Fact Check',type:'Website',url:`https://www.altnews.in`}],
+    default: [{name:`${topic} full course videos`,type:'YouTube',url:`https://www.youtube.com/results?search_query=${q}+full+course+free`},{name:`${topic} Study Notes`,type:'Website',url:`https://swayam.gov.in/search?query=${q}`},{name:`${topic} on Wikipedia`,type:'Website',url:`https://en.wikipedia.org/wiki/Special:Search?search=${q}`}]
   };
 
   // ── Match topic to category (expanded) ──
@@ -5282,38 +5259,15 @@ const PAYMENT_METHODS = [
 
 // ── PREMIUM STATE ──
 let isPremium = false;
-
-function generateReferralCode(){
-  if(P && P.referralCode) return P.referralCode;
-  const base = (P && P.name ? P.name.replace(/[^a-zA-Z]/g,'').toUpperCase().slice(0,4) : 'FS');
-  const code = (base||'FS') + Math.floor(1000 + Math.random()*9000);
-  if(P) { P.referralCode = code; saveAll(); }
-  return code;
-}
-function renderReferral(){
-  const code = generateReferralCode();
-  const el = document.getElementById('referral-code');
-  if(el) el.textContent = code;
-}
-
-function copyReferral(){
-  const code = document.getElementById('referral-code')?.textContent || 'FS0000';
-  navigator.clipboard?.writeText('Download Life Tracker - India\'s best student career app! Use my code '+code+' for free premium month. Download: https://play.google.com/store/apps/details?id=com.fstracker').catch(()=>{});
-  toast('📋 Referral link copied!');
-}
-
-function shareReferral(){
-  const code = document.getElementById('referral-code')?.textContent || 'FS0000';
-  if(navigator.share){
-    navigator.share({
-      title:'Life Tracker  -  Free Student App',
-      text:'Check out this amazing free app for students  -  schedule, jobs, study planner, AI courses! Use my code '+code+' for 1 month free Premium.',
-      url:'https://play.google.com/store/apps/details?id=com.fstracker'
-    });
-  } else {
-    copyReferral();
-  }
-}
+// NOTE: the referral-code / "invite a friend for free premium" feature that
+// used to live here has been removed. It offered a free premium month as
+// the reward, but premium was already removed from the app (see the line
+// below), and it linked to a Play Store listing (com.fstracker) that
+// doesn't exist since this app is a PWA, not a published Android app.
+// Reintroducing it would mean showing users a reward and a download link
+// that don't work. If you want a referral/invite feature again, it needs a
+// real reward tied to what the app actually offers now, and a real share
+// link (e.g. the GitHub Pages URL) instead of the old Play Store one.
 
 function checkAiLimit(){ return true; } // Premium removed  -  all features free
 
@@ -6568,27 +6522,6 @@ function renderInsights() {
 }
 
 // Patch sw() to render stats when Stats tab opens
-document.addEventListener('DOMContentLoaded', () => {
-  // Pre-load Chart.js immediately so stats tab is instant
-  const s = document.createElement('script');
-  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
-  document.head.appendChild(s);
-
-  const _orig = window.sw;
-  window.sw = function(tab, btn) {
-    _orig(tab, btn);
-    if (tab === 'stats') {
-      setTimeout(() => {
-        if (window.Chart) renderStats();
-        else {
-          // Fallback if CDN was slow
-          s.onload = renderStats;
-        }
-      }, 100);
-    }
-  };
-});
-
 // ═══════════════════════════════════════════
 // SMART NOTIFICATIONS  -  task reminders + daily check-ins
 // ═══════════════════════════════════════════
