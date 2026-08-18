@@ -281,7 +281,19 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 /* ── MODAL ── */
 .modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:300;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur();backdrop-filter:blur(4px);}
 .modal-bg.open{display:flex;}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r) var(--r) 0 0;padding:20px 16px calc(var(--safe-bot) + 20px);width:100%;max-height:88vh;overflow-y:auto;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r) var(--r) 0 0;padding:20px 16px calc(var(--safe-bot) + 20px);width:100%;max-height:88vh;overflow-y:auto;animation:modalSlideUp .32s cubic-bezier(.22,1,.36,1);}
+@keyframes modalSlideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes msgIn{from{transform:translateY(8px) scale(.98);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+.jv-msg{animation:msgIn .24s cubic-bezier(.22,1,.36,1);}
+.jv-typing{display:inline-flex;gap:4px;align-items:center;padding:2px 2px;}
+.jv-typing span{width:6px;height:6px;border-radius:50%;background:var(--text3);display:inline-block;animation:jvBounce 1.1s infinite ease-in-out;}
+.jv-typing span:nth-child(2){animation-delay:.15s;}
+.jv-typing span:nth-child(3){animation-delay:.3s;}
+@keyframes jvBounce{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-5px);opacity:1;}}
+.jv-send{transition:transform .15s ease;}
+.jv-send:active{transform:scale(.88);}
+.jv-send.sending{animation:jvPulse 1s infinite;}
+@keyframes jvPulse{0%,100%{opacity:1;}50%{opacity:.55;}}
 .modal h3{font-size:16px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
 .modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:0;}
 .field{margin-bottom:12px;}
@@ -1186,6 +1198,41 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       <div id="skill-list"></div>
     </div>
 
+    <!-- ═══ MORE ═══ -->
+    <div id="s-more" class="sec">
+      <div class="stitle">🧩 More</div>
+
+      <div class="widget" style="background:linear-gradient(135deg,rgba(108,95,255,.08),rgba(0,191,166,.05));border-color:rgba(108,95,255,.2);margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Built by the same builder 🛠️</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">A few other projects from the maker of Life Tracker OS.</div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title"><span>🤖</span>Other Projects</div>
+
+        <div style="display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--border2);border-radius:var(--rs);padding:14px;background:var(--bg3);">
+          <div style="width:44px;height:44px;flex:0 0 44px;border-radius:12px;background:var(--grad3);display:flex;align-items:center;justify-content:center;font-size:22px;">🤖</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;">
+              <div style="font-size:14px;font-weight:800;">J.A.R.V.I.S.</div>
+              <span class="badge badge-purple">Desktop AI</span>
+            </div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:8px;">
+              A personal AI assistant for desktop — built with Electron, with its own reasoning agents, task automation, live-data providers (weather, news, finance) and local memory/embeddings. Currently in active development.
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+              <span class="badge badge-blue">Electron</span>
+              <span class="badge badge-green">Multi-agent</span>
+              <span class="badge badge-yellow">Automation</span>
+            </div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Windows desktop app · full version not available in-browser</div>
+            <button class="btn btn-primary btn-sm" style="justify-content:center;" onclick="openModal('jarvis-modal')">▶ Start J.A.R.V.I.S.</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- ═══ STATS ═══ -->
 
   </div>
@@ -1213,6 +1260,9 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     </button>
     <button class="nb" onclick="sw('profile',this)">
       <div class="nb-icon">👤</div><div>Me</div><div class="nb-dot"></div>
+    </button>
+    <button class="nb" onclick="sw('more',this)">
+      <div class="nb-icon">🧩</div><div>More</div><div class="nb-dot"></div>
     </button>
   </nav>
 </div>
@@ -1543,6 +1593,37 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       <div style="margin-top:8px;font-size:11px;color:var(--text3);line-height:1.7;background:var(--bg3);padding:10px;border-radius:10px;">
         ⏰ <b>Want a real phone alarm instead?</b> Go to the Timetable tab and tap the ⏰ next to any task — on Android it opens your Clock app pre-filled with that time. (iOS doesn't allow this, so use Smart Notifications above there.)
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- JARVIS ASSISTANT MODAL -->
+<div class="modal-bg" id="jarvis-modal">
+  <div class="modal" style="max-height:88vh;display:flex;flex-direction:column;padding:0;overflow:hidden;">
+    <div style="padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:var(--grad3);display:flex;align-items:center;justify-content:center;font-size:18px;">🤖</div>
+        <div>
+          <div style="font-size:14px;font-weight:800;">J.A.R.V.I.S.</div>
+          <div style="font-size:10px;color:var(--text3);">Lite chat mode</div>
+        </div>
+      </div>
+      <button class="modal-close" style="position:static;" onclick="closeModal('jarvis-modal')">✕</button>
+    </div>
+
+    <div id="jarvis-msgs" style="flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:260px;max-height:50vh;scroll-behavior:smooth;">
+      <div class="jv-msg" style="align-self:flex-start;max-width:85%;background:var(--bg3);border-radius:12px;border-bottom-left-radius:4px;padding:9px 12px;font-size:13px;line-height:1.5;">
+        Hey, I'm J.A.R.V.I.S. Ask me anything — explain a concept, help you plan, debug code, brainstorm, whatever you need. What's up?
+      </div>
+    </div>
+
+    <div id="jarvis-status" style="display:none;padding:0 16px 8px;">
+      <span class="jv-typing"><span></span><span></span><span></span></span>
+    </div>
+
+    <div style="padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;">
+      <textarea id="jarvis-input" rows="1" placeholder="Ask J.A.R.V.I.S. something…" style="flex:1;resize:none;padding:10px 12px;border:1.5px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg3);color:var(--text);font-family:inherit;outline:none;max-height:120px;overflow-y:auto;transition:border .2s;" oninput="jarvisAutoGrow(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendJarvisMsg();}"></textarea>
+      <button class="btn btn-primary jv-send" id="jarvis-send-btn" style="padding:10px 14px;" onclick="sendJarvisMsg()">➤</button>
     </div>
   </div>
 </div>
@@ -3945,6 +4026,7 @@ function sw(tab,btn){
   else if(tab==='skills') renderSkills();
   else if(tab==='jobs') renderJobs();
   else if(tab==='profile') renderProfile();
+  else if(tab==='more'){}
 }
 function toast(msg){const t=document.getElementById('toast');t.innerHTML=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function resetApp(){
@@ -6108,9 +6190,12 @@ function fireNotif(id, title, body){
   if(!('Notification' in window)) return;
   if(notifPerm() !== 'granted') return;
   try{
+    // Determine icon path based on hosting
+    const base = location.pathname.includes('lifetracker') ? '/lifetracker/' : './';
     new Notification(title, {
       body: body,
-      icon: '🎓',
+      icon: base + 'icon-192.png',
+      badge: base + 'icon-192.png',
       tag: id,
       requireInteraction: false
     });
@@ -6866,6 +6951,96 @@ function checkMissedAndReschedule() {
 })();
 
 // Called after startApp() to ensure tasks are loaded before scheduling
+
+// ── J.A.R.V.I.S. LITE CHAT ──
+let _jarvisHistory = [];
+let _jarvisBusy = false;
+
+function jarvisAutoGrow(el){
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function sendJarvisMsg(){
+  if (_jarvisBusy) return;
+  const inp = document.getElementById('jarvis-input');
+  const text = (inp.value || '').trim();
+  if (!text) return;
+  inp.value = '';
+  inp.style.height = 'auto';
+  jarvisAppendMsg('user', text);
+  _jarvisHistory.push({ role: 'user', content: text });
+  jarvisAskAPI();
+}
+
+// Small, safe markdown-lite renderer: escapes HTML first, then converts
+// **bold**, *italic*, `code`, ```code blocks```, and - / 1. lists.
+function jarvisRenderMD(raw){
+  let s = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s = s.replace(/```([\s\S]*?)```/g, (m, code) => `<pre style="background:var(--bg4);padding:8px 10px;border-radius:8px;overflow-x:auto;font-size:12px;margin:6px 0;"><code>${code.trim()}</code></pre>`);
+  s = s.replace(/`([^`]+)`/g, '<code style="background:var(--bg4);padding:1px 5px;border-radius:5px;font-size:12px;">$1</code>');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  s = s.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<i>$1</i>');
+  s = s.split(/\n{2,}/).map(block=>{
+    const lines = block.split('\n');
+    if (lines.every(l=>/^\s*[-•]\s+/.test(l)) && lines.length>0 && lines[0].trim()){
+      return '<ul style="margin:4px 0 4px 18px;">'+lines.map(l=>`<li>${l.replace(/^\s*[-•]\s+/,'')}</li>`).join('')+'</ul>';
+    }
+    if (lines.every(l=>/^\s*\d+\.\s+/.test(l)) && lines.length>0 && lines[0].trim()){
+      return '<ol style="margin:4px 0 4px 18px;">'+lines.map(l=>`<li>${l.replace(/^\s*\d+\.\s+/,'')}</li>`).join('')+'</ol>';
+    }
+    return block.replace(/\n/g,'<br>');
+  }).join('<br><br>');
+  return s;
+}
+
+function jarvisAppendMsg(role, text){
+  const box = document.getElementById('jarvis-msgs');
+  const b = document.createElement('div');
+  b.className = 'jv-msg';
+  b.style.cssText = role === 'user'
+    ? 'align-self:flex-end;max-width:85%;background:var(--grad);color:#fff;border-radius:12px;border-bottom-right-radius:4px;padding:9px 12px;font-size:13px;line-height:1.55;'
+    : 'align-self:flex-start;max-width:85%;background:var(--bg3);border-radius:12px;border-bottom-left-radius:4px;padding:9px 12px;font-size:13px;line-height:1.55;';
+  if (role === 'user') b.textContent = text;
+  else b.innerHTML = jarvisRenderMD(text);
+  box.appendChild(b);
+  box.scrollTop = box.scrollHeight;
+}
+
+async function jarvisAskAPI(){
+  _jarvisBusy = true;
+  const statusEl = document.getElementById('jarvis-status');
+  const sendBtn = document.getElementById('jarvis-send-btn');
+  statusEl.style.display = 'block';
+  sendBtn.classList.add('sending');
+  const msgsBox = document.getElementById('jarvis-msgs');
+  msgsBox.scrollTop = msgsBox.scrollHeight;
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1500,
+        system: "You are J.A.R.V.I.S., a sharp, knowledgeable personal assistant embedded inside a student productivity app called Life Tracker OS. You can help with absolutely anything the user asks — explaining concepts clearly, answering factual and general-knowledge questions, helping plan schedules and goals, writing and debugging code, brainstorming, doing quick calculations, drafting messages, and general conversation. Be direct, warm, and genuinely useful. Default to a concise, well-organized answer (short paragraphs, bullet points, or numbered steps when that helps); go deeper only when the question calls for it or the user asks for more detail. Use markdown formatting (**bold**, `code`, lists) where it improves clarity. Avoid unnecessary preamble like 'Great question!' — just answer.",
+        messages: _jarvisHistory
+      })
+    });
+    if (!response.ok) throw new Error('API error ' + response.status);
+    const data = await response.json();
+    const reply = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('\n').trim()
+      || "Sorry, I couldn't reach the assistant backend right now.";
+    _jarvisHistory.push({ role: 'assistant', content: reply });
+    jarvisAppendMsg('assistant', reply);
+  } catch (e) {
+    jarvisAppendMsg('assistant', "I couldn't connect to the assistant backend. This chat needs a live Anthropic API connection (with your own backend proxy) once the app is deployed on its own domain — see the note in the More tab.");
+  } finally {
+    statusEl.style.display = 'none';
+    sendBtn.classList.remove('sending');
+    _jarvisBusy = false;
+    msgsBox.scrollTop = msgsBox.scrollHeight;
+  }
+}
 
 </script>
 </body>
