@@ -279,7 +279,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .learn-pct{font-size:12px;font-weight:700;color:var(--acc);min-width:34px;}
 
 /* ── MODAL ── */
-.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:300;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur();backdrop-filter:blur(4px);}
+.modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:450;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur();backdrop-filter:blur(4px);}
 .modal-bg.open{display:flex;}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r) var(--r) 0 0;padding:20px 16px calc(var(--safe-bot) + 20px);width:100%;max-height:88vh;overflow-y:auto;animation:modalSlideUp .32s cubic-bezier(.22,1,.36,1);}
 @keyframes modalSlideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
@@ -293,6 +293,96 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .jv-send{transition:transform .15s ease;}
 .jv-send:active{transform:scale(.88);}
 .jv-send.sending{animation:jvPulse 1s infinite;}
+.wi-tab{flex:0 0 auto;padding:7px 12px;border-radius:20px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.wi-tab.active{background:var(--grad3);border-color:transparent;color:#fff;}
+.wi-row{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);padding:10px 2px;font-size:12.5px;}
+.wi-row:last-child{border-bottom:none;}
+.wi-up{color:#22C55E;}
+.wi-down{color:#EF4444;}
+.wm-overlay{
+  --bg:#080B12;--bg2:#0F1420;--bg3:#161C2B;--bg4:#1F2738;
+  --text:#EAEEF7;--text2:#9AA5BD;--text3:#616C84;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --acc:#22D3EE;--acc2:#38BDF8;--acc3:#FB7185;--acc4:#FBBF24;
+  --grad:linear-gradient(135deg,#22D3EE 0%,#3B82F6 100%);
+  --grad3:linear-gradient(135deg,#22D3EE 0%,#3B82F6 100%);
+  --sh:0 12px 40px rgba(0,0,0,.55);
+  color:var(--text);
+  display:flex;position:fixed;inset:0;z-index:400;background:var(--bg);flex-direction:column;opacity:0;pointer-events:none;transform:scale(1.02);transition:opacity .22s ease,transform .22s ease;
+}
+.wm-overlay.open{opacity:1;pointer-events:auto;transform:scale(1);}
+#jarvis-modal .modal{
+  --bg2:#0F1420;--bg3:#161C2B;--bg4:#1F2738;
+  --text:#EAEEF7;--text2:#9AA5BD;--text3:#616C84;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --acc:#22D3EE;
+  --grad3:linear-gradient(135deg,#22D3EE 0%,#3B82F6 100%);
+  color:var(--text);
+  background:var(--bg2);
+}
+.wm-header{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 14px;background:linear-gradient(135deg,#05070C 0%,#0B1220 100%);position:sticky;top:0;z-index:2;overflow:hidden;}
+.wm-title{font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:8px;flex:1;color:#fff;position:relative;z-index:1;}
+.wm-live-dot{width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:wmPulse 1.6s infinite;}
+@keyframes wmPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}70%{box-shadow:0 0 0 8px rgba(34,197,94,0);}100%{box-shadow:0 0 0 0 rgba(34,197,94,0);}}
+.wm-clock{font-family:monospace;font-size:12.5px;color:#7DD3FC;letter-spacing:.03em;position:relative;z-index:1;}
+.wm-close{background:rgba(255,255,255,.1);border:none;color:#fff;width:30px;height:30px;flex:0 0 30px;border-radius:10px;font-size:15px;cursor:pointer;position:relative;z-index:1;}
+.wm-jarvis-btn{background:linear-gradient(135deg,var(--acc) 0%,#9C6FFF 100%);border:none;color:#fff;width:30px;height:30px;flex:0 0 30px;border-radius:10px;font-size:15px;cursor:pointer;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0 rgba(108,95,255,.5);animation:wmJarvisPulse 2.4s infinite;}
+@keyframes wmJarvisPulse{0%{box-shadow:0 0 0 0 rgba(108,95,255,.45);}70%{box-shadow:0 0 0 7px rgba(108,95,255,0);}100%{box-shadow:0 0 0 0 rgba(108,95,255,0);}}
+.wm-kpis{flex:0 0 auto;display:flex;gap:8px;overflow-x:auto;padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border);scrollbar-width:none;}
+.wm-kpi{flex:0 0 auto;min-width:112px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 12px;}
+.wm-kpi-val{font-size:16px;font-weight:800;font-family:monospace;}
+.wm-kpi-label{font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+.wm-grid{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px calc(var(--safe-bot) + 20px);display:grid;grid-template-columns:1fr;gap:12px;}
+.wm-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);}
+.wm-panel-head{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+.wm-panel-body{padding:4px 14px 8px;max-height:320px;overflow-y:auto;}
+@media (min-width:720px){.wm-grid{grid-template-columns:1fr 1fr;}}
+@media (min-width:1100px){.wm-grid{grid-template-columns:1fr 1fr 1fr;max-width:1400px;margin:0 auto;}}
+@media (min-width:720px){
+  .modal-bg{align-items:center;}
+  .modal{max-width:480px;border-radius:var(--r);margin:0 auto;max-height:85vh;}
+  .wm-search-input{max-width:560px;margin:0 auto;display:block;}
+  .wm-search-results{max-width:560px;left:50%;right:auto;transform:translateX(-50%);}
+  .wm-header,.wm-search-row,.wm-kpis{padding-left:24px;padding-right:24px;}
+  .wm-kpis{flex-wrap:wrap;overflow-x:visible;max-width:1400px;margin:0 auto;}
+  #cd-body{grid-template-columns:1fr 1fr!important;max-width:900px;margin:0 auto;}
+}
+@media (min-width:1100px){
+  .wm-header,.wm-search-row,.wm-kpis{padding-left:32px;padding-right:32px;}
+}
+.wm-country-search{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text);font-size:13px;margin-bottom:8px;font-family:inherit;outline:none;}
+.wm-country-item{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--border);cursor:pointer;}
+.wm-country-item:last-child{border-bottom:none;}
+.wm-country-flag{width:28px;height:20px;object-fit:cover;border-radius:3px;flex:0 0 28px;background:var(--bg3);}
+.wm-cd-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;}
+.wm-cd-fact{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12.5px;}
+.wm-cd-fact:last-child{border-bottom:none;}
+.wm-cd-fact-label{color:var(--text3);}
+.wm-cd-fact-val{font-weight:700;text-align:right;}
+.wm-search-row{position:relative;flex:0 0 auto;padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);}
+.wm-search-input{width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text);font-size:13px;font-family:inherit;outline:none;}
+.wm-search-results{position:absolute;left:16px;right:16px;top:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;box-shadow:var(--sh);max-height:260px;overflow-y:auto;z-index:5;display:none;}
+.wm-search-results.show{display:block;}
+.wm-map-svg{width:100%;height:auto;display:block;}
+.wm-map-dot{cursor:pointer;}
+.wm-map-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:var(--text3);}
+.wm-map-legend span{display:inline-flex;align-items:center;gap:4px;}
+.wm-map-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;}
+.wm-panel-head{justify-content:space-between;}
+.wm-panel-head-left{display:flex;align-items:center;gap:6px;}
+.wm-panel-meta{display:flex;align-items:center;gap:8px;}
+.wm-updated{font-size:9.5px;color:var(--text3);font-weight:500;text-transform:none;letter-spacing:0;}
+.wm-refresh-btn{background:none;border:none;color:var(--text3);cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:transform .3s,color .15s;}
+.wm-refresh-btn:hover{color:var(--acc);}
+.wm-refresh-btn.spinning{animation:wmSpin .7s linear infinite;color:var(--acc);}
+@keyframes wmSpin{to{transform:rotate(360deg);}}
+.wm-skel{height:34px;border-radius:8px;background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 37%,var(--bg3) 63%);background-size:400% 100%;animation:wmShimmer 1.4s ease infinite;margin:5px 0;}
+@keyframes wmShimmer{0%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+.wm-mover-tag{font-size:8.5px;font-weight:800;background:var(--acc4);color:#fff;padding:1px 5px;border-radius:6px;margin-left:6px;letter-spacing:.03em;}
+.wm-radar{position:absolute;top:0;right:0;width:120px;height:100%;overflow:hidden;pointer-events:none;opacity:.5;}
+.wm-radar::before{content:'';position:absolute;top:50%;right:14px;width:90px;height:90px;margin-top:-45px;border-radius:50%;border:1px solid rgba(125,211,252,.25);}
+.wm-radar::after{content:'';position:absolute;top:50%;right:14px;width:90px;height:90px;margin-top:-45px;border-radius:50%;background:conic-gradient(from 0deg,rgba(125,211,252,.35),transparent 35%);animation:wmRadarSpin 3s linear infinite;}
+@keyframes wmRadarSpin{to{transform:rotate(360deg);}}
 @keyframes jvPulse{0%,100%{opacity:1;}50%{opacity:.55;}}
 .modal h3{font-size:16px;font-weight:800;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
 .modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:0;}
@@ -1204,29 +1294,29 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 
       <div class="widget" style="background:linear-gradient(135deg,rgba(108,95,255,.08),rgba(0,191,166,.05));border-color:rgba(108,95,255,.2);margin-bottom:12px;">
         <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Built by the same builder 🛠️</div>
-        <div style="font-size:12px;color:var(--text2);line-height:1.6;">A few other projects from the maker of Life Tracker OS.</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">Also from the maker of Life Tracker OS.</div>
       </div>
 
       <div class="widget">
-        <div class="widget-title"><span>🤖</span>Other Projects</div>
+        <div class="widget-title"><span>🌍</span>World Monitor</div>
 
         <div style="display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--border2);border-radius:var(--rs);padding:14px;background:var(--bg3);">
-          <div style="width:44px;height:44px;flex:0 0 44px;border-radius:12px;background:var(--grad3);display:flex;align-items:center;justify-content:center;font-size:22px;">🤖</div>
+          <div style="width:44px;height:44px;flex:0 0 44px;border-radius:12px;background:linear-gradient(135deg,#0EA5A5 0%,#0284C7 100%);display:flex;align-items:center;justify-content:center;font-size:22px;">🌍</div>
           <div style="flex:1;min-width:0;">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;">
-              <div style="font-size:14px;font-weight:800;">J.A.R.V.I.S.</div>
-              <span class="badge badge-purple">Desktop AI</span>
+              <div style="font-size:14px;font-weight:800;">World Monitor</div>
+              <span class="badge badge-blue">Live Data</span>
             </div>
             <div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:8px;">
-              A personal AI assistant for desktop — built with Electron, with its own reasoning agents, task automation, live-data providers (weather, news, finance) and local memory/embeddings. Currently in active development.
+              A live briefing on world events — real-time news, stock markets, currency rates and hazard/earthquake alerts, all in one screen. J.A.R.V.I.S. is one tap away inside it too, so you can ask about anything you're seeing.
             </div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
-              <span class="badge badge-blue">Electron</span>
-              <span class="badge badge-green">Multi-agent</span>
-              <span class="badge badge-yellow">Automation</span>
+              <span class="badge badge-yellow">News</span>
+              <span class="badge badge-green">Markets & Rates</span>
+              <span class="badge badge-purple">Alerts</span>
+              <span class="badge badge-blue">🤖 J.A.R.V.I.S. built in</span>
             </div>
-            <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Windows desktop app · full version not available in-browser</div>
-            <button class="btn btn-primary btn-sm" style="justify-content:center;" onclick="openModal('jarvis-modal')">▶ Start J.A.R.V.I.S.</button>
+            <button class="btn btn-primary btn-sm" style="justify-content:center;background:linear-gradient(135deg,#0EA5A5 0%,#0284C7 100%);" onclick="openWorldIntel()">▶ Start World Monitor</button>
           </div>
         </div>
 
@@ -1628,10 +1718,159 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
   </div>
 </div>
 
+<!-- WORLD INTEL MODAL -->
+<div class="wm-overlay" id="world-monitor">
+  <div class="wm-header">
+    <div class="wm-radar"></div>
+    <div class="wm-title"><span>🌍</span> World Monitor <span class="wm-live-dot"></span></div>
+    <div class="wm-clock" id="wm-clock">--:--:--</div>
+    <button class="wm-jarvis-btn" onclick="openModal('jarvis-modal')" title="Ask J.A.R.V.I.S.">🤖</button>
+    <button class="wm-close" onclick="closeWorldMonitor()">✕</button>
+  </div>
+
+  <div class="wm-search-row">
+    <input type="text" id="wm-search" class="wm-search-input" placeholder="🔎 Search any country…" oninput="wmSearchInput(this.value)">
+    <div id="wm-search-results" class="wm-search-results"></div>
+  </div>
+
+  <div class="wm-kpis" id="wm-kpis">
+    <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-pop">—</div><div class="wm-kpi-label" id="wm-kpi-pop-label">World Population</div></div>
+    <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-countries">195</div><div class="wm-kpi-label">Countries</div></div>
+    <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-alerts">—</div><div class="wm-kpi-label">Active Alerts</div></div>
+    <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-markets">—</div><div class="wm-kpi-label">Markets Sentiment</div></div>
+    <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-news">—</div><div class="wm-kpi-label">Live Stories</div></div>
+    <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-gdp">—</div><div class="wm-kpi-label" id="wm-kpi-gdp-label">Global GDP</div></div>
+    <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-cryptocap">—</div><div class="wm-kpi-label">Crypto Market Cap</div></div>
+    <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-internet">—</div><div class="wm-kpi-label" id="wm-kpi-internet-label">Internet Users</div></div>
+    <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-co2">—</div><div class="wm-kpi-label" id="wm-kpi-co2-label">CO₂ Emissions</div></div>
+  </div>
+
+  <div class="wm-grid">
+    <div class="wm-panel" style="grid-column:1/-1;">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>🤖</span>Today's Summary</div>
+        <div class="wm-panel-meta"><span class="wm-updated" id="wm-summary-updated"></span></div>
+      </div>
+      <div id="wm-summary" class="wm-panel-body" style="max-height:none;"></div>
+    </div>
+    <div class="wm-panel" style="grid-column:1/-1;">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>🛰️</span>Live Hazard Map</div>
+        <div class="wm-panel-meta">
+          <span class="wm-updated" id="wm-map-updated"></span>
+        </div>
+      </div>
+      <div id="wm-map" class="wm-panel-body" style="max-height:none;padding:10px 10px 12px;"></div>
+    </div>
+    <div class="wm-panel">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>🕐</span>World Clocks</div>
+        <div class="wm-panel-meta">
+          <span class="wm-updated" id="wm-clocks-updated"></span>
+          <button class="wm-refresh-btn" id="wm-clocks-refresh" onclick="wmLoadClocks(true)" title="Refresh">⟳</button>
+        </div>
+      </div>
+      <div id="wm-clocks" class="wm-panel-body"></div>
+    </div>
+    <div class="wm-panel">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>📈</span>Global Markets</div>
+        <div class="wm-panel-meta">
+          <span class="wm-updated" id="wm-markets-updated"></span>
+          <button class="wm-refresh-btn" id="wm-markets-refresh" onclick="wmLoadMarkets(true)" title="Refresh">⟳</button>
+        </div>
+      </div>
+      <div id="wm-markets" class="wm-panel-body"></div>
+    </div>
+    <div class="wm-panel">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>🪙</span>Cryptocurrencies</div>
+        <div class="wm-panel-meta">
+          <span class="wm-updated" id="wm-crypto-updated"></span>
+          <button class="wm-refresh-btn" id="wm-crypto-refresh" onclick="wmLoadCrypto(true)" title="Refresh">⟳</button>
+        </div>
+      </div>
+      <div id="wm-crypto" class="wm-panel-body"></div>
+    </div>
+    <div class="wm-panel">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>📰</span>Breaking News</div>
+        <div class="wm-panel-meta">
+          <span class="wm-updated" id="wm-news-updated"></span>
+          <button class="wm-refresh-btn" id="wm-news-refresh" onclick="wmLoadNews(true)" title="Refresh">⟳</button>
+        </div>
+      </div>
+      <div id="wm-news" class="wm-panel-body"></div>
+    </div>
+    <div class="wm-panel">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>⚠️</span>Hazard Alerts</div>
+        <div class="wm-panel-meta">
+          <span class="wm-updated" id="wm-alerts-updated"></span>
+          <button class="wm-refresh-btn" id="wm-alerts-refresh" onclick="wmLoadAlerts(true)" title="Refresh">⟳</button>
+        </div>
+      </div>
+      <div id="wm-alerts" class="wm-panel-body"></div>
+    </div>
+    <div class="wm-panel" style="grid-column:1/-1;">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>🗺️</span>Countries</div>
+        <div class="wm-panel-meta">
+          <span class="wm-updated" id="wm-countries-updated"></span>
+        </div>
+      </div>
+      <div class="wm-panel-body" style="max-height:none;">
+        <input type="text" id="wm-country-search" class="wm-country-search" placeholder="Search any country…" oninput="wiFilterCountries(this.value)">
+        <div id="wm-countries-list" style="max-height:280px;overflow-y:auto;"></div>
+      </div>
+    </div>
+
+    <div class="wm-panel">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>📡</span>Data Sources</div>
+      </div>
+      <div id="wm-status" class="wm-panel-body"></div>
+    </div>
+
+    <div class="wm-panel">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>📅</span>Economic Calendar</div>
+      </div>
+      <div class="wm-panel-body">
+        <p style="font-size:12.5px;color:var(--text2);line-height:1.6;padding:6px 2px;">There's no free, key-free live source for scheduled events (rate decisions, CPI releases, earnings), so this isn't faked here — a fabricated calendar could send you to the wrong date for something that actually matters.</p>
+        <a href="https://www.investing.com/economic-calendar/" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;margin-top:6px;padding:9px;border-radius:8px;background:var(--bg3);font-size:12px;font-weight:600;color:var(--acc);text-decoration:none;">Open a live economic calendar →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COUNTRY DETAIL OVERLAY -->
+<div class="wm-overlay" id="country-detail" style="z-index:420;">
+  <div class="wm-header" style="background:linear-gradient(135deg,#05070C 0%,#0B1220 100%);">
+    <button class="wm-close" onclick="wiCloseCountryDetail()" style="transform:rotate(180deg);">➜</button>
+    <div class="wm-title" id="cd-title" style="flex:1;">Loading…</div>
+    <button class="wm-close" onclick="closeWorldMonitor(); wiCloseCountryDetail();">✕</button>
+  </div>
+  <div class="wm-grid" style="grid-template-columns:1fr;" id="cd-body"></div>
+</div>
+
 <div id="toast"></div>
 
 
 <script>// Life Tracker OS  -  Built 2026-07-12 04:00  -  v12-LEARN-FIX
+
+// ── LIVE BACKEND ENDPOINTS ──
+// These need your deployed Firebase Cloud Function URLs (see jarvis-function/).
+// World Clocks (Open-Meteo) and Earthquake Alerts (USGS) work immediately —
+// no backend needed, since those APIs allow direct browser calls.
+// Markets (Yahoo Finance) and News (Google News RSS) need a backend proxy
+// because those sources block direct browser requests.
+const LIVE_ENDPOINTS = {
+  jarvisChat: 'PASTE_YOUR_JARVIS_CHAT_URL_HERE',
+  worldMarkets: 'PASTE_YOUR_WORLD_MARKETS_URL_HERE',
+  worldNews: 'PASTE_YOUR_WORLD_NEWS_URL_HERE',
+  worldAlerts: 'PASTE_YOUR_WORLD_ALERTS_URL_HERE', // optional — adds floods/cyclones/wildfires/volcanoes on top of earthquakes (which already work with no backend)
+};
 
 // STORAGE
 let P=null,CERTS=[],APPLIED=[],TASK_LOG={},WEEK_LOG={};
@@ -7015,31 +7254,886 @@ async function jarvisAskAPI(){
   sendBtn.classList.add('sending');
   const msgsBox = document.getElementById('jarvis-msgs');
   msgsBox.scrollTop = msgsBox.scrollHeight;
+
+  // ⚠️ Uses LIVE_ENDPOINTS.jarvisChat — set that at the top of this script
+  // once you've deployed the Cloud Function (see jarvis-function/).
+  const JARVIS_API_ENDPOINT = LIVE_ENDPOINTS.jarvisChat;
+
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    if (!JARVIS_API_ENDPOINT || JARVIS_API_ENDPOINT.startsWith('PASTE_')) {
+      throw new Error('not-configured');
+    }
+    const response = await fetch(JARVIS_API_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1500,
         system: "You are J.A.R.V.I.S., a sharp, knowledgeable personal assistant embedded inside a student productivity app called Life Tracker OS. You can help with absolutely anything the user asks — explaining concepts clearly, answering factual and general-knowledge questions, helping plan schedules and goals, writing and debugging code, brainstorming, doing quick calculations, drafting messages, and general conversation. Be direct, warm, and genuinely useful. Default to a concise, well-organized answer (short paragraphs, bullet points, or numbered steps when that helps); go deeper only when the question calls for it or the user asks for more detail. Use markdown formatting (**bold**, `code`, lists) where it improves clarity. Avoid unnecessary preamble like 'Great question!' — just answer.",
         messages: _jarvisHistory
       })
     });
     if (!response.ok) throw new Error('API error ' + response.status);
     const data = await response.json();
-    const reply = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('\n').trim()
-      || "Sorry, I couldn't reach the assistant backend right now.";
+    const reply = (data.reply || '').trim() || "Sorry, I couldn't reach the assistant backend right now.";
     _jarvisHistory.push({ role: 'assistant', content: reply });
     jarvisAppendMsg('assistant', reply);
   } catch (e) {
-    jarvisAppendMsg('assistant', "I couldn't connect to the assistant backend. This chat needs a live Anthropic API connection (with your own backend proxy) once the app is deployed on its own domain — see the note in the More tab.");
+    const msg = e && e.message === 'not-configured'
+      ? "J.A.R.V.I.S.'s backend isn't connected yet — the app owner needs to deploy the Cloud Function and set JARVIS_API_ENDPOINT in the code."
+      : "I couldn't reach the assistant backend right now. Please try again in a moment.";
+    jarvisAppendMsg('assistant', msg);
   } finally {
     statusEl.style.display = 'none';
     sendBtn.classList.remove('sending');
     _jarvisBusy = false;
     msgsBox.scrollTop = msgsBox.scrollHeight;
   }
+}
+
+// ── WORLD MONITOR ──
+let _wmClockTimer = null;
+let _wmPollTimers = [];
+let _wmLastUpdated = { clocks: null, markets: null, news: null, alerts: null, crypto: null, map: null };
+let _wmNewsCache = [];
+let _wmCountriesCache = null;
+let _wmAgoTimer = null;
+
+function openWorldIntel(){
+  document.getElementById('world-monitor').classList.add('open');
+  wmStartClock();
+  wmLoadClocks();
+  wmLoadMarkets();
+  wmLoadNews();
+  wmLoadAlerts();
+  wmLoadCrypto();
+  wmLoadGlobalStats();
+  wmLoadStatus();
+  wmInitSummary();
+  wiInitCountries();
+  _wmClearPolls();
+  _wmPollTimers.push(window.setInterval(() => wmLoadClocks(), 5 * 60 * 1000));   // 5 min
+  _wmPollTimers.push(window.setInterval(() => wmLoadMarkets(), 2 * 60 * 1000));  // 2 min
+  _wmPollTimers.push(window.setInterval(() => wmLoadNews(), 3 * 60 * 1000));     // 3 min
+  _wmPollTimers.push(window.setInterval(() => wmLoadAlerts(), 3 * 60 * 1000));   // 3 min
+  _wmPollTimers.push(window.setInterval(() => wmLoadCrypto(), 2 * 60 * 1000));   // 2 min
+
+  // Keep "updated Xs ago" labels ticking without re-fetching.
+  if (_wmAgoTimer) window.clearInterval(_wmAgoTimer);
+  _wmAgoTimer = window.setInterval(wmRefreshAgoLabels, 15000);
+}
+
+function closeWorldMonitor(){
+  document.getElementById('world-monitor').classList.remove('open');
+  if (_wmClockTimer) { window.clearInterval(_wmClockTimer); _wmClockTimer = null; }
+  if (_wmAgoTimer) { window.clearInterval(_wmAgoTimer); _wmAgoTimer = null; }
+  _wmClearPolls();
+}
+
+function _wmClearPolls(){
+  _wmPollTimers.forEach(id => window.clearInterval(id));
+  _wmPollTimers = [];
+}
+
+function wmStartClock(){
+  const el = document.getElementById('wm-clock');
+  const tick = () => { el.textContent = new Date().toUTCString().slice(17, 25) + ' UTC'; };
+  tick();
+  if (_wmClockTimer) window.clearInterval(_wmClockTimer);
+  _wmClockTimer = window.setInterval(tick, 1000);
+}
+
+function wiTimeAgo(iso){
+  const mins = Math.max(1, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  if (mins < 60) return mins + 'm ago';
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return hrs + 'h ago';
+  return Math.round(hrs / 24) + 'd ago';
+}
+
+function wmMarkUpdated(key){
+  _wmLastUpdated[key] = Date.now();
+  wmRefreshAgoLabels();
+}
+
+function wmRefreshAgoLabels(){
+  ['clocks', 'markets', 'news', 'alerts', 'crypto', 'map'].forEach(key => {
+    const el = document.getElementById('wm-' + key + '-updated');
+    if (!el) return;
+    const ts = _wmLastUpdated[key];
+    el.textContent = ts ? 'Updated ' + wiTimeAgo(new Date(ts).toISOString()) : '';
+  });
+}
+
+async function wmRefreshOne(key, btnId, fn){
+  const btn = document.getElementById(btnId);
+  if (btn) btn.classList.add('spinning');
+  await fn();
+  if (btn) btn.classList.remove('spinning');
+}
+
+// World Clocks + Weather — Open-Meteo, CORS-friendly, works with no backend.
+const WI_CITIES = [
+  { city: 'New York', flag: '🇺🇸', tz: 'America/New_York', lat: 40.7128, lon: -74.006 },
+  { city: 'London', flag: '🇬🇧', tz: 'Europe/London', lat: 51.5072, lon: -0.1276 },
+  { city: 'Dubai', flag: '🇦🇪', tz: 'Asia/Dubai', lat: 25.2048, lon: 55.2708 },
+  { city: 'New Delhi', flag: '🇮🇳', tz: 'Asia/Kolkata', lat: 28.6139, lon: 77.209 },
+  { city: 'Singapore', flag: '🇸🇬', tz: 'Asia/Singapore', lat: 1.3521, lon: 103.8198 },
+  { city: 'Tokyo', flag: '🇯🇵', tz: 'Asia/Tokyo', lat: 35.6762, lon: 139.6503 },
+  { city: 'Sydney', flag: '🇦🇺', tz: 'Australia/Sydney', lat: -33.8688, lon: 151.2093 },
+];
+const WI_WCODE = {0:'Clear',1:'Mostly Clear',2:'Partly Cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Drizzle',61:'Light Rain',63:'Rain',65:'Heavy Rain',71:'Snow',73:'Snow',75:'Heavy Snow',80:'Showers',81:'Showers',82:'Storms',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'};
+const WI_WICON = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌦️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+
+async function wmLoadClocks(manual){
+  const box = document.getElementById('wm-clocks');
+  if (manual) return wmRefreshOne('clocks', 'wm-clocks-refresh', () => wmLoadClocks());
+  if (!box.dataset.loaded) box.innerHTML = wmSkeleton(6);
+  try {
+    const results = await Promise.all(WI_CITIES.map(async c => {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code&timezone=auto`;
+      const res = await fetch(url);
+      if (!res.ok) return { ...c, temp: null, code: 0 };
+      const json = await res.json();
+      return { ...c, temp: Math.round(json.current?.temperature_2m ?? 0), code: json.current?.weather_code ?? 0 };
+    }));
+
+    box.innerHTML = results.map(c => {
+      const time = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', timeZone: c.tz }).format(new Date());
+      const icon = WI_WICON[c.code] || '☁️';
+      const label = WI_WCODE[c.code] || '—';
+      return `<div class="wi-row">
+        <span style="width:22px;text-align:center;">${c.flag}</span>
+        <span style="flex:1;font-weight:600;">${c.city}</span>
+        <span style="color:var(--text3);font-size:11px;">${icon} ${c.temp}° ${label}</span>
+        <span style="font-family:monospace;font-weight:700;">${time}</span>
+      </div>`;
+    }).join('');
+    box.dataset.loaded = '1';
+
+    document.getElementById('wm-kpi-cities').textContent = results.length;
+    wmMarkUpdated('clocks');
+  } catch (e) {
+    box.innerHTML = wmErrorMsg('wmLoadClocks()');
+  }
+}
+
+// Global Markets — needs LIVE_ENDPOINTS.worldMarkets (Yahoo Finance blocks
+// direct browser requests, so this goes through your Cloud Function).
+async function wmLoadMarkets(manual){
+  const box = document.getElementById('wm-markets');
+  const url = LIVE_ENDPOINTS.worldMarkets;
+  const kpi = document.getElementById('wm-kpi-markets');
+  if (manual) return wmRefreshOne('markets', 'wm-markets-refresh', () => wmLoadMarkets());
+  if (!url || url.startsWith('PASTE_')) {
+    box.innerHTML = wiNotConfiguredMsg('worldMarkets');
+    kpi.textContent = '—';
+    return;
+  }
+  if (!box.dataset.loaded) box.innerHTML = wmSkeleton(8);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    const groups = ['indices', 'commodities', 'forex'];
+    const allRows = groups.flatMap(g => data[g] || []);
+    let topMover = null;
+    allRows.forEach(q => {
+      if (!topMover || Math.abs(q.changePercent) > Math.abs(topMover.changePercent)) topMover = q;
+    });
+
+    let html = '';
+    let upCount = 0, total = 0;
+    groups.forEach(g => {
+      const rows = data[g] || [];
+      if (!rows.length) return;
+      html += `<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin:10px 2px 2px;">${g}</div>`;
+      html += rows.map(q => {
+        const up = q.change >= 0;
+        total++; if (up) upCount++;
+        const price = g === 'forex' ? q.price.toFixed(4) : q.price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        const isTop = topMover && q.symbol === topMover.symbol;
+        return `<div class="wi-row">
+          <span style="width:22px;text-align:center;">${q.flag}</span>
+          <span style="flex:1;">${q.name}${isTop ? '<span class="wm-mover-tag">TOP MOVER</span>' : ''}</span>
+          <span style="font-family:monospace;color:var(--text2);margin-right:8px;">${price}</span>
+          <span class="${up ? 'wi-up' : 'wi-down'}" style="font-family:monospace;font-weight:700;font-size:11px;">${up ? '▲' : '▼'} ${Math.abs(q.changePercent).toFixed(2)}%</span>
+        </div>`;
+      }).join('');
+    });
+    box.innerHTML = html || '<p style="padding:14px;font-size:13px;color:var(--text2);">No market data available.</p>';
+    box.dataset.loaded = '1';
+    kpi.textContent = total ? Math.round((upCount / total) * 100) + '% ▲' : '—';
+    wmMarkUpdated('markets');
+  } catch (e) {
+    box.innerHTML = wmErrorMsg('wmLoadMarkets()');
+    kpi.textContent = '—';
+  }
+}
+
+// Breaking News — needs LIVE_ENDPOINTS.worldNews (Google News RSS also
+// blocks direct browser requests, so this goes through your Cloud Function).
+async function wmLoadNews(manual){
+  const box = document.getElementById('wm-news');
+  const url = LIVE_ENDPOINTS.worldNews;
+  const kpi = document.getElementById('wm-kpi-news');
+  if (manual) return wmRefreshOne('news', 'wm-news-refresh', () => wmLoadNews());
+  if (!url || url.startsWith('PASTE_')) {
+    box.innerHTML = wiNotConfiguredMsg('worldNews');
+    kpi.textContent = '—';
+    return;
+  }
+  if (!box.dataset.loaded) box.innerHTML = wmSkeleton(6);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(String(res.status));
+    const items = await res.json();
+    _wmNewsCache = items;
+    box.innerHTML = items.slice(0, 15).map(a => `
+      <a href="${a.link}" target="_blank" rel="noopener noreferrer" style="display:block;text-decoration:none;color:inherit;border-bottom:1px solid var(--border);padding:9px 2px;">
+        <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:2px;">
+          <span style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--acc);">${a.category}</span>
+          <span style="font-size:10px;color:var(--text3);flex-shrink:0;">${wiTimeAgo(a.publishedAt)}</span>
+        </div>
+        <div style="font-size:13px;line-height:1.4;color:var(--text);">${a.title}</div>
+        <div style="font-size:10.5px;color:var(--text3);margin-top:2px;">${a.source}</div>
+      </a>`).join('');
+    box.dataset.loaded = '1';
+    kpi.textContent = items.length;
+    wmMarkUpdated('news');
+  } catch (e) {
+    box.innerHTML = wmErrorMsg('wmLoadNews()');
+    kpi.textContent = '—';
+  }
+}
+
+// Hazard Alerts — USGS earthquakes (direct, CORS-friendly) merged with
+// GDACS disaster alerts (floods/cyclones/wildfires/volcanoes) via
+// LIVE_ENDPOINTS.worldAlerts if you've deployed that function. Earthquakes
+// always show even without a backend — GDACS just adds more hazard types.
+async function wmLoadAlerts(manual){
+  const box = document.getElementById('wm-alerts');
+  const kpi = document.getElementById('wm-kpi-alerts');
+  if (manual) return wmRefreshOne('alerts', 'wm-alerts-refresh', () => wmLoadAlerts());
+  if (!box.dataset.loaded) box.innerHTML = wmSkeleton(5);
+  try {
+    const quakePromise = fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson')
+      .then(r => r.ok ? r.json() : null)
+      .then(json => (json?.features || []).map(f => ({
+        icon: '🌍',
+        mag: f.properties.mag || 0,
+        title: f.properties.mag ? f.properties.mag.toFixed(1) + 'M Earthquake' : 'Earthquake',
+        location: f.properties.place || 'Unknown location',
+        time: new Date(f.properties.time).toISOString(),
+        link: f.properties.url,
+        lat: f.geometry?.coordinates?.[1],
+        lon: f.geometry?.coordinates?.[0],
+      })))
+      .catch(() => []);
+
+    const gdacsUrl = LIVE_ENDPOINTS.worldAlerts;
+    const gdacsPromise = (!gdacsUrl || gdacsUrl.startsWith('PASTE_'))
+      ? Promise.resolve([])
+      : fetch(gdacsUrl).then(r => r.ok ? r.json() : []).catch(() => []);
+
+    const [quakes, gdacs] = await Promise.all([quakePromise, gdacsPromise]);
+    const merged = [...quakes, ...gdacs].sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 14);
+
+    if (!merged.length) {
+      box.innerHTML = '<p style="padding:14px;font-size:13px;color:var(--text2);">No significant hazards detected right now.</p>';
+    } else {
+      box.innerHTML = merged.map(h => {
+        const sev = wmSeverityColor(h.mag);
+        return `<a href="${h.link || '#'}" target="${h.link ? '_blank' : ''}" rel="noopener noreferrer" style="display:flex;gap:10px;align-items:flex-start;text-decoration:none;color:inherit;border-bottom:1px solid var(--border);padding:9px 2px;">
+        <span style="width:32px;height:32px;flex:0 0 32px;border-radius:8px;background:${sev.bg};display:flex;align-items:center;justify-content:center;">${h.icon || '⚠️'}</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:12.5px;display:flex;align-items:center;gap:6px;">${h.title}${sev.label ? `<span style="font-size:8.5px;font-weight:800;background:${sev.tagBg};color:${sev.tagColor};padding:1px 5px;border-radius:6px;letter-spacing:.03em;">${sev.label}</span>` : ''}</div>
+          <div style="font-size:11px;color:var(--text3);">${h.location || ''}</div>
+        </div>
+        <span style="font-size:10px;color:var(--text3);flex-shrink:0;">${wiTimeAgo(h.time)}</span>
+      </a>`;
+      }).join('');
+    }
+    box.dataset.loaded = '1';
+    kpi.textContent = merged.length;
+    wmMarkUpdated('alerts');
+    wmRenderMap(merged.filter(h => h.lat != null && h.lon != null));
+  } catch (e) {
+    box.innerHTML = wmErrorMsg('wmLoadAlerts()');
+    kpi.textContent = '—';
+  }
+}
+
+function wmErrorMsg(retryFn){
+  return `<div style="padding:14px;">
+    <p style="font-size:13px;color:var(--text2);margin-bottom:8px;">Couldn't reach that data source right now.</p>
+    <button onclick="${retryFn}" style="background:var(--bg4);border:none;color:var(--text);font-size:11.5px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;">↻ Retry</button>
+  </div>`;
+}
+
+function wmSeverityColor(mag){
+  if (mag >= 6) return { bg:'rgba(239,68,68,.14)', label:'MAJOR', tagBg:'#EF4444', tagColor:'#fff' };
+  if (mag >= 5) return { bg:'rgba(249,115,22,.14)', label:'STRONG', tagBg:'#F97316', tagColor:'#fff' };
+  if (mag >= 4.5) return { bg:'rgba(234,179,8,.14)', label:'', tagBg:'', tagColor:'' };
+  return { bg:'var(--bg3)', label:'', tagBg:'', tagColor:'' };
+}
+
+function wmSkeleton(rows){
+  return Array.from({ length: rows }).map(() => '<div class="wm-skel"></div>').join('');
+}
+
+// ── COUNTRIES ──
+// REST Countries (restcountries.com) — free, CORS-enabled, no API key.
+// Wikipedia REST API — free, CORS-enabled, no API key. Used for a live,
+// factual overview (history/geography/culture) instead of anything invented.
+async function wiInitCountries(){
+  if (_wmCountriesCache) { wiRenderCountryList(_wmCountriesCache); return; }
+  const list = document.getElementById('wm-countries-list');
+  list.innerHTML = wmSkeleton(6);
+  try {
+    const fields = 'name,capital,region,subregion,population,area,currencies,languages,flags,latlng,capitalInfo,cca2,cca3,maps,timezones';
+    const res = await fetch(`https://restcountries.com/v3.1/all?fields=${fields}`);
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    data.sort((a, b) => (a.name?.common || '').localeCompare(b.name?.common || ''));
+    _wmCountriesCache = data;
+    wiRenderCountryList(data);
+    document.getElementById('wm-countries-updated').textContent = data.length + ' countries loaded';
+    const kpiCountries = document.getElementById('wm-kpi-countries');
+    if (kpiCountries) kpiCountries.textContent = data.length;
+  } catch (e) {
+    list.innerHTML = wmErrorMsg('wiInitCountries()');
+  }
+}
+
+function wiFilterCountries(q){
+  if (!_wmCountriesCache) return;
+  const query = q.trim().toLowerCase();
+  const filtered = !query ? _wmCountriesCache : _wmCountriesCache.filter(c =>
+    (c.name?.common || '').toLowerCase().includes(query) ||
+    (c.capital?.[0] || '').toLowerCase().includes(query) ||
+    (c.region || '').toLowerCase().includes(query)
+  );
+  wiRenderCountryList(filtered);
+}
+
+function wiRenderCountryList(countries){
+  const list = document.getElementById('wm-countries-list');
+  if (!countries.length) {
+    list.innerHTML = '<p style="padding:14px;font-size:13px;color:var(--text2);">No countries match that search.</p>';
+    return;
+  }
+  list.innerHTML = countries.map(c => `
+    <div class="wm-country-item" onclick="wiOpenCountry('${c.cca3}')">
+      <img class="wm-country-flag" src="${c.flags?.svg || c.flags?.png || ''}" alt="" loading="lazy">
+      <span style="flex:1;font-weight:600;">${c.name?.common || 'Unknown'}</span>
+      <span style="font-size:11px;color:var(--text3);">${c.region || ''}</span>
+    </div>`).join('');
+}
+
+async function wiOpenCountry(cca3){
+  const country = (_wmCountriesCache || []).find(c => c.cca3 === cca3);
+  if (!country) return;
+
+  document.getElementById('country-detail').classList.add('open');
+  document.getElementById('cd-title').textContent = `${country.name?.common || ''}`;
+
+  const currencyEntries = Object.entries(country.currencies || {});
+  const currencyCode = currencyEntries[0]?.[0] || '';
+  const currencyName = currencyEntries[0]?.[1]?.name || '';
+  const languages = Object.values(country.languages || {}).join(', ') || '—';
+  const mapUrl = country.maps?.googleMaps || `https://www.google.com/maps?q=${country.latlng?.[0]},${country.latlng?.[1]}`;
+
+  const body = document.getElementById('cd-body');
+  body.innerHTML = `
+    <div class="wm-cd-card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+        <img src="${country.flags?.svg || ''}" style="width:56px;height:38px;object-fit:cover;border-radius:6px;" alt="">
+        <div>
+          <div style="font-size:17px;font-weight:800;">${country.name?.common || ''}</div>
+          <div style="font-size:11.5px;color:var(--text3);">${country.name?.official || ''}</div>
+        </div>
+      </div>
+      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Capital</span><span class="wm-cd-fact-val">${country.capital?.[0] || '—'}</span></div>
+      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Region</span><span class="wm-cd-fact-val">${country.region || '—'}${country.subregion ? ' · ' + country.subregion : ''}</span></div>
+      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Population</span><span class="wm-cd-fact-val">${(country.population || 0).toLocaleString()}</span></div>
+      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Area</span><span class="wm-cd-fact-val">${(country.area || 0).toLocaleString()} km²</span></div>
+      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Languages</span><span class="wm-cd-fact-val">${languages}</span></div>
+      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Currency</span><span class="wm-cd-fact-val" id="cd-currency">${currencyName ? currencyName + ' (' + currencyCode + ')' : '—'}</span></div>
+      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Live rate</span><span class="wm-cd-fact-val" id="cd-fx">Loading…</span></div>
+      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Timezones</span><span class="wm-cd-fact-val" style="max-width:60%;">${(country.timezones || []).slice(0, 3).join(', ')}</span></div>
+      <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;margin-top:10px;padding:8px;border-radius:8px;background:var(--bg3);font-size:12px;font-weight:600;color:var(--acc);text-decoration:none;">📍 Open in Maps</a>
+    </div>
+
+    <div class="wm-cd-card">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:8px;">🌦️ 5-Day Forecast · ${country.capital?.[0] || country.name?.common}</div>
+      <div id="cd-forecast" style="display:flex;justify-content:space-between;gap:4px;">${wmSkeleton(1)}</div>
+    </div>
+
+    <div class="wm-cd-card">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:2px;">📈 Growth Outlook</div>
+      <div style="font-size:10.5px;color:var(--text3);margin-bottom:8px;">Most recent annual trend, World Bank Open Data — a real historical rate, not a forecast of what will happen next.</div>
+      <div id="cd-growth">${wmSkeleton(2)}</div>
+    </div>
+
+    <div class="wm-cd-card">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:8px;">📊 GDP, Last 10 Years</div>
+      <div id="cd-gdp-chart">${wmSkeleton(1)}</div>
+    </div>
+
+    <div class="wm-cd-card">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:2px;">🔑 Key Indicators</div>
+      <div style="font-size:10.5px;color:var(--text3);margin-bottom:8px;">Latest available year per indicator, World Bank Open Data.</div>
+      <div id="cd-indicators">${wmSkeleton(6)}</div>
+    </div>
+
+    <div class="wm-cd-card">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:8px;">📖 Overview</div>
+      <div id="cd-wiki" style="font-size:13px;line-height:1.6;color:var(--text2);">${wmSkeleton(3)}</div>
+    </div>
+
+    <div class="wm-cd-card">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-bottom:8px;">📰 Related headlines from World Monitor's live feed</div>
+      <div id="cd-news" style="font-size:12.5px;">${wmSkeleton(2)}</div>
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;justify-content:center;background:linear-gradient(135deg,var(--acc) 0%,#9C6FFF 100%);grid-column:1/-1;padding:14px;" onclick="wiAskJarvisAbout('${(country.name?.common || '').replace(/'/g, "\\'")}')">🤖 Ask J.A.R.V.I.S. about ${country.name?.common || 'this country'}</button>
+  `;
+
+  wiLoadWikiSummary(country.name?.common);
+  wiRenderCountryNews(country.name?.common);
+  wiLoadFxRate(currencyCode);
+  wiLoadGdpChart(country.cca2);
+  wiLoadKeyIndicators(country.cca2);
+  wiLoadForecast(country);
+  wiLoadGrowthOutlook(country.cca2, country.cca3);
+}
+
+async function wiLoadWikiSummary(name){
+  const el = document.getElementById('cd-wiki');
+  if (!el) return;
+  try {
+    const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name)}`);
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    el.innerHTML = `${data.extract || 'No summary available.'}
+      <a href="${data.content_urls?.desktop?.page || '#'}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;font-size:11.5px;color:var(--acc);">Read more on Wikipedia →</a>`;
+  } catch (e) {
+    el.innerHTML = '<span style="color:var(--text3);">Couldn\'t load the overview right now.</span>';
+  }
+}
+
+function wiRenderCountryNews(countryName){
+  const el = document.getElementById('cd-news');
+  if (!el) return;
+  const matches = (_wmNewsCache || []).filter(a =>
+    a.title.toLowerCase().includes(countryName.toLowerCase())
+  ).slice(0, 6);
+
+  if (!matches.length) {
+    el.innerHTML = `<p style="color:var(--text3);margin-bottom:8px;">No mentions of ${countryName} in the current world news feed.</p>
+      <a href="https://news.google.com/search?q=${encodeURIComponent(countryName)}" target="_blank" rel="noopener noreferrer" style="color:var(--acc);font-size:11.5px;">Search Google News for ${countryName} →</a>`;
+    return;
+  }
+  el.innerHTML = matches.map(a => `
+    <a href="${a.link}" target="_blank" rel="noopener noreferrer" style="display:block;text-decoration:none;color:inherit;border-bottom:1px solid var(--border);padding:7px 0;">
+      <div style="color:var(--text);line-height:1.4;">${a.title}</div>
+      <div style="font-size:10.5px;color:var(--text3);margin-top:2px;">${a.source} · ${wiTimeAgo(a.publishedAt)}</div>
+    </a>`).join('');
+}
+
+async function wiLoadFxRate(code){
+  const el = document.getElementById('cd-fx');
+  if (!el) return;
+  if (!code) { el.textContent = '—'; return; }
+  if (code === 'USD') { el.textContent = '1 USD = 1.00 USD'; return; }
+  try {
+    const res = await fetch(`https://api.frankfurter.app/latest?from=${code}&to=USD`);
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    const rate = data.rates?.USD;
+    el.textContent = rate ? `1 ${code} = ${rate.toFixed(4)} USD` : 'Not available';
+  } catch (e) {
+    el.textContent = 'Not available';
+  }
+}
+
+const WM_FORECAST_ICON = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌦️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+
+// Real 5-day forecast (Open-Meteo) for the country's capital — an honest
+// "future" data point, unlike anything speculative about politics/conflict.
+async function wiLoadForecast(country){
+  const el = document.getElementById('cd-forecast');
+  if (!el) return;
+  const coords = country.capitalInfo?.latlng || country.latlng;
+  if (!coords || coords.length < 2) { el.innerHTML = '<span style="color:var(--text3);font-size:12px;">No location data available.</span>'; return; }
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords[0]}&longitude=${coords[1]}&daily=temperature_2m_max,temperature_2m_min,weather_code&forecast_days=5&timezone=auto`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    const days = data.daily?.time || [];
+    el.innerHTML = days.map((d, i) => {
+      const code = data.daily.weather_code[i];
+      const max = Math.round(data.daily.temperature_2m_max[i]);
+      const min = Math.round(data.daily.temperature_2m_min[i]);
+      const label = new Date(d + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short' });
+      return `<div style="flex:1;text-align:center;">
+        <div style="font-size:9.5px;color:var(--text3);margin-bottom:3px;">${label}</div>
+        <div style="font-size:16px;">${WM_FORECAST_ICON[code] || '☁️'}</div>
+        <div style="font-size:10.5px;font-weight:700;margin-top:2px;">${max}°</div>
+        <div style="font-size:9.5px;color:var(--text3);">${min}°</div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    el.innerHTML = '<span style="color:var(--text3);font-size:12px;">Couldn\'t load the forecast right now.</span>';
+  }
+}
+
+// Most recent annual population & GDP growth rate — real, sourced,
+// backward-looking trend data (World Bank), explicitly NOT a prediction.
+async function wiLoadGrowthOutlook(cca2, cca3){
+  const el = document.getElementById('cd-growth');
+  if (!el) return;
+  const code = cca2 || cca3;
+  try {
+    const [popRes, gdpRes] = await Promise.all([
+      fetch(`https://api.worldbank.org/v2/country/${code}/indicator/SP.POP.GROW?format=json&mrv=1`),
+      fetch(`https://api.worldbank.org/v2/country/${code}/indicator/NY.GDP.MKTP.KD.ZG?format=json&mrv=1`),
+    ]);
+    const [popJson, gdpJson] = await Promise.all([popRes.json(), gdpRes.json()]);
+    const popEntry = popJson?.[1]?.[0];
+    const gdpEntry = gdpJson?.[1]?.[0];
+
+    const rows = [];
+    if (popEntry?.value != null) {
+      rows.push(`<div class="wm-cd-fact"><span class="wm-cd-fact-label">Population growth (${popEntry.date})</span><span class="wm-cd-fact-val ${popEntry.value >= 0 ? 'wi-up' : 'wi-down'}">${popEntry.value >= 0 ? '▲' : '▼'} ${Math.abs(popEntry.value).toFixed(2)}%/yr</span></div>`);
+    }
+    if (gdpEntry?.value != null) {
+      rows.push(`<div class="wm-cd-fact"><span class="wm-cd-fact-label">GDP growth (${gdpEntry.date})</span><span class="wm-cd-fact-val ${gdpEntry.value >= 0 ? 'wi-up' : 'wi-down'}">${gdpEntry.value >= 0 ? '▲' : '▼'} ${Math.abs(gdpEntry.value).toFixed(2)}%/yr</span></div>`);
+    }
+    el.innerHTML = rows.length ? rows.join('') : '<span style="color:var(--text3);font-size:12px;">No World Bank data available for this country.</span>';
+  } catch (e) {
+    el.innerHTML = '<span style="color:var(--text3);font-size:12px;">Couldn\'t load growth data right now.</span>';
+  }
+}
+
+// Real 10-year GDP history as an SVG line chart — actual World Bank
+// figures, not a projection.
+async function wiLoadGdpChart(cca2){
+  const el = document.getElementById('cd-gdp-chart');
+  if (!el || !cca2) return;
+  try {
+    const res = await fetch(`https://api.worldbank.org/v2/country/${cca2}/indicator/NY.GDP.MKTP.CD?format=json&mrv=10`);
+    const json = await res.json();
+    const points = (json?.[1] || []).filter(p => p.value != null).reverse();
+    if (points.length < 2) { el.innerHTML = '<span style="color:var(--text3);font-size:12px;">Not enough World Bank data to chart.</span>'; return; }
+
+    const w = 300, h = 90, pad = 4;
+    const values = points.map(p => p.value);
+    const min = Math.min(...values), max = Math.max(...values);
+    const range = (max - min) || 1;
+    const stepX = (w - pad * 2) / (points.length - 1);
+    const coords = points.map((p, i) => {
+      const x = pad + i * stepX;
+      const y = h - pad - ((p.value - min) / range) * (h - pad * 2);
+      return [x, y];
+    });
+    const path = coords.map((c, i) => (i === 0 ? 'M' : 'L') + c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ');
+    const areaPath = path + ` L${coords[coords.length - 1][0].toFixed(1)},${h} L${coords[0][0].toFixed(1)},${h} Z`;
+    const latest = points[points.length - 1];
+    const first = points[0];
+    const totalChangePct = ((latest.value - first.value) / first.value) * 100;
+
+    el.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+        <span style="font-size:16px;font-weight:800;">$${(latest.value / 1e9).toFixed(1)}B</span>
+        <span class="${totalChangePct >= 0 ? 'wi-up' : 'wi-down'}" style="font-size:11px;font-weight:700;">${totalChangePct >= 0 ? '▲' : '▼'} ${Math.abs(totalChangePct).toFixed(1)}% since ${first.date}</span>
+      </div>
+      <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:70px;display:block;">
+        <path d="${areaPath}" fill="var(--acc)" fill-opacity="0.12"/>
+        <path d="${path}" fill="none" stroke="var(--acc)" stroke-width="2"/>
+      </svg>
+      <div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--text3);margin-top:2px;"><span>${first.date}</span><span>${latest.date}</span></div>`;
+  } catch (e) {
+    el.innerHTML = '<span style="color:var(--text3);font-size:12px;">Couldn\'t load GDP history right now.</span>';
+  }
+}
+
+// Extra World Bank indicators — the "tourism / military / energy" breadth
+// from the reference, folded into one honest, sourced facts list.
+const WI_KEY_INDICATORS = [
+  { code: 'FP.CPI.TOTL.ZG', label: 'Inflation', suffix: '%/yr' },
+  { code: 'SL.UEM.TOTL.ZS', label: 'Unemployment', suffix: '% of labor force' },
+  { code: 'EN.POP.DNST', label: 'Population Density', suffix: ' people/km²', raw: true },
+  { code: 'SP.DYN.LE00.IN', label: 'Life Expectancy', suffix: ' years', raw: true },
+  { code: 'ST.INT.ARVL', label: 'Tourist Arrivals', suffix: '', big: true },
+  { code: 'MS.MIL.XPND.GD.ZS', label: 'Military Spending', suffix: '% of GDP' },
+  { code: 'EG.FEC.RNEW.ZS', label: 'Renewable Energy Use', suffix: '% of total' },
+];
+
+async function wiLoadKeyIndicators(cca2){
+  const el = document.getElementById('cd-indicators');
+  if (!el || !cca2) return;
+  try {
+    const results = await Promise.all(WI_KEY_INDICATORS.map(ind =>
+      fetch(`https://api.worldbank.org/v2/country/${cca2}/indicator/${ind.code}?format=json&mrv=1`)
+        .then(r => r.json())
+        .then(json => ({ ind, entry: json?.[1]?.[0] }))
+        .catch(() => ({ ind, entry: null }))
+    ));
+    const rows = results
+      .filter(r => r.entry?.value != null)
+      .map(({ ind, entry }) => {
+        let val;
+        if (ind.big) val = entry.value >= 1e6 ? (entry.value / 1e6).toFixed(1) + 'M' : entry.value.toLocaleString();
+        else if (ind.raw) val = entry.value.toFixed(1) + ind.suffix;
+        else val = entry.value.toFixed(1) + ind.suffix;
+        return `<div class="wm-cd-fact"><span class="wm-cd-fact-label">${ind.label} (${entry.date})</span><span class="wm-cd-fact-val">${val}</span></div>`;
+      });
+    el.innerHTML = rows.length ? rows.join('') : '<span style="color:var(--text3);font-size:12px;">No additional World Bank indicators available for this country.</span>';
+  } catch (e) {
+    el.innerHTML = '<span style="color:var(--text3);font-size:12px;">Couldn\'t load indicators right now.</span>';
+  }
+}
+
+function wiCloseCountryDetail(){
+  document.getElementById('country-detail').classList.remove('open');
+}
+
+function wiAskJarvisAbout(countryName){
+  openModal('jarvis-modal');
+  const input = document.getElementById('jarvis-input');
+  input.value = `What's the current situation in ${countryName} — politically, economically, and anything notable happening there right now?`;
+  jarvisAutoGrow(input);
+}
+
+// Live Hazard Map — stylized equirectangular grid, real coordinates from
+// USGS earthquake data (GDACS items are plotted too when they carry coords).
+function wmRenderMap(features){
+  const box = document.getElementById('wm-map');
+  if (!box) return;
+  const w = 720, h = 360;
+  const project = (lat, lon) => [(lon + 180) / 360 * w, (90 - lat) / 180 * h];
+
+  let grid = '';
+  for (let lon = -180; lon <= 180; lon += 30) {
+    const x = (lon + 180) / 360 * w;
+    grid += `<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>`;
+  }
+  for (let lat = -90; lat <= 90; lat += 30) {
+    const y = (90 - lat) / 180 * h;
+    grid += `<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>`;
+  }
+  grid += `<line x1="0" y1="${h/2}" x2="${w}" y2="${h/2}" stroke="rgba(125,211,252,.18)" stroke-width="1"/>`;
+  grid += `<line x1="${w/2}" y1="0" x2="${w/2}" y2="${h}" stroke="rgba(125,211,252,.18)" stroke-width="1"/>`;
+
+  const dots = features.map(f => {
+    const [x, y] = project(f.lat, f.lon);
+    const color = f.mag >= 6 ? '#EF4444' : f.mag >= 5 ? '#F97316' : f.mag >= 4.5 ? '#EAB308' : '#7DD3FC';
+    const r = f.mag ? Math.max(3, Math.min(9, f.mag)) : 4;
+    const safeTitle = (f.title + ' — ' + (f.location || '')).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    return `<circle class="wm-map-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${color}" fill-opacity="0.85" stroke="${color}" stroke-width="1.5"><title>${safeTitle}</title></circle>`;
+  }).join('');
+
+  box.innerHTML = `
+    <svg class="wm-map-svg" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${w}" height="${h}" rx="10" fill="#060A12"/>
+      ${grid}
+      ${dots}
+    </svg>
+    <div class="wm-map-legend">
+      <span><i style="background:#EF4444;"></i>Major (6.0+)</span>
+      <span><i style="background:#F97316;"></i>Strong (5.0+)</span>
+      <span><i style="background:#EAB308;"></i>Moderate (4.5+)</span>
+      <span style="margin-left:auto;">${features.length} live points · positions are real coordinates, from USGS/GDACS</span>
+    </div>`;
+  wmMarkUpdated('map');
+}
+
+// Cryptocurrencies — CoinGecko, free, no key, CORS-enabled.
+async function wmLoadCrypto(manual){
+  const box = document.getElementById('wm-crypto');
+  if (manual) return wmRefreshOne('crypto', 'wm-crypto-refresh', () => wmLoadCrypto());
+  if (!box.dataset.loaded) box.innerHTML = wmSkeleton(6);
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=8&page=1&price_change_percentage=24h');
+    if (!res.ok) throw new Error(String(res.status));
+    const coins = await res.json();
+    box.innerHTML = coins.map(c => {
+      const chg = c.price_change_percentage_24h || 0;
+      const up = chg >= 0;
+      const price = c.current_price < 1 ? c.current_price.toFixed(4) : c.current_price.toLocaleString(undefined, { maximumFractionDigits: 2 });
+      return `<div class="wi-row">
+        <img src="${c.image}" style="width:20px;height:20px;border-radius:50%;flex:0 0 20px;" alt="">
+        <span style="flex:1;">${c.name} <span style="color:var(--text3);font-size:10px;">${(c.symbol || '').toUpperCase()}</span></span>
+        <span style="font-family:monospace;color:var(--text2);margin-right:8px;">$${price}</span>
+        <span class="${up ? 'wi-up' : 'wi-down'}" style="font-family:monospace;font-weight:700;font-size:11px;">${up ? '▲' : '▼'} ${Math.abs(chg).toFixed(2)}%</span>
+      </div>`;
+    }).join('');
+    box.dataset.loaded = '1';
+    wmMarkUpdated('crypto');
+  } catch (e) {
+    box.innerHTML = wmErrorMsg('wmLoadCrypto()');
+  }
+}
+
+// Global population & GDP KPIs — World Bank's latest annual world totals,
+// clearly labeled with the year they're from (not a live tick).
+async function wmLoadGlobalStats(){
+  let worldPop = null;
+  try {
+    const [popRes, gdpRes] = await Promise.all([
+      fetch('https://api.worldbank.org/v2/country/WLD/indicator/SP.POP.TOTL?format=json&mrv=1'),
+      fetch('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&mrv=1'),
+    ]);
+    const [popJson, gdpJson] = await Promise.all([popRes.json(), gdpRes.json()]);
+    const pop = popJson?.[1]?.[0];
+    const gdp = gdpJson?.[1]?.[0];
+    if (pop?.value) {
+      worldPop = pop.value;
+      document.getElementById('wm-kpi-pop').textContent = (pop.value / 1e9).toFixed(2) + 'B';
+      document.getElementById('wm-kpi-pop-label').textContent = 'World Population (' + pop.date + ')';
+    }
+    if (gdp?.value) {
+      document.getElementById('wm-kpi-gdp').textContent = '$' + (gdp.value / 1e12).toFixed(1) + 'T';
+      document.getElementById('wm-kpi-gdp-label').textContent = 'Global GDP (' + gdp.date + ')';
+    }
+  } catch (e) {
+    // Non-critical — KPIs just stay at "—" if World Bank is unreachable.
+  }
+
+  // Crypto total market cap — CoinGecko's /global endpoint, genuinely live.
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/global');
+    const json = await res.json();
+    const cap = json?.data?.total_market_cap?.usd;
+    if (cap) document.getElementById('wm-kpi-cryptocap').textContent = '$' + (cap / 1e12).toFixed(2) + 'T';
+  } catch (e) { /* leave dash */ }
+
+  // Internet users — World Bank's % of population online, converted to a
+  // headcount using the population figure fetched above.
+  try {
+    const res = await fetch('https://api.worldbank.org/v2/country/WLD/indicator/IT.NET.USER.ZS?format=json&mrv=1');
+    const json = await res.json();
+    const entry = json?.[1]?.[0];
+    if (entry?.value && worldPop) {
+      const users = worldPop * (entry.value / 100);
+      document.getElementById('wm-kpi-internet').textContent = (users / 1e9).toFixed(2) + 'B';
+      document.getElementById('wm-kpi-internet-label').textContent = 'Internet Users (' + entry.date + ')';
+    }
+  } catch (e) { /* leave dash */ }
+
+  // CO₂ emissions — World Bank world total, in kt, converted to Gt.
+  try {
+    const res = await fetch('https://api.worldbank.org/v2/country/WLD/indicator/EN.GHG.CO2.MT.CE.AR5?format=json&mrv=1');
+    const json = await res.json();
+    const entry = json?.[1]?.[0];
+    if (entry?.value) {
+      document.getElementById('wm-kpi-co2').textContent = (entry.value / 1000).toFixed(1) + ' Gt';
+      document.getElementById('wm-kpi-co2-label').textContent = 'CO₂ Emissions (' + entry.date + ')';
+    }
+  } catch (e) { /* leave dash */ }
+}
+
+// Global country search bar in the World Monitor header.
+function wmSearchInput(q){
+  const resultsEl = document.getElementById('wm-search-results');
+  const query = q.trim().toLowerCase();
+  if (!query || !_wmCountriesCache) { resultsEl.classList.remove('show'); resultsEl.innerHTML = ''; return; }
+  const matches = _wmCountriesCache.filter(c => (c.name?.common || '').toLowerCase().includes(query)).slice(0, 8);
+  if (!matches.length) {
+    resultsEl.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--text3);">No matches yet — try a different spelling.</div>';
+  } else {
+    resultsEl.innerHTML = matches.map(c => `<div class="wm-country-item" style="padding:8px 12px;" onclick="wmSearchSelect('${c.cca3}')">
+      <img class="wm-country-flag" src="${c.flags?.svg || ''}" alt="">
+      <span style="flex:1;">${c.name.common}</span>
+      <span style="font-size:10px;color:var(--text3);">${c.region || ''}</span>
+    </div>`).join('');
+  }
+  resultsEl.classList.add('show');
+}
+function wmSearchSelect(cca3){
+  document.getElementById('wm-search').value = '';
+  document.getElementById('wm-search-results').classList.remove('show');
+  document.getElementById('wm-search-results').innerHTML = '';
+  wiOpenCountry(cca3);
+}
+
+// Data Sources — an honest status panel: what's actually live right now in
+// THIS app, not decorative "AI Models: Operational" chrome.
+function wmLoadStatus(){
+  const el = document.getElementById('wm-status');
+  if (!el) return;
+  const backendReady = (key) => LIVE_ENDPOINTS[key] && !LIVE_ENDPOINTS[key].startsWith('PASTE_');
+  const rows = [
+    { label: 'World Clocks & Weather', src: 'Open-Meteo', live: true },
+    { label: 'Hazard Map & Earthquakes', src: 'USGS', live: true },
+    { label: 'Disaster Alerts', src: 'GDACS via backend', live: backendReady('worldAlerts'), optional: true },
+    { label: 'Countries & Facts', src: 'REST Countries', live: true },
+    { label: 'Currency Rates', src: 'Frankfurter', live: true },
+    { label: 'Country Overviews', src: 'Wikipedia', live: true },
+    { label: 'Economic Indicators', src: 'World Bank', live: true },
+    { label: 'Cryptocurrencies', src: 'CoinGecko', live: true },
+    { label: 'Global Markets', src: 'Yahoo Finance via backend', live: backendReady('worldMarkets') },
+    { label: 'Breaking News', src: 'Google News via backend', live: backendReady('worldNews') },
+    { label: 'J.A.R.V.I.S. Chat', src: 'Anthropic via backend', live: backendReady('jarvisChat') },
+  ];
+  el.innerHTML = rows.map(r => `
+    <div class="wi-row">
+      <span style="width:8px;height:8px;border-radius:50%;flex:0 0 8px;background:${r.live ? '#22C55E' : '#71717A'};${r.live ? 'box-shadow:0 0 0 2px rgba(34,197,94,.15);' : ''}"></span>
+      <span style="flex:1;">${r.label}<span style="display:block;font-size:10px;color:var(--text3);">${r.src}</span></span>
+      <span style="font-size:10.5px;font-weight:700;color:${r.live ? '#22C55E' : 'var(--text3)'};">${r.live ? 'LIVE' : (r.optional ? 'OPTIONAL' : 'NEEDS SETUP')}</span>
+    </div>`).join('');
+}
+
+// Today's Summary — an on-demand AI synthesis of the data already loaded in
+// this screen (real headlines + real market sentiment + real alert count).
+// Manual trigger by design: this calls your Anthropic-backed Cloud Function,
+// which costs a little money per call, so it shouldn't fire silently every
+// time someone opens World Monitor.
+function wmInitSummary(){
+  const el = document.getElementById('wm-summary');
+  if (!el) return;
+  if (!LIVE_ENDPOINTS.jarvisChat || LIVE_ENDPOINTS.jarvisChat.startsWith('PASTE_')) {
+    el.innerHTML = wiNotConfiguredMsg('jarvisChat');
+    return;
+  }
+  el.innerHTML = `<button class="btn btn-primary" style="width:100%;justify-content:center;background:linear-gradient(135deg,var(--acc) 0%,#9C6FFF 100%);" onclick="wmGenerateSummary()">✨ Generate Today's Summary</button>
+    <p style="font-size:10.5px;color:var(--text3);text-align:center;margin-top:6px;">Uses J.A.R.V.I.S. to summarize the live data already on this screen — tap when you want it, not automatic.</p>`;
+}
+
+async function wmGenerateSummary(){
+  const el = document.getElementById('wm-summary');
+  el.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text3);font-size:12px;">Reading today\'s live data…</div>';
+  try {
+    const headlines = (_wmNewsCache || []).slice(0, 8).map(a => '- ' + a.title).join('\n') || 'No headlines currently loaded.';
+    const alertCount = document.getElementById('wm-kpi-alerts')?.textContent || 'unknown';
+    const marketSentiment = document.getElementById('wm-kpi-markets')?.textContent || 'unknown';
+    const prompt = `Here is a snapshot of live world data pulled just now:\n\nHeadlines:\n${headlines}\n\nMarkets sentiment (share of tracked indices/commodities/forex currently up): ${marketSentiment}\nActive hazard alerts: ${alertCount}\n\nWrite a tight 3-4 sentence "Today's Summary" for a dashboard, in plain factual language, based only on the data above. Don't invent anything not in it. No preamble.`;
+
+    const res = await fetch(LIVE_ENDPOINTS.jarvisChat, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'You write extremely concise, factual dashboard summaries strictly from the data given to you. Never speculate beyond it.',
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    const reply = (data.reply || '').trim() || 'No summary could be generated.';
+    el.innerHTML = `<div style="font-size:13px;line-height:1.6;color:var(--text2);">${reply}</div>
+      <button class="wm-refresh-btn" style="margin-top:8px;font-size:11px;color:var(--acc);" onclick="wmGenerateSummary()">↻ Regenerate</button>`;
+  } catch (e) {
+    el.innerHTML = wmErrorMsg('wmGenerateSummary()');
+  }
+}
+
+function wiNotConfiguredMsg(fnName){
+  return `<div style="padding:16px;font-size:12.5px;color:var(--text2);line-height:1.6;">
+    This needs the app owner to deploy the <b>${fnName}</b> Cloud Function and set
+    <span style="font-family:monospace;background:var(--bg4);padding:1px 5px;border-radius:5px;">LIVE_ENDPOINTS.${fnName}</span>
+    at the top of the code.
+  </div>`;
 }
 
 </script>
