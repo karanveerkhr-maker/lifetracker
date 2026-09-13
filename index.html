@@ -368,6 +368,18 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .wm-map-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:10px;color:var(--text3);}
 .wm-map-legend span{display:inline-flex;align-items:center;gap:4px;}
 .wm-map-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;}
+#wm-map{border-radius:12px;overflow:hidden;background:#000;}
+.wm-globe-tooltip{background:var(--bg2);color:var(--text);border:1px solid var(--border2);font-family:inherit;font-size:12px;padding:6px 10px;border-radius:8px;box-shadow:var(--sh);}
+.wm-globe-preview{position:absolute;left:10px;right:10px;bottom:10px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;box-shadow:var(--sh);padding:12px;display:none;opacity:0;transform:translateY(6px);transition:opacity .18s ease,transform .18s ease;pointer-events:none;z-index:4;}
+.wm-globe-preview.show{display:block;opacity:1;transform:translateY(0);pointer-events:auto;}
+.wm-globe-preview-close{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer;padding:2px;}
+@media (min-width:1100px){#wm-map{height:460px!important;}}
+.wm-jumpnav{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;padding:8px 16px;background:var(--bg2);border-bottom:1px solid var(--border);scrollbar-width:none;position:sticky;top:0;z-index:3;}
+.wm-jumpnav::-webkit-scrollbar{display:none;}
+.wm-jumpnav button{flex:0 0 auto;padding:6px 12px;border-radius:20px;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:11.5px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.wm-jumpnav button:hover,.wm-jumpnav button:active{background:var(--acc);color:#fff;border-color:transparent;}
+.wm-jumpnav button.active{background:var(--acc);color:#fff;border-color:transparent;}
+@media (min-width:720px){.wm-jumpnav{justify-content:center;flex-wrap:wrap;overflow-x:visible;}}
 .wm-panel-head{justify-content:space-between;}
 .wm-panel-head-left{display:flex;align-items:center;gap:6px;}
 .wm-panel-meta{display:flex;align-items:center;gap:8px;}
@@ -418,6 +430,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .content::-webkit-scrollbar-track{background:transparent;}
 .content::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px;}
 </style>
+<script src="https://unpkg.com/globe.gl" defer></script>
 </head>
 <body>
 
@@ -1729,7 +1742,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
   </div>
 
   <div class="wm-search-row">
-    <input type="text" id="wm-search" class="wm-search-input" placeholder="🔎 Search any country…" oninput="wmSearchInput(this.value)">
+    <input type="text" id="wm-search" class="wm-search-input" placeholder="🔎 Search any country…" oninput="wmSearchInput(this.value)" onfocus="wmSearchInput(this.value)" onkeydown="if(event.key==='Enter'){const first=document.querySelector('#wm-search-results .wm-country-item');if(first)first.click();}">
     <div id="wm-search-results" class="wm-search-results"></div>
   </div>
 
@@ -1745,24 +1758,43 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
     <div class="wm-kpi"><div class="wm-kpi-val" id="wm-kpi-co2">—</div><div class="wm-kpi-label" id="wm-kpi-co2-label">CO₂ Emissions</div></div>
   </div>
 
+  <div class="wm-jumpnav" id="wm-jumpnav">
+    <button onclick="wmJumpTo('panel-summary')">🤖 Summary</button>
+    <button onclick="wmJumpTo('panel-map')">🌍 Map</button>
+    <button onclick="wmJumpTo('panel-clocks')">🕐 Clocks</button>
+    <button onclick="wmJumpTo('panel-markets')">📈 Markets</button>
+    <button onclick="wmJumpTo('panel-crypto')">🪙 Crypto</button>
+    <button onclick="wmJumpTo('panel-news')">📰 News</button>
+    <button onclick="wmJumpTo('panel-alerts')">⚠️ Alerts</button>
+    <button onclick="wmJumpTo('panel-trending')">🔥 Trending</button>
+    <button onclick="wmJumpTo('panel-countries')">🗺️ Countries</button>
+    <button onclick="wmJumpTo('panel-status')">📡 System</button>
+  </div>
+
   <div class="wm-grid">
-    <div class="wm-panel" style="grid-column:1/-1;">
+    <div class="wm-panel" id="panel-summary" style="grid-column:1/-1;">
       <div class="wm-panel-head">
         <div class="wm-panel-head-left"><span>🤖</span>Today's Summary</div>
         <div class="wm-panel-meta"><span class="wm-updated" id="wm-summary-updated"></span></div>
       </div>
       <div id="wm-summary" class="wm-panel-body" style="max-height:none;"></div>
     </div>
-    <div class="wm-panel" style="grid-column:1/-1;">
+    <div class="wm-panel" id="panel-map" style="grid-column:1/-1;">
       <div class="wm-panel-head">
-        <div class="wm-panel-head-left"><span>🛰️</span>Live Hazard Map</div>
+        <div class="wm-panel-head-left"><span>🌐</span>Interactive 3D Globe</div>
         <div class="wm-panel-meta">
           <span class="wm-updated" id="wm-map-updated"></span>
         </div>
       </div>
-      <div id="wm-map" class="wm-panel-body" style="max-height:none;padding:10px 10px 12px;"></div>
+      <div style="padding:6px 14px 4px;font-size:11px;color:var(--text3);">Drag to rotate · scroll to zoom · touch/hover a country for a quick preview, tap it again (or the button) for its full profile · red/orange/yellow dots are live earthquakes</div>
+      <div style="position:relative;">
+        <div id="wm-map" class="wm-panel-body" style="max-height:none;padding:6px 4px 10px;height:340px;position:relative;">
+          <div id="wm-globe-canvas" style="width:100%;height:100%;"></div>
+        </div>
+        <div id="wm-globe-preview" class="wm-globe-preview"></div>
+      </div>
     </div>
-    <div class="wm-panel">
+    <div class="wm-panel" id="panel-clocks">
       <div class="wm-panel-head">
         <div class="wm-panel-head-left"><span>🕐</span>World Clocks</div>
         <div class="wm-panel-meta">
@@ -1772,7 +1804,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       </div>
       <div id="wm-clocks" class="wm-panel-body"></div>
     </div>
-    <div class="wm-panel">
+    <div class="wm-panel" id="panel-markets">
       <div class="wm-panel-head">
         <div class="wm-panel-head-left"><span>📈</span>Global Markets</div>
         <div class="wm-panel-meta">
@@ -1782,7 +1814,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       </div>
       <div id="wm-markets" class="wm-panel-body"></div>
     </div>
-    <div class="wm-panel">
+    <div class="wm-panel" id="panel-crypto">
       <div class="wm-panel-head">
         <div class="wm-panel-head-left"><span>🪙</span>Cryptocurrencies</div>
         <div class="wm-panel-meta">
@@ -1792,7 +1824,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       </div>
       <div id="wm-crypto" class="wm-panel-body"></div>
     </div>
-    <div class="wm-panel">
+    <div class="wm-panel" id="panel-news">
       <div class="wm-panel-head">
         <div class="wm-panel-head-left"><span>📰</span>Breaking News</div>
         <div class="wm-panel-meta">
@@ -1802,7 +1834,7 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       </div>
       <div id="wm-news" class="wm-panel-body"></div>
     </div>
-    <div class="wm-panel">
+    <div class="wm-panel" id="panel-alerts">
       <div class="wm-panel-head">
         <div class="wm-panel-head-left"><span>⚠️</span>Hazard Alerts</div>
         <div class="wm-panel-meta">
@@ -1812,7 +1844,13 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       </div>
       <div id="wm-alerts" class="wm-panel-body"></div>
     </div>
-    <div class="wm-panel" style="grid-column:1/-1;">
+    <div class="wm-panel" id="panel-trending">
+      <div class="wm-panel-head">
+        <div class="wm-panel-head-left"><span>🔥</span>Trending Countries</div>
+      </div>
+      <div id="wm-trending" class="wm-panel-body"></div>
+    </div>
+    <div class="wm-panel" id="panel-countries" style="grid-column:1/-1;">
       <div class="wm-panel-head">
         <div class="wm-panel-head-left"><span>🗺️</span>Countries</div>
         <div class="wm-panel-meta">
@@ -1825,14 +1863,14 @@ button,a,[onclick]{cursor:pointer;-webkit-tap-highlight-color:transparent;}
       </div>
     </div>
 
-    <div class="wm-panel">
+    <div class="wm-panel" id="panel-status">
       <div class="wm-panel-head">
         <div class="wm-panel-head-left"><span>📡</span>Data Sources</div>
       </div>
       <div id="wm-status" class="wm-panel-body"></div>
     </div>
 
-    <div class="wm-panel">
+    <div class="wm-panel" id="panel-calendar">
       <div class="wm-panel-head">
         <div class="wm-panel-head-left"><span>📅</span>Economic Calendar</div>
       </div>
@@ -7300,6 +7338,9 @@ let _wmAgoTimer = null;
 function openWorldIntel(){
   document.getElementById('world-monitor').classList.add('open');
   wmStartClock();
+  wmInitMap();
+  if (_wmGlobeInstance) { try { _wmGlobeInstance.controls().autoRotate = true; } catch (e) {} }
+  wmInitScrollSpy();
   wmLoadClocks();
   wmLoadMarkets();
   wmLoadNews();
@@ -7308,6 +7349,8 @@ function openWorldIntel(){
   wmLoadGlobalStats();
   wmLoadStatus();
   wmInitSummary();
+  _wmTrendingRetries = 0;
+  wmRenderTrending();
   wiInitCountries();
   _wmClearPolls();
   _wmPollTimers.push(window.setInterval(() => wmLoadClocks(), 5 * 60 * 1000));   // 5 min
@@ -7326,6 +7369,11 @@ function closeWorldMonitor(){
   if (_wmClockTimer) { window.clearInterval(_wmClockTimer); _wmClockTimer = null; }
   if (_wmAgoTimer) { window.clearInterval(_wmAgoTimer); _wmAgoTimer = null; }
   _wmClearPolls();
+  // The 3D globe keeps rendering frames even while hidden — at least stop
+  // the continuous auto-rotate animation so it's not spinning (and costing
+  // battery) behind a closed screen.
+  if (_wmGlobeInstance) { try { _wmGlobeInstance.controls().autoRotate = false; } catch (e) {} }
+  wmHideCountryPreview();
 }
 
 function _wmClearPolls(){
@@ -7408,8 +7456,6 @@ async function wmLoadClocks(manual){
       </div>`;
     }).join('');
     box.dataset.loaded = '1';
-
-    document.getElementById('wm-kpi-cities').textContent = results.length;
     wmMarkUpdated('clocks');
   } catch (e) {
     box.innerHTML = wmErrorMsg('wmLoadClocks()');
@@ -7499,6 +7545,7 @@ async function wmLoadNews(manual){
     box.dataset.loaded = '1';
     kpi.textContent = items.length;
     wmMarkUpdated('news');
+    wmRenderTrending();
   } catch (e) {
     box.innerHTML = wmErrorMsg('wmLoadNews()');
     kpi.textContent = '—';
@@ -7569,6 +7616,110 @@ function wmErrorMsg(retryFn){
   </div>`;
 }
 
+// Quick-jump navigation — the panel list has grown long, so this scrolls
+// straight to a section instead of making people scroll past everything.
+function wmJumpTo(panelId){
+  const panel = document.getElementById(panelId);
+  if (!panel) return;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  wmSetActiveJumpChip(panelId);
+}
+
+function wmSetActiveJumpChip(panelId){
+  document.querySelectorAll('#wm-jumpnav button').forEach(b => b.classList.remove('active'));
+  const idx = ['panel-summary','panel-map','panel-clocks','panel-markets','panel-crypto','panel-news','panel-alerts','panel-trending','panel-countries','panel-status'].indexOf(panelId);
+  const btn = document.querySelectorAll('#wm-jumpnav button')[idx];
+  if (btn) {
+    btn.classList.add('active');
+    btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+}
+
+// Scroll-spy: highlight whichever chip's panel is currently at the top of
+// the visible scroll area. Uses a plain scroll listener rather than
+// IntersectionObserver — with several panels of different heights, more
+// than one can be "intersecting" at once, which made the observer version
+// pick whichever happened to be last in the callback rather than the one
+// actually at the top. This picks deterministically by closest distance.
+function wmInitScrollSpy(){
+  const grid = document.querySelector('.wm-grid');
+  if (!grid) return;
+  const ids = ['panel-summary','panel-map','panel-clocks','panel-markets','panel-crypto','panel-news','panel-alerts','panel-trending','panel-countries','panel-status'];
+
+  if (grid._wmScrollSpyHandler) grid.removeEventListener('scroll', grid._wmScrollSpyHandler);
+
+  const handler = () => {
+    const gridTop = grid.getBoundingClientRect().top;
+    let bestId = null, bestDelta = Infinity;
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const relativeTop = el.getBoundingClientRect().top - gridTop;
+      // Prefer the panel whose top is at or just above the visible area's
+      // top edge (a small tolerance lets the "current" panel stay active
+      // until the next one actually reaches the top).
+      if (relativeTop <= 48 && Math.abs(relativeTop) < bestDelta) {
+        bestDelta = Math.abs(relativeTop);
+        bestId = id;
+      }
+    });
+    if (bestId) wmSetActiveJumpChip(bestId);
+  };
+
+  grid._wmScrollSpyHandler = handler;
+  grid.addEventListener('scroll', handler, { passive: true });
+  handler();
+}
+
+// Trending Countries — cross-references the already-loaded live news
+// headlines against the countries database to see who's actually being
+// talked about right now. Real cross-referencing of two live data sources,
+// not a separate API. Uses word-boundary matching (not plain substring) to
+// cut down on false positives, though short/ambiguous country names (e.g.
+// "Chad", "Georgia", "Jordan", "Turkey") can still occasionally mismatch —
+// this is a real limitation of name-matching against free text, not
+// something a bit of regex can fully solve.
+let _wmTrendingRetries = 0;
+function wmRenderTrending(){
+  const box = document.getElementById('wm-trending');
+  if (!box) return;
+  const newsReady = (_wmNewsCache || []).length > 0;
+  const countriesReady = (_wmCountriesCache || []).length > 50; // bulk list, not just a few searched ones
+  if (!newsReady || !countriesReady) {
+    _wmTrendingRetries++;
+    if (_wmTrendingRetries > 15) {
+      box.innerHTML = '<p style="padding:14px;font-size:12.5px;color:var(--text3);">Not enough news/country data loaded yet to cross-reference.</p>';
+      return;
+    }
+    box.innerHTML = '<p style="padding:14px;font-size:12.5px;color:var(--text3);">Waiting on news and country data to cross-reference…</p>';
+    setTimeout(wmRenderTrending, 2000);
+    return;
+  }
+
+  const counts = new Map();
+  _wmCountriesCache.forEach(c => {
+    const name = c.name?.common;
+    if (!name || name.length < 4) return;
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(`\\b${escaped}\\b`, 'i');
+    let count = 0;
+    _wmNewsCache.forEach(a => { if (re.test(a.title)) count++; });
+    if (count > 0) counts.set(c.cca3, { country: c, count });
+  });
+
+  const ranked = Array.from(counts.values()).sort((a, b) => b.count - a.count).slice(0, 8);
+  if (!ranked.length) {
+    box.innerHTML = '<p style="padding:14px;font-size:12.5px;color:var(--text3);">No specific countries stood out by name in the current headlines.</p>';
+    return;
+  }
+  box.innerHTML = ranked.map(({ country, count }) => `
+    <div class="wi-row" style="cursor:pointer;" onclick="wiOpenCountry('${country.cca3}')">
+      <img class="wm-country-flag" src="${country.flags?.svg || ''}" alt="">
+      <span style="flex:1;">${country.name.common}</span>
+      <span style="font-size:10.5px;color:var(--acc);font-weight:700;">${count} mention${count > 1 ? 's' : ''}</span>
+    </div>`).join('');
+}
+
 function wmSeverityColor(mag){
   if (mag >= 6) return { bg:'rgba(239,68,68,.14)', label:'MAJOR', tagBg:'#EF4444', tagColor:'#fff' };
   if (mag >= 5) return { bg:'rgba(249,115,22,.14)', label:'STRONG', tagBg:'#F97316', tagColor:'#fff' };
@@ -7599,6 +7750,7 @@ async function wiInitCountries(){
     document.getElementById('wm-countries-updated').textContent = data.length + ' countries loaded';
     const kpiCountries = document.getElementById('wm-kpi-countries');
     if (kpiCountries) kpiCountries.textContent = data.length;
+    wmRenderTrending();
   } catch (e) {
     list.innerHTML = wmErrorMsg('wiInitCountries()');
   }
@@ -7630,8 +7782,31 @@ function wiRenderCountryList(countries){
 }
 
 async function wiOpenCountry(cca3){
-  const country = (_wmCountriesCache || []).find(c => c.cca3 === cca3);
-  if (!country) return;
+  let country = (_wmCountriesCache || []).find(c => c.cca3 === cca3);
+
+  // Robustness: if it's not in cache yet (e.g. opened from a source that
+  // only had a code, or the cache hasn't loaded), fetch it directly rather
+  // than silently doing nothing.
+  if (!country) {
+    document.getElementById('country-detail').classList.add('open');
+    document.getElementById('cd-title').textContent = 'Loading…';
+    document.getElementById('cd-body').innerHTML = wmSkeleton(4);
+    try {
+      const res = await fetch(`https://restcountries.com/v3.1/alpha/${cca3}`);
+      if (!res.ok) throw new Error(String(res.status));
+      const data = await res.json();
+      country = Array.isArray(data) ? data[0] : data;
+      if (!country) throw new Error('not found');
+      _wmCountriesCache = (_wmCountriesCache || []);
+      if (!_wmCountriesCache.some(c => c.cca3 === country.cca3)) _wmCountriesCache.push(country);
+    } catch (e) {
+      document.getElementById('cd-title').textContent = 'Not found';
+      document.getElementById('cd-body').innerHTML = wmErrorMsg(`wiOpenCountry('${cca3}')`);
+      return;
+    }
+  }
+
+  wmTrackRecentCountry(country);
 
   document.getElementById('country-detail').classList.add('open');
   document.getElementById('cd-title').textContent = `${country.name?.common || ''}`;
@@ -7647,10 +7822,11 @@ async function wiOpenCountry(cca3){
     <div class="wm-cd-card">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
         <img src="${country.flags?.svg || ''}" style="width:56px;height:38px;object-fit:cover;border-radius:6px;" alt="">
-        <div>
+        <div style="flex:1;">
           <div style="font-size:17px;font-weight:800;">${country.name?.common || ''}</div>
           <div style="font-size:11.5px;color:var(--text3);">${country.name?.official || ''}</div>
         </div>
+        <button id="cd-fav-btn" onclick="wiToggleFavorite('${country.cca3}')" style="background:none;border:none;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);white-space:nowrap;">☆ Add to Favorites</button>
       </div>
       <div class="wm-cd-fact"><span class="wm-cd-fact-label">Capital</span><span class="wm-cd-fact-val">${country.capital?.[0] || '—'}</span></div>
       <div class="wm-cd-fact"><span class="wm-cd-fact-label">Region</span><span class="wm-cd-fact-val">${country.region || '—'}${country.subregion ? ' · ' + country.subregion : ''}</span></div>
@@ -7658,7 +7834,7 @@ async function wiOpenCountry(cca3){
       <div class="wm-cd-fact"><span class="wm-cd-fact-label">Area</span><span class="wm-cd-fact-val">${(country.area || 0).toLocaleString()} km²</span></div>
       <div class="wm-cd-fact"><span class="wm-cd-fact-label">Languages</span><span class="wm-cd-fact-val">${languages}</span></div>
       <div class="wm-cd-fact"><span class="wm-cd-fact-label">Currency</span><span class="wm-cd-fact-val" id="cd-currency">${currencyName ? currencyName + ' (' + currencyCode + ')' : '—'}</span></div>
-      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Live rate</span><span class="wm-cd-fact-val" id="cd-fx">Loading…</span></div>
+      <div class="wm-cd-fact"><span class="wm-cd-fact-label">Live rate <button id="cd-fx-toggle" onclick="wiToggleFxTarget('${currencyCode}')" style="background:none;border:none;color:var(--acc);cursor:pointer;font-size:10px;font-weight:700;padding:0 0 0 4px;">⇄ ${_wmFxTarget === 'USD' ? 'show in INR' : 'show in USD'}</button></span><span class="wm-cd-fact-val" id="cd-fx">Loading…</span></div>
       <div class="wm-cd-fact"><span class="wm-cd-fact-label">Timezones</span><span class="wm-cd-fact-val" style="max-width:60%;">${(country.timezones || []).slice(0, 3).join(', ')}</span></div>
       <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;margin-top:10px;padding:8px;border-radius:8px;background:var(--bg3);font-size:12px;font-weight:600;color:var(--acc);text-decoration:none;">📍 Open in Maps</a>
     </div>
@@ -7705,6 +7881,7 @@ async function wiOpenCountry(cca3){
   wiLoadKeyIndicators(country.cca2);
   wiLoadForecast(country);
   wiLoadGrowthOutlook(country.cca2, country.cca3);
+  wiRenderFavoriteButton(country.cca3);
 }
 
 async function wiLoadWikiSummary(name){
@@ -7740,20 +7917,31 @@ function wiRenderCountryNews(countryName){
     </a>`).join('');
 }
 
+let _wmFxTarget = 'USD'; // toggled between USD/INR by the country detail's currency button
+
 async function wiLoadFxRate(code){
   const el = document.getElementById('cd-fx');
   if (!el) return;
+  const target = _wmFxTarget;
   if (!code) { el.textContent = '—'; return; }
-  if (code === 'USD') { el.textContent = '1 USD = 1.00 USD'; return; }
+  if (code === target) { el.textContent = `1 ${code} = 1.00 ${target}`; return; }
+  el.textContent = 'Loading…';
   try {
-    const res = await fetch(`https://api.frankfurter.app/latest?from=${code}&to=USD`);
+    const res = await fetch(`https://api.frankfurter.app/latest?from=${code}&to=${target}`);
     if (!res.ok) throw new Error(String(res.status));
     const data = await res.json();
-    const rate = data.rates?.USD;
-    el.textContent = rate ? `1 ${code} = ${rate.toFixed(4)} USD` : 'Not available';
+    const rate = data.rates?.[target];
+    el.textContent = rate ? `1 ${code} = ${rate.toFixed(4)} ${target}` : 'Not available';
   } catch (e) {
     el.textContent = 'Not available';
   }
+}
+
+function wiToggleFxTarget(code){
+  _wmFxTarget = _wmFxTarget === 'USD' ? 'INR' : 'USD';
+  const btn = document.getElementById('cd-fx-toggle');
+  if (btn) btn.textContent = `⇄ ${_wmFxTarget === 'USD' ? 'show in INR' : 'show in USD'}`;
+  wiLoadFxRate(code);
 }
 
 const WM_FORECAST_ICON = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌦️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
@@ -7796,8 +7984,8 @@ async function wiLoadGrowthOutlook(cca2, cca3){
   const code = cca2 || cca3;
   try {
     const [popRes, gdpRes] = await Promise.all([
-      fetch(`https://api.worldbank.org/v2/country/${code}/indicator/SP.POP.GROW?format=json&mrv=1`),
-      fetch(`https://api.worldbank.org/v2/country/${code}/indicator/NY.GDP.MKTP.KD.ZG?format=json&mrv=1`),
+      fetch(`https://api.worldbank.org/v2/country/${code}/indicator/SP.POP.GROW?format=json&mrnev=1`),
+      fetch(`https://api.worldbank.org/v2/country/${code}/indicator/NY.GDP.MKTP.KD.ZG?format=json&mrnev=1`),
     ]);
     const [popJson, gdpJson] = await Promise.all([popRes.json(), gdpRes.json()]);
     const popEntry = popJson?.[1]?.[0];
@@ -7822,7 +8010,7 @@ async function wiLoadGdpChart(cca2){
   const el = document.getElementById('cd-gdp-chart');
   if (!el || !cca2) return;
   try {
-    const res = await fetch(`https://api.worldbank.org/v2/country/${cca2}/indicator/NY.GDP.MKTP.CD?format=json&mrv=10`);
+    const res = await fetch(`https://api.worldbank.org/v2/country/${cca2}/indicator/NY.GDP.MKTP.CD?format=json&mrnev=10`);
     const json = await res.json();
     const points = (json?.[1] || []).filter(p => p.value != null).reverse();
     if (points.length < 2) { el.innerHTML = '<span style="color:var(--text3);font-size:12px;">Not enough World Bank data to chart.</span>'; return; }
@@ -7875,7 +8063,7 @@ async function wiLoadKeyIndicators(cca2){
   if (!el || !cca2) return;
   try {
     const results = await Promise.all(WI_KEY_INDICATORS.map(ind =>
-      fetch(`https://api.worldbank.org/v2/country/${cca2}/indicator/${ind.code}?format=json&mrv=1`)
+      fetch(`https://api.worldbank.org/v2/country/${cca2}/indicator/${ind.code}?format=json&mrnev=1`)
         .then(r => r.json())
         .then(json => ({ ind, entry: json?.[1]?.[0] }))
         .catch(() => ({ ind, entry: null }))
@@ -7906,47 +8094,231 @@ function wiAskJarvisAbout(countryName){
   jarvisAutoGrow(input);
 }
 
-// Live Hazard Map — stylized equirectangular grid, real coordinates from
-// USGS earthquake data (GDACS items are plotted too when they carry coords).
+// Interactive 3D Globe — real, clickable, rotating earth (globe.gl / Three.js,
+// same library family used in this builder's other World Intelligence
+// project). Country borders come from Natural Earth's public 110m dataset;
+// codes are ISO alpha-2/alpha-3, matching REST Countries' cca2/cca3 exactly,
+// so a tap opens the same real Country Detail panel used everywhere else.
+let _wmGlobeInstance = null;
+let _wmGlobeRetries = 0;
+let _wmMapMarkerRetries = 0;
+let _wmGlobeCountries = null;
+
+function wmInitMap(){
+  const el = document.getElementById('wm-globe-canvas');
+  if (!el) return;
+  if (typeof Globe === 'undefined') {
+    _wmGlobeRetries++;
+    if (_wmGlobeRetries > 20) {
+      wmShowMapFallback(el, "Couldn't load the globe library — check your connection and reopen World Monitor.");
+      return;
+    }
+    setTimeout(wmInitMap, 400);
+    return;
+  }
+  if (_wmGlobeInstance) return; // already built — just needs marker/data refreshes, not a rebuild
+
+  if (!wmHasWebGL()) {
+    wmShowMapFallback(el, "Your browser/device doesn't support the 3D graphics (WebGL) this globe needs.");
+    return;
+  }
+
+  try {
+    el.innerHTML = '';
+    const rect = el.getBoundingClientRect();
+    let _wmHoverPolygon = null;
+
+    _wmGlobeInstance = new Globe(el)
+      .width(rect.width)
+      .height(rect.height)
+      .backgroundColor('rgba(0,0,0,0)')
+      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+      .showAtmosphere(true)
+      .atmosphereColor('#7DD3FC')
+      .atmosphereAltitude(0.16)
+      .lineHoverPrecision(0)
+      .polygonsTransitionDuration(0)
+      .polygonAltitude(0.008)
+      .polygonCapColor(d => d === _wmHoverPolygon ? 'rgba(34, 211, 238, 0.55)' : 'rgba(255, 255, 255, 0.05)')
+      .polygonSideColor(() => 'rgba(0, 0, 0, 0.18)')
+      .polygonStrokeColor(() => '#FFD84D')
+      .polygonLabel(d => {
+        const p = d.properties || {};
+        return `<div class="wm-globe-tooltip"><b>${p.ADMIN || p.NAME || ''}</b></div>`;
+      })
+      .onPolygonClick(d => {
+        if (d) wmShowCountryPreview(d);
+      })
+      .onPolygonHover(d => {
+        _wmHoverPolygon = d;
+        el.style.cursor = d ? 'pointer' : 'grab';
+        _wmGlobeInstance.polygonCapColor(_wmGlobeInstance.polygonCapColor());
+        if (d) wmShowCountryPreview(d);
+      })
+      .pointLat('lat')
+      .pointLng('lon')
+      .pointColor(d => d.color)
+      .pointRadius(d => d.radius)
+      .pointAltitude(0.01)
+      .pointLabel(d => `<div class="wm-globe-tooltip"><b>${d.title}</b><br>${d.location || ''}</div>`)
+      .onPointClick(d => { if (d.link) window.open(d.link, '_blank'); });
+
+    // Gentle auto-rotate so it reads as "alive" even before anyone touches it.
+    _wmGlobeInstance.controls().autoRotate = true;
+    _wmGlobeInstance.controls().autoRotateSpeed = 0.4;
+    _wmGlobeInstance.controls().enableZoom = true;
+    _wmGlobeInstance.pointOfView({ lat: 20, lng: 20, altitude: 2.2 });
+
+    window.addEventListener('resize', wmResizeGlobe);
+    wmLoadGlobeCountries();
+    wmMarkUpdated('map');
+  } catch (e) {
+    console.error('Globe init failed:', e);
+    _wmGlobeInstance = null;
+    wmShowMapFallback(el, "The 3D globe couldn't start on this device (" + (e?.message || 'unknown error') + ").");
+  }
+}
+
+// Quick, cheap check for WebGL support — fails fast with a clear message
+// instead of letting Three.js throw deep inside its own internals.
+function wmHasWebGL(){
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext &&
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+  } catch (e) {
+    return false;
+  }
+}
+
+// Guaranteed fallback: even if the 3D globe can't run at all, country data
+// is never actually unreachable — this points straight at the Countries
+// search panel, which needs no WebGL and is already fully working.
+function wmShowMapFallback(el, reason){
+  el.innerHTML = `<div style="padding:20px 16px;text-align:center;">
+    <p style="font-size:12.5px;color:var(--text3);margin-bottom:12px;">${reason}</p>
+    <p style="font-size:12.5px;color:var(--text2);margin-bottom:12px;">You can still look up any country's full data below.</p>
+    <button class="wm-refresh-btn" style="background:var(--bg4);padding:8px 16px;border-radius:8px;color:var(--text);font-weight:600;" onclick="wmJumpTo('panel-countries'); document.getElementById('wm-country-search')?.focus();">🗺️ Go to Countries search</button>
+  </div>`;
+}
+
+// Quick country preview — shown on hover (desktop cursor) AND on tap/click
+// (since touchscreens don't have real "hover"), so both input methods get
+// an immediate at-a-glance answer instead of jumping straight to the full
+// profile. Prefers cached REST Countries data when available (capital,
+// currency, flag); falls back to the GeoJSON's own basic fields (name,
+// population estimate) if that hasn't loaded yet.
+function wmShowCountryPreview(feature){
+  const card = document.getElementById('wm-globe-preview');
+  if (!card || !feature) return;
+  const p = feature.properties || {};
+  const code3 = p.ISO_A3 && p.ISO_A3 !== '-99' ? p.ISO_A3 : null;
+  const code2 = p.ISO_A2 && p.ISO_A2 !== '-99' ? p.ISO_A2 : null;
+  const cached = (_wmCountriesCache || []).find(c => (code3 && c.cca3 === code3) || (code2 && c.cca2 === code2));
+
+  const name = cached?.name?.common || p.ADMIN || p.NAME || 'Unknown';
+  const flag = cached?.flags?.svg;
+  const capital = cached?.capital?.[0];
+  const region = cached?.region || '';
+  const population = cached?.population ?? (p.POP_EST ? Math.round(p.POP_EST) : null);
+  const currencyEntries = cached ? Object.entries(cached.currencies || {}) : [];
+  const currencyName = currencyEntries[0]?.[1]?.name;
+  const currencyCode = currencyEntries[0]?.[0];
+  const code = code3 || code2 || '';
+
+  card.innerHTML = `
+    <button class="wm-globe-preview-close" onclick="wmHideCountryPreview()">✕</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      ${flag ? `<img src="${flag}" style="width:36px;height:24px;object-fit:cover;border-radius:4px;flex:0 0 36px;" alt="">` : ''}
+      <div style="min-width:0;">
+        <div style="font-size:14px;font-weight:800;">${name}</div>
+        ${region ? `<div style="font-size:10.5px;color:var(--text3);">${region}</div>` : ''}
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:11.5px;margin-bottom:10px;">
+      ${capital ? `<div><span style="color:var(--text3);">Capital</span><br><b>${capital}</b></div>` : ''}
+      ${population ? `<div><span style="color:var(--text3);">Population</span><br><b>${population.toLocaleString()}</b></div>` : ''}
+      ${currencyName ? `<div><span style="color:var(--text3);">Currency</span><br><b>${currencyName}${currencyCode ? ' (' + currencyCode + ')' : ''}</b></div>` : ''}
+    </div>
+    ${code ? `<button class="btn btn-primary" style="width:100%;justify-content:center;padding:8px;font-size:12px;" onclick="wmOpenFullFromPreview('${code}')">View Full Profile →</button>` : ''}
+  `;
+  card.classList.add('show');
+}
+
+function wmHideCountryPreview(){
+  const card = document.getElementById('wm-globe-preview');
+  if (card) card.classList.remove('show');
+}
+
+function wmOpenFullFromPreview(code){
+  wmHideCountryPreview();
+  if (code) wiOpenCountry(code);
+}
+
+function wmResizeGlobe(){
+  const el = document.getElementById('wm-globe-canvas');
+  if (!el || !_wmGlobeInstance) return;
+  const rect = el.getBoundingClientRect();
+  _wmGlobeInstance.width(rect.width).height(rect.height);
+}
+
+let _wmGlobeCountriesRetries = 0;
+async function wmLoadGlobeCountries(){
+  if (_wmGlobeCountries) { if (_wmGlobeInstance) _wmGlobeInstance.polygonsData(_wmGlobeCountries.features); return; }
+  try {
+    const res = await fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson');
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    _wmGlobeCountries = data;
+    _wmGlobeCountriesRetries = 0;
+    if (_wmGlobeInstance) _wmGlobeInstance.polygonsData(data.features.filter(f => f.properties.ISO_A2 !== 'AQ'));
+  } catch (e) {
+    // Globe still rotates and shows hazard points without this — just no
+    // clickable country borders until it loads. Retry a bounded number of
+    // times rather than forever, and tell people where they can still get
+    // country data (search) if borders never show up.
+    _wmGlobeCountriesRetries++;
+    if (_wmGlobeCountriesRetries > 8) {
+      const hint = document.querySelector('#panel-map [style*="color:var(--text3)"]');
+      if (hint) hint.insertAdjacentHTML('afterend', '<div style="padding:0 14px 6px;font-size:11px;color:var(--acc);">Country borders didn\'t load — <a href="#" onclick="wmJumpTo(\'panel-countries\'); document.getElementById(\'wm-country-search\')?.focus(); return false;" style="color:var(--acc);">search countries here instead →</a></div>');
+      return;
+    }
+    setTimeout(wmLoadGlobeCountries, 3000);
+  }
+}
+
+function wmUpdateMapMarkers(features){
+  if (!_wmGlobeInstance) return;
+  const points = features.map(f => ({
+    lat: f.lat,
+    lon: f.lon,
+    title: f.title,
+    location: f.location,
+    link: f.link,
+    color: f.mag >= 6 ? '#EF4444' : f.mag >= 5 ? '#F97316' : '#EAB308',
+    radius: f.mag ? Math.max(0.3, Math.min(1.2, f.mag / 6)) : 0.4,
+  }));
+  _wmGlobeInstance.pointsData(points);
+}
+
 function wmRenderMap(features){
-  const box = document.getElementById('wm-map');
-  if (!box) return;
-  const w = 720, h = 360;
-  const project = (lat, lon) => [(lon + 180) / 360 * w, (90 - lat) / 180 * h];
-
-  let grid = '';
-  for (let lon = -180; lon <= 180; lon += 30) {
-    const x = (lon + 180) / 360 * w;
-    grid += `<line x1="${x}" y1="0" x2="${x}" y2="${h}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>`;
+  if (!_wmGlobeInstance) {
+    wmInitMap();
+    // Keep retrying until the globe actually exists, rather than guessing
+    // a fixed delay — the globe library itself can take several seconds
+    // to load on a slow connection, and a one-shot timeout would silently
+    // drop the markers forever if it was too short.
+    _wmMapMarkerRetries = (_wmMapMarkerRetries || 0) + 1;
+    if (_wmMapMarkerRetries > 30) { _wmMapMarkerRetries = 0; return; }
+    setTimeout(() => wmRenderMap(features), 500);
+    return;
   }
-  for (let lat = -90; lat <= 90; lat += 30) {
-    const y = (90 - lat) / 180 * h;
-    grid += `<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>`;
-  }
-  grid += `<line x1="0" y1="${h/2}" x2="${w}" y2="${h/2}" stroke="rgba(125,211,252,.18)" stroke-width="1"/>`;
-  grid += `<line x1="${w/2}" y1="0" x2="${w/2}" y2="${h}" stroke="rgba(125,211,252,.18)" stroke-width="1"/>`;
-
-  const dots = features.map(f => {
-    const [x, y] = project(f.lat, f.lon);
-    const color = f.mag >= 6 ? '#EF4444' : f.mag >= 5 ? '#F97316' : f.mag >= 4.5 ? '#EAB308' : '#7DD3FC';
-    const r = f.mag ? Math.max(3, Math.min(9, f.mag)) : 4;
-    const safeTitle = (f.title + ' — ' + (f.location || '')).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-    return `<circle class="wm-map-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" fill="${color}" fill-opacity="0.85" stroke="${color}" stroke-width="1.5"><title>${safeTitle}</title></circle>`;
-  }).join('');
-
-  box.innerHTML = `
-    <svg class="wm-map-svg" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="${w}" height="${h}" rx="10" fill="#060A12"/>
-      ${grid}
-      ${dots}
-    </svg>
-    <div class="wm-map-legend">
-      <span><i style="background:#EF4444;"></i>Major (6.0+)</span>
-      <span><i style="background:#F97316;"></i>Strong (5.0+)</span>
-      <span><i style="background:#EAB308;"></i>Moderate (4.5+)</span>
-      <span style="margin-left:auto;">${features.length} live points · positions are real coordinates, from USGS/GDACS</span>
-    </div>`;
+  _wmMapMarkerRetries = 0;
+  wmUpdateMapMarkers(features);
   wmMarkUpdated('map');
+  const meta = document.getElementById('wm-map-updated');
+  if (meta) meta.title = features.length + ' live hazard points plotted';
 }
 
 // Cryptocurrencies — CoinGecko, free, no key, CORS-enabled.
@@ -7982,8 +8354,8 @@ async function wmLoadGlobalStats(){
   let worldPop = null;
   try {
     const [popRes, gdpRes] = await Promise.all([
-      fetch('https://api.worldbank.org/v2/country/WLD/indicator/SP.POP.TOTL?format=json&mrv=1'),
-      fetch('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&mrv=1'),
+      fetch('https://api.worldbank.org/v2/country/WLD/indicator/SP.POP.TOTL?format=json&mrnev=1'),
+      fetch('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&mrnev=1'),
     ]);
     const [popJson, gdpJson] = await Promise.all([popRes.json(), gdpRes.json()]);
     const pop = popJson?.[1]?.[0];
@@ -8012,7 +8384,7 @@ async function wmLoadGlobalStats(){
   // Internet users — World Bank's % of population online, converted to a
   // headcount using the population figure fetched above.
   try {
-    const res = await fetch('https://api.worldbank.org/v2/country/WLD/indicator/IT.NET.USER.ZS?format=json&mrv=1');
+    const res = await fetch('https://api.worldbank.org/v2/country/WLD/indicator/IT.NET.USER.ZS?format=json&mrnev=1');
     const json = await res.json();
     const entry = json?.[1]?.[0];
     if (entry?.value && worldPop) {
@@ -8024,7 +8396,7 @@ async function wmLoadGlobalStats(){
 
   // CO₂ emissions — World Bank world total, in kt, converted to Gt.
   try {
-    const res = await fetch('https://api.worldbank.org/v2/country/WLD/indicator/EN.GHG.CO2.MT.CE.AR5?format=json&mrv=1');
+    const res = await fetch('https://api.worldbank.org/v2/country/WLD/indicator/EN.GHG.CO2.MT.CE.AR5?format=json&mrnev=1');
     const json = await res.json();
     const entry = json?.[1]?.[0];
     if (entry?.value) {
@@ -8035,27 +8407,153 @@ async function wmLoadGlobalStats(){
 }
 
 // Global country search bar in the World Monitor header.
+// Search is intentionally NOT dependent on the big /all countries fetch —
+// that endpoint is known to be under heavy load (the REST Countries
+// maintainers themselves report ~4M hits/day and server strain), so relying
+// on it for search made search fail whenever that one big request was slow.
+// Instead, search calls the much lighter per-query name endpoint directly.
+let _wmSearchDebounce = null;
+let _wmSearchSeq = 0;
+let _wmRecentCountries = wmLoadFromStorage('wm_recent_countries');
+let _wmFavoriteCountries = wmLoadFromStorage('wm_favorite_countries');
+
+// Persisted via localStorage — needs no backend, works purely client-side,
+// and survives closing the app/browser (unlike a plain in-memory array).
+function wmLoadFromStorage(key){
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return []; // private browsing / storage disabled — degrade to empty, not a crash
+  }
+}
+function wmSaveToStorage(key, value){
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage full or disabled — non-fatal */ }
+}
+
 function wmSearchInput(q){
   const resultsEl = document.getElementById('wm-search-results');
-  const query = q.trim().toLowerCase();
-  if (!query || !_wmCountriesCache) { resultsEl.classList.remove('show'); resultsEl.innerHTML = ''; return; }
-  const matches = _wmCountriesCache.filter(c => (c.name?.common || '').toLowerCase().includes(query)).slice(0, 8);
-  if (!matches.length) {
-    resultsEl.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--text3);">No matches yet — try a different spelling.</div>';
-  } else {
-    resultsEl.innerHTML = matches.map(c => `<div class="wm-country-item" style="padding:8px 12px;" onclick="wmSearchSelect('${c.cca3}')">
+  const query = q.trim();
+  clearTimeout(_wmSearchDebounce);
+
+  if (!query) {
+    wmShowSearchDefaults();
+    return;
+  }
+
+  resultsEl.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--text3);">Searching…</div>';
+  resultsEl.classList.add('show');
+
+  _wmSearchDebounce = setTimeout(() => wmDoSearch(query), 300);
+}
+
+async function wmDoSearch(query){
+  const resultsEl = document.getElementById('wm-search-results');
+  const seq = ++_wmSearchSeq; // guards against an older slow request overwriting a newer one
+  try {
+    const res = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(query)}?fields=name,capital,region,flags,cca2,cca3`);
+    if (seq !== _wmSearchSeq) return; // a newer keystroke already superseded this
+    if (!res.ok) {
+      resultsEl.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--text3);">No countries match that search.</div>';
+      return;
+    }
+    const matches = (await res.json()).slice(0, 8);
+    if (seq !== _wmSearchSeq) return;
+
+    // Cache these so tapping them, or the map, can open details instantly.
+    _wmCountriesCache = _wmCountriesCache || [];
+    matches.forEach(m => { if (!_wmCountriesCache.some(c => c.cca3 === m.cca3)) _wmCountriesCache.push(m); });
+
+    wmRenderSearchResults(matches, resultsEl);
+  } catch (e) {
+    if (seq !== _wmSearchSeq) return;
+    resultsEl.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--text3);">Couldn\'t reach the country database right now. <button onclick="wmDoSearch(document.getElementById(\'wm-search\').value)" style="color:var(--acc);background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline;">Retry</button></div>';
+  }
+}
+
+function wmRenderSearchResults(list, resultsEl){
+  if (!list.length) {
+    resultsEl.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--text3);">No countries match that search.</div>';
+    return;
+  }
+  resultsEl.innerHTML = list.map(c => `<div class="wm-country-item" style="padding:8px 12px;" onclick="wmSearchSelect('${c.cca3}')">
       <img class="wm-country-flag" src="${c.flags?.svg || ''}" alt="">
       <span style="flex:1;">${c.name.common}</span>
       <span style="font-size:10px;color:var(--text3);">${c.region || ''}</span>
     </div>`).join('');
-  }
   resultsEl.classList.add('show');
 }
+
+function wmShowSearchDefaults(){
+  const resultsEl = document.getElementById('wm-search-results');
+  const blocks = [];
+  if (_wmFavoriteCountries.length) {
+    blocks.push(`<div style="padding:8px 12px 2px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);">⭐ Favorites</div>`);
+    blocks.push(_wmFavoriteCountries.map(c => wmSearchRowHtml(c)).join(''));
+  }
+  if (_wmRecentCountries.length) {
+    blocks.push(`<div style="padding:8px 12px 2px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);">🕘 Recently Viewed</div>`);
+    blocks.push(_wmRecentCountries.map(c => wmSearchRowHtml(c)).join(''));
+  }
+  if (!blocks.length) {
+    resultsEl.classList.remove('show');
+    resultsEl.innerHTML = '';
+    return;
+  }
+  resultsEl.innerHTML = blocks.join('');
+  resultsEl.classList.add('show');
+}
+
+function wmSearchRowHtml(c){
+  return `<div class="wm-country-item" style="padding:8px 12px;" onclick="wmSearchSelect('${c.cca3}')">
+    <img class="wm-country-flag" src="${c.flags?.svg || ''}" alt="">
+    <span style="flex:1;">${c.name.common}</span>
+    <span style="font-size:10px;color:var(--text3);">${c.region || ''}</span>
+  </div>`;
+}
+
 function wmSearchSelect(cca3){
   document.getElementById('wm-search').value = '';
   document.getElementById('wm-search-results').classList.remove('show');
   document.getElementById('wm-search-results').innerHTML = '';
   wiOpenCountry(cca3);
+}
+
+function wmLightweightCountry(country){
+  // Only what the search dropdown needs — keeps localStorage small instead
+  // of storing the country's full data (timezones, maps, etc.) twice over.
+  return {
+    name: { common: country.name?.common },
+    cca2: country.cca2,
+    cca3: country.cca3,
+    region: country.region,
+    flags: { svg: country.flags?.svg },
+  };
+}
+
+function wmTrackRecentCountry(country){
+  _wmRecentCountries = _wmRecentCountries.filter(c => c.cca3 !== country.cca3);
+  _wmRecentCountries.unshift(wmLightweightCountry(country));
+  _wmRecentCountries = _wmRecentCountries.slice(0, 5);
+  wmSaveToStorage('wm_recent_countries', _wmRecentCountries);
+}
+
+function wiToggleFavorite(cca3){
+  const country = (_wmCountriesCache || []).find(c => c.cca3 === cca3);
+  if (!country) return;
+  const idx = _wmFavoriteCountries.findIndex(c => c.cca3 === cca3);
+  if (idx > -1) _wmFavoriteCountries.splice(idx, 1);
+  else _wmFavoriteCountries.unshift(wmLightweightCountry(country));
+  wmSaveToStorage('wm_favorite_countries', _wmFavoriteCountries);
+  wiRenderFavoriteButton(cca3);
+}
+
+function wiRenderFavoriteButton(cca3){
+  const btn = document.getElementById('cd-fav-btn');
+  if (!btn) return;
+  const isFav = _wmFavoriteCountries.some(c => c.cca3 === cca3);
+  btn.textContent = isFav ? '⭐ Favorited' : '☆ Add to Favorites';
+  btn.style.color = isFav ? '#FBBF24' : 'var(--text2)';
 }
 
 // Data Sources — an honest status panel: what's actually live right now in
